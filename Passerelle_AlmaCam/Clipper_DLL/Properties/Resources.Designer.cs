@@ -61,7 +61,7 @@ namespace AF_Clipper_Dll.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à 2.1.3.
+        ///   Recherche une chaîne localisée semblable à 2.1.4.
         /// </summary>
         internal static string Almcam_Version {
             get {
@@ -70,7 +70,7 @@ namespace AF_Clipper_Dll.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à AlmaCAM_Clipper_7.
+        ///   Recherche une chaîne localisée semblable à AlmaCAM_Clipper_8.
         /// </summary>
         internal static string Clipper_Almacam_Database_Name {
             get {

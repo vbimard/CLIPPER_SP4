@@ -396,7 +396,9 @@ namespace AF_Clipper_Dll
     /// </summary>
     /// bouton de commande d'import du stock 
     /// de l'interface clipper
-    ///
+    /// Import du stock traitement par ommission
+    /// Taitement des toles non reservées uniquement
+    /// 
     ///
     public class Command_Clipper_ImportStock : CommandProcessor
     {
@@ -420,6 +422,8 @@ namespace AF_Clipper_Dll
                 Stock.Import(contextlocal);//), csvImportPath);
             }
 
+            ///reajustement des qtés par omission
+            
 
             return base.Execute();
         }
@@ -489,14 +493,14 @@ namespace AF_Clipper_Dll
                 //chemin import cahier affaire
                 //chemin import
                 //test migration sp3 changement de nom de cle pour clip configuraton
-                IParameterValue sp3;
+                //IParameterValue sp3;
                 
                 bool rst;
                 
 
                 string parametersetkey = "CLIPPER_DLL";
                 parametre_name = "IMPORT_CDA";
-                context.ParameterSetManager.TryGetParameterValue(parametersetkey, parametre_name, out sp3);
+                context.ParameterSetManager.TryGetParameterValue(parametersetkey, parametre_name, out IParameterValue sp3);
                 if (sp3 == null) { parametersetkey = "CLIP_CONFIGURATION"; }
 
                 parametre_name = "IMPORT_CDA";
@@ -610,7 +614,7 @@ namespace AF_Clipper_Dll
 
                 //verification des path
                 Alma_Log.Info("verification de l'existance des path " , "GetlistParam");
-                if (checkClipperFolderExists() == false) { throw new System.ApplicationException("Certains chemin d'echanges de la Passerelle AlmaCam-clipper ne sont pas accessibles"); };
+                if (CheckClipperFolderExists() == false) { throw new System.ApplicationException("Certains chemin d'echanges de la Passerelle AlmaCam-clipper ne sont pas accessibles"); };
                 ///string AlmaCAmVersion = Directory.GetCurrentDirectory().ToString() + Parameters_Dictionnary.Values("");///
                 if (ckeckCompatibilityVersion() == false) { throw new System.ApplicationException("Version de la Dll clipper n'est pas validée pour cette version d'AlmaCam"); }
 
@@ -687,15 +691,16 @@ namespace AF_Clipper_Dll
             try
             {
                 bool rst = false;
-                IParameterValue value;
+                //IParameterValue value;
                 if (  string.IsNullOrEmpty(parameterkeyname)) { parameterkeyname = parameter_name; }
                 Alma_Log.Info("recuperation du parametre " + parameter_name, "GetlistParam");
-                rst =contextlocal.ParameterSetManager.TryGetParameterValue(parametersetkey, parameterkeyname, out value);
+                rst =contextlocal.ParameterSetManager.TryGetParameterValue(parametersetkey, parameterkeyname, out IParameterValue value);
                 if (rst == false)
                 {
+                    rst = false;
                     parameters_dictionnary.Add(parameter_name, "");
                     throw new MissingParameterException(parameter_name);
-                    rst = false;
+                   
                 }
                 else
                 {
@@ -735,15 +740,15 @@ namespace AF_Clipper_Dll
             try
             {
                 bool rst = false;
-                IParameterValue value;
+                
                 if (string.IsNullOrEmpty(parameterkeyname)) { parameterkeyname = parameter_name; }
                 Alma_Log.Info("recuperation du parametre " + parameter_name, "GetlistParam");
-                rst = contextlocal.ParameterSetManager.TryGetParameterValue(parametersetkey, parameterkeyname, out value);
+                rst = contextlocal.ParameterSetManager.TryGetParameterValue(parametersetkey, parameterkeyname, out IParameterValue value);
                 if (rst == false)
-                {  
+                {   rst = false;
                     parameters_dictionnary.Add(parameter_name, defaultvalue);
                     throw new MissingParameterException(parameter_name);
-                    rst = false;
+                   
                 }
                 else
                 {
@@ -781,9 +786,9 @@ namespace AF_Clipper_Dll
             {
                 try {
 
-                        object obj;
+                   
 
-                        dic.TryGetValue(key, out obj);
+                        dic.TryGetValue(key, out object obj);
 
                         return (T)obj;
 
@@ -932,7 +937,7 @@ namespace AF_Clipper_Dll
         /// verification de l'existance des dossiers d'echange
         /// </summary>
         /// <returns>true si tous les dossier existent, false si ils n'existent pas</returns>
-        public static Boolean checkClipperFolderExists() {
+        public static Boolean CheckClipperFolderExists() {
             try
             {
 
@@ -962,7 +967,7 @@ namespace AF_Clipper_Dll
         /// car clipper a écrit en dur le nom de la base de données
         /// </summary>
         /// <returns>true si le nom de la base est correcte</returns>
-        public static Boolean checkDatabasename(string actualdatabasename)
+        public static Boolean CheckDatabasename(string actualdatabasename)
         {
             try
             { bool res = true;
@@ -981,7 +986,7 @@ namespace AF_Clipper_Dll
 
                     string working_db = Properties.Resources.Clipper_Almacam_Database_Name.ToString();
                     Alma_Log.Write_Log("derniere base ouverte: " + working_db);
-                    if (Clipper_Param.checkDatabasename(working_db) == false) { throw new Exception(Alma_RegitryInfos.GetLastDataBase() + ", le Nom de la base est incorrecte,  elle doit se nommer :" + Properties.Resources.Clipper_Almacam_Database_Name); }
+                    if (Clipper_Param.CheckDatabasename(working_db) == false) { throw new Exception(Alma_RegitryInfos.GetLastDataBase() + ", le Nom de la base est incorrecte,  elle doit se nommer :" + Properties.Resources.Clipper_Almacam_Database_Name); }
 
 
                 }
@@ -1188,6 +1193,8 @@ namespace AF_Clipper_Dll
                 using (Clipper_OF cahierAffaire = new Clipper_OF())
                 {
                     cahierAffaire.Import(Context, csvImportPath, dataModelstring, false);//), csvImportPath);
+
+
                 }
             }
             return base.Execute();
@@ -2325,7 +2332,7 @@ namespace AF_Clipper_Dll
                     //declaration des dictionaires
                     Dictionary<string, object> line_Dictionnary = new Dictionary<string, object>();
                     //on lit les centres de frais 
-                    Dictionary<string, string> CentreFrais_Dictionnary = null;
+                    ; //= null;
                     Data_Model.setFieldDictionnary(DataModelString);
                     Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": reading data model :success !! ");
                     ///remplissage des machines et verification de la presence du centre de frais demandé par clipper
@@ -2334,10 +2341,10 @@ namespace AF_Clipper_Dll
                     //machine_liste.Fill(false);
 
                     //recuperation de la machine clipper
-                    IEntity Clipper_Machine = null;
-                    IEntity Clipper_Centre_Frais = null;
+                    //IEntity Clipper_Machine = null;
+                    //IEntity Clipper_Centre_Frais = null;
                     //recuperation de la machine clipper et construction de la liste machine
-                    Get_Clipper_Machine(contextlocal, out Clipper_Machine, out Clipper_Centre_Frais, out CentreFrais_Dictionnary);
+                    Get_Clipper_Machine(contextlocal, out IEntity Clipper_Machine , out IEntity Clipper_Centre_Frais , out Dictionary<string, string> CentreFrais_Dictionnary);
 
                     //verification que toutes les machines sont conformes pour une intégration clipper
 
@@ -2825,13 +2832,13 @@ namespace AF_Clipper_Dll
             IEntitySelector select_reference_list = new EntitySelector();
             IEntitySelector select_preparation_list = new EntitySelector();
 
-            IEntity clipper_machine = null;
-            IEntity centre_frais_clipper = null;
+            //IEntity clipper_machine = null;
+            //IEntity centre_frais_clipper = null;
 
             Dictionary<string, string> centre_frais_dictionnary = null;
             centre_frais_dictionnary = new Dictionary<string, string>();
             //machine clipper
-            Get_Clipper_Machine(contextlocal, out clipper_machine, out centre_frais_clipper, out centre_frais_dictionnary);
+            Get_Clipper_Machine(contextlocal, out IEntity clipper_machine, out IEntity centre_frais_clipper, out centre_frais_dictionnary);
             //on retourne les pieces marquées "sansdt"
 
             IEntityList sans_dt_filter = contextlocal.EntityManager.GetEntityList("_REFERENCE", "REMONTER_DT", ConditionOperator.Equal, true);
@@ -3055,15 +3062,16 @@ namespace AF_Clipper_Dll
         public override bool Execute()
         {
 
-            //recuperation du context
-            //string DbName = Alma_RegitryInfos.GetLastDataBase();
-            //IModelsRepository modelsRepository = new ModelsRepository();
-            //contextlocal = modelsRepository.GetModelContext(DbName);
 
-
+            //declaratin des listes pour post traitement
+          
             using (Clipper_Stock Stock = new Clipper_Stock())
-            {
+            {   
+               
+                //Stock.Import(Context);//), csvImportPath);
                 Stock.Import(Context);//), csvImportPath);
+
+                
             }
 
 
@@ -3105,6 +3113,7 @@ namespace AF_Clipper_Dll
         }
         /// <summary>
         /// met a jour les valeurs stock et sheet  dans le stock almacam
+        /// attention on ne met à jour que les chute tole qui n'ont pas de qtés reservées 
         /// </summary>
         /// <param name="contextlocal">contexte context</param>
         /// <param name="sheet">ientity sheet  </param>
@@ -3202,8 +3211,11 @@ namespace AF_Clipper_Dll
                                 //on recuepere  les quantités de la chute courante de la chute
                                 //on verifie si les il y a des quantité en prod
                                 //on requalifie les quantité
-
-                                stock.SetFieldValue(field.Key, field.Value);
+                                if (stock.GetFieldValueAsInt("_USED_QUANTITY") != 0)
+                                {
+                                    stock.SetFieldValue(field.Key, field.Value);
+                                }
+                                
 
 
 
@@ -3452,6 +3464,7 @@ namespace AF_Clipper_Dll
         /// <param name="pathToFile">path to dispomat.csv file</param>
         /// <param name="DataModelString"></param>
         //public void Import(IContext contextlocal, string pathToFile, string DataModelString)
+       
         public void Import(IContext contextlocal)//, string pathToFile)
         {   ///definiton des path
            
@@ -3459,6 +3472,7 @@ namespace AF_Clipper_Dll
             //recuperation des path
             //CsvImportPath = pathToFile;
             string methodename = MethodBase.GetCurrentMethod().Name;
+           
             try
             {  //creation du timetag d'import
                 string timetag = string.Format("{0:d_M_yyyy_HH_mm_ss}", DateTime.Now);
@@ -3720,28 +3734,43 @@ namespace AF_Clipper_Dll
 
                     }
                 }
+                //reception des toles qte no null dans almacam et quantité non utilisées
+                IEntityList stockslist = contextlocal.EntityManager.GetEntityList("_STOCK", LogicOperator.And, "IDCLIP", ConditionOperator.NotEqual,string.Empty, "_QUANTITY", ConditionOperator.Greater, 0);//.GetEntityList("_STOCK", "_QUANTITY", ConditionOperator.Greater, 0);
+                //IEntityList stockslist = contextlocal.EntityManager.GetEntityList("_STOCK",  "IDCLIP", ConditionOperator.NotEqual, string.Empty);//.GetEntityList("_STOCK", "_QUANTITY", ConditionOperator.Greater, 0);
+                stockslist.Fill(false);
 
-                //purge
-                using (StreamReader csvfile = new StreamReader(CsvImportPath, Encoding.Default, true))
+                if (stockslist.Count > 0)
                 {
-                    //construction de la liste 1
+
+                    // sheetId_list_from_database;
+                    foreach (IEntity stock in stockslist)
+                    {
+                        if (stock.GetFieldValueAsLong("_QUANTITY") > 0)
+                        {
+                            sheetId_list_from_database.Add(stock.GetFieldValueAsString("IDCLIP"));
+                        }
+
+                    }
+
+                    //purge//
 
 
-                    //construiction de la liste 2
-                    //stocks = contextlocal.EntityManager.GetEntityList("_STOCK", "IDCLIP", ConditionOperator.Equal, line_Dictionnary["IDCLIP"]);
-                    //stocks.Fill(false);
-                    //fuisun /
-                    //suppression
+                    foreach (string idclip in GetOmmittedSheet(sheetId_list_from_txt_file, sheetId_list_from_database))
+                    {
+                        IEntity stockommitted = SimplifiedMethods.GetFirtOfList(contextlocal.EntityManager.GetEntityList("_STOCK", "IDCLIP", ConditionOperator.Equal, idclip));
+                        stockommitted.SetFieldValue("_QUANTITY", 0);
+                    }
 
-                }
+
 
                     // Set cursor as default arrow
                     Cursor.Current = Cursors.Default;
-                //rename the File once imported
-                //ImportTools.File_Tools.Rename_Csv(CsvImportPath);
-                File_Tools.Rename_Csv(CsvImportPath, timetag);
-                Alma_Log.Write_Log(methodename + " fichier   " + CsvImportPath + " renommé");
-                Alma_Log.Final_Open_Log(ligneNumber);
+                    //rename the File once imported
+                    //ImportTools.File_Tools.Rename_Csv(CsvImportPath);
+                    File_Tools.Rename_Csv(CsvImportPath, timetag);
+                    Alma_Log.Write_Log(methodename + " fichier   " + CsvImportPath + " renommé");
+                    Alma_Log.Final_Open_Log(ligneNumber);
+                }
             }
             catch (Exception e)
             {
@@ -3751,6 +3780,39 @@ namespace AF_Clipper_Dll
             }
 
         }
+        /// <summary>
+        /// retourne la liste des chute ommise dans le fichier en comparant les toles de qté >0
+        /// avec les toles envoyées par clipper
+        /// si clipper n'envoie pas le ficher la liste de ces toles sera mise a 0
+        /// </summary>
+        /// <param name="ToleImportDM">liste des toles venant du fichier impor dm </param>
+        /// <param name="ToleImportAlmaDaraBase">liste des toles venant de la base clipper</param>
+        /// <returns></returns>
+         public List<string> GetOmmittedSheet(List<string> ToleImportDM, List<string> ToleImportAlmaDaraBase)
+        {
+            try
+            {
+                        List<string> getOmmittedSheet= new List<string>();                        
+                        getOmmittedSheet = ToleImportAlmaDaraBase.Except(ToleImportDM).ToList();
+                //a voir les condition qui peuvent faire qu il  ait moins de toles dans cam que dans clip
+                        //getOmmittedSheet = ToleImportDM.Except(ToleImportAlmaDaraBase).ToList();
+                        return getOmmittedSheet;
+
+
+            }
+            catch(Exception ie)
+            {
+                return null;
+            }
+                    
+
+          
+
+
+
+        }
+
+
     }
     #endregion
 
@@ -3787,7 +3849,7 @@ namespace AF_Clipper_Dll
         {  
             {
                 //this.execute(contextlocal, args.NestingEntity);
-                execute(args.ToCutSheetEntity);
+                Execute(args.ToCutSheetEntity);
             }
         }
 
@@ -3797,7 +3859,7 @@ namespace AF_Clipper_Dll
         /// creation auto du fichier texte à  la cloture
         /// </summary>
         /// <param name="args"></param>
-        public void execute(IEntity entity)
+        public void Execute(IEntity entity)
         {
             //recuperation des path
             Clipper_Param.GetlistParam(entity.Context);
@@ -4098,8 +4160,8 @@ namespace AF_Clipper_Dll
 
                             string Separator = ";";
                             //recuperaiton des champs specifiques
-                            string NUMMATLOT = "";
-                            currentnestinfos.Tole_Nesting.Specific_Tole_Fields.Get<string>("NUMMATLOT", out NUMMATLOT);
+                            //string NUMMATLOT = "";
+                            currentnestinfos.Tole_Nesting.Specific_Tole_Fields.Get<string>("NUMMATLOT", out string NUMMATLOT);
                             if (NUMMATLOT == "Undef")
                             {
                                 NUMMATLOT = string.Empty;
@@ -4137,10 +4199,10 @@ namespace AF_Clipper_Dll
                             //recue
                             foreach (Nested_PartInfo clipperpart in currentnestinfos.Nested_Part_Infos_List)
                             {
-                                string idlnrout;
-                                clipperpart.Nested_PartInfo_specificFields.Get<string>("IDLNROUT", out idlnrout);
-                                string idlnbom;
-                                clipperpart.Nested_PartInfo_specificFields.Get<string>("IDLNBOM", out idlnbom);
+                                ///string idlnrout;
+                                clipperpart.Nested_PartInfo_specificFields.Get<string>("IDLNROUT", out string idlnrout);
+                               
+                                clipperpart.Nested_PartInfo_specificFields.Get<string>("IDLNBOM", out string idlnbom);
                                 string CuttingTime = (currentnestinfos.Calculus_Parts_Total_Time == 0) == false ? String.Format(Clipper_Param.get_string_format_double(), clipperpart.Part_Time * clipperpart.Nested_Quantity / currentnestinfos.Calculus_Parts_Total_Time) : "0";
 
                                 string detail_Line =
@@ -4231,8 +4293,8 @@ namespace AF_Clipper_Dll
 
                                 string Separator = ";";
                                 //recuperaiton des champs specifiques
-                                string NUMMATLOT="";
-                                currentnestinfos.Tole_Nesting.Specific_Tole_Fields.Get<string>("NUMMATLOT", out NUMMATLOT);
+                                //string NUMMATLOT="";
+                                currentnestinfos.Tole_Nesting.Specific_Tole_Fields.Get<string>("NUMMATLOT", out string NUMMATLOT);
                                 if(NUMMATLOT == "Undef"){ 
                                 NUMMATLOT = string.Empty;
                                 }
@@ -4272,10 +4334,10 @@ namespace AF_Clipper_Dll
                     //recue
                     foreach (Nested_PartInfo clipperpart in currentnestinfos.Nested_Part_Infos_List)
                     {
-                        string idlnrout; 
-                        clipperpart.Nested_PartInfo_specificFields.Get<string>("IDLNROUT", out idlnrout);
-                        string idlnbom;
-                        clipperpart.Nested_PartInfo_specificFields.Get<string>("IDLNBOM", out idlnbom);
+                        //string idlnrout; 
+                        clipperpart.Nested_PartInfo_specificFields.Get<string>("IDLNROUT", out string idlnrout);
+                        //string idlnbom;
+                        clipperpart.Nested_PartInfo_specificFields.Get<string>("IDLNBOM", out string idlnbom);
                         string CuttingTime = (currentnestinfos.Calculus_Parts_Total_Time==0) == false? String.Format(Clipper_Param.get_string_format_double(), clipperpart.Part_Time * clipperpart.Nested_Quantity / currentnestinfos.Calculus_Parts_Total_Time) : "0";
 
                         string detail_Line =

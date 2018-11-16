@@ -445,7 +445,7 @@ namespace AlmaCamTrainingTest
             GPAO_Exported_filter.Fill(false);
 
             _Context.EntityManager.GetExtendedEntityList(entitystage, GPAO_Exported_filter);
-            IExtendedEntityList exported_nestings = _Context.EntityManager.GetExtendedEntityList(entitystage, GPAO_Exported_filter);
+            IDynamicExtendedEntityList exported_nestings = _Context.EntityManager.GetDynamicExtendedEntityList(entitystage, GPAO_Exported_filter);
             exported_nestings.Fill(false);
 
             if (exported_nestings.Count == 0)
@@ -454,7 +454,7 @@ namespace AlmaCamTrainingTest
                 GPAO_Exported_filter = _Context.EntityManager.GetEntityList(entitystage, "GPAO_Exported", ConditionOperator.Equal, false);
                 GPAO_Exported_filter.Fill(false);
                // _Context.EntityManager.GetExtendedEntityList("_CLOSED_NESTING"entitystage, GPAO_Exported_filter);
-                exported_nestings = _Context.EntityManager.GetExtendedEntityList(entitystage, GPAO_Exported_filter);
+                exported_nestings = _Context.EntityManager.GetDynamicExtendedEntityList(entitystage, GPAO_Exported_filter);
                 exported_nestings.Fill(false);
             }
 
