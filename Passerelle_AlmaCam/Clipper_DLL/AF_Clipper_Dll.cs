@@ -3759,6 +3759,7 @@ namespace AF_Clipper_Dll
                     {
                         IEntity stockommitted = SimplifiedMethods.GetFirtOfList(contextlocal.EntityManager.GetEntityList("_STOCK", "IDCLIP", ConditionOperator.Equal, idclip));
                         stockommitted.SetFieldValue("_QUANTITY", 0);
+                        stockommitted.Save();
                     }
 
 
