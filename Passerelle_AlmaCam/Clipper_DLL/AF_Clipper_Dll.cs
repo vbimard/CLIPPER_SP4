@@ -488,15 +488,7 @@ namespace AF_Clipper_Dll
                 string parametre_name;
 
                 Parameters_Dictionnary.Clear();
-                /**/
-                //ListPath.Add("EXPORT_GP", context.ParameterSetManager.GetParameterValue("EXPORT_GP", "DIR").GetValueAsString());
-                //chemin import cahier affaire
-                //chemin import
-                //test migration sp3 changement de nom de cle pour clip configuraton
-                //IParameterValue sp3;
-                
-                bool rst;
-                
+             
 
                 string parametersetkey = "CLIPPER_DLL";
                 parametre_name = "IMPORT_CDA";
@@ -506,22 +498,22 @@ namespace AF_Clipper_Dll
                 parametre_name = "IMPORT_CDA";
                 //Alma_Log.Info("recuperation du parametre "+parametre_name, "GetlistParam");
                 //Parameters_Dictionnary.Add(parametre_name, context.ParameterSetManager.GetParameterValue(parametersetkey, "IMPORT_CDA").GetValueAsString());
-                get_string_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "", ref Parameters_Dictionnary);
+                Get_string_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "", ref Parameters_Dictionnary);
 
                 parametre_name = "IMPORT_DM";
                 //Alma_Log.Info("recuperation du parametre " + parametre_name, "GetlistParam");
                 //Parameters_Dictionnary.Add(parametre_name, context.ParameterSetManager.GetParameterValue(parametersetkey, "IMPORT_DM").GetValueAsString());
-                get_string_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "", ref Parameters_Dictionnary);
+                Get_string_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "", ref Parameters_Dictionnary);
 
                 parametre_name ="Export_GPAO";
                 Alma_Log.Info("recuperation du parametre " + parametre_name, "GetlistParam");
                 //Parameters_Dictionnary.Add(parametre_name, context.ParameterSetManager.GetParameterValue(parametersetkey, "EXPORT_Rp").GetValueAsString());
-                get_string_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "EXPORT_Rp", ref Parameters_Dictionnary);
+                Get_string_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "EXPORT_Rp", ref Parameters_Dictionnary);
 
                 parametre_name = "EXPORT_DT";
                 //Alma_Log.Info("recuperation du parametre " + parametre_name, "GetlistParam");
                 //Parameters_Dictionnary.Add(parametre_name, context.ParameterSetManager.GetParameterValue(parametersetkey, "EXPORT_Dt").GetValueAsString());                /**/
-                get_string_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "EXPORT_Dt", ref Parameters_Dictionnary);
+                Get_string_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "EXPORT_Dt", ref Parameters_Dictionnary);
 
                 //description import
                 parametre_name = "IMPORT_AUTO";
@@ -532,33 +524,33 @@ namespace AF_Clipper_Dll
                 parametre_name = "EMF_DIRECTORY";
                 //Alma_Log.Info("recuperation du parametre " + parametre_name, "GetlistParam");
                 //Parameters_Dictionnary.Add(parametre_name, context.ParameterSetManager.GetParameterValue(parametersetkey, "EMF_DIRECTORY").GetValueAsString());                /**/
-                get_string_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "", ref Parameters_Dictionnary);
+                Get_string_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "", ref Parameters_Dictionnary);
 
 
                 parametre_name = "MODEL_CA";
                 //Alma_Log.Info("recuperation du parametre " + parametre_name, "GetlistParam");
                 //Parameters_Dictionnary.Add(parametre_name, context.ParameterSetManager.GetParameterValue(parametersetkey, "MODEL_CA").GetValueAsString());
-                get_string_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "", ref Parameters_Dictionnary);
+                Get_string_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "", ref Parameters_Dictionnary);
 
                 parametre_name = "MODEL_DM";
                 //Alma_Log.Info("recuperation du parametre " + parametre_name, "GetlistParam");
                 //Parameters_Dictionnary.Add(parametre_name, context.ParameterSetManager.GetParameterValue(parametersetkey, "MODEL_DM").GetValueAsString());
-                get_string_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "", ref Parameters_Dictionnary);
+                Get_string_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "", ref Parameters_Dictionnary);
 
                 parametre_name = "MODEL_PATH";
                 //Alma_Log.Info("recuperation du parametre " + parametre_name, "GetlistParam");
                 //Parameters_Dictionnary.Add(parametre_name, context.ParameterSetManager.GetParameterValue(parametersetkey, "MODEL_PATH").GetValueAsString());
-                get_string_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "", ref Parameters_Dictionnary);
+                Get_string_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "", ref Parameters_Dictionnary);
 
                 parametre_name = "APPLICATION1";
                 //Alma_Log.Info("recuperation du parametre " + parametre_name, "GetlistParam");
                 //Parameters_Dictionnary.Add(parametre_name, context.ParameterSetManager.GetParameterValue(parametersetkey, "APPLICATION1").GetValueAsString());
-                get_string_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "", ref Parameters_Dictionnary);
+                Get_string_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "", ref Parameters_Dictionnary);
 
                 parametre_name = "SHEET_REQUIREMENT";
                 //Alma_Log.Info("recuperation du parametre " + parametre_name, "GetlistParam");
                 //Parameters_Dictionnary.Add(parametre_name, context.ParameterSetManager.GetParameterValue(parametersetkey, "SHEET_REQUIREMENT").GetValueAsString());
-                get_string_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "", ref Parameters_Dictionnary);
+                Get_string_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "", ref Parameters_Dictionnary);
 
                 //log
                 parametre_name = "VERBOSE_LOG";
@@ -568,31 +560,31 @@ namespace AF_Clipper_Dll
                 parametre_name = "CLIPPER_MACHINE_CF";
                 //Alma_Log.Info("recuperation du parametre " + parametre_name, "GetlistParam");
                 //Parameters_Dictionnary.Add(parametre_name, context.ParameterSetManager.GetParameterValue(parametersetkey, "CLIPPER_MACHINE_CF").GetValueAsString());
-                get_string_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "", ref Parameters_Dictionnary);
+                Get_string_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "", ref Parameters_Dictionnary);
 
                 /*parametres de sorties*/
                 parametre_name = "STRING_FORMAT_DOUBLE";
                 Alma_Log.Info("recuperation du parametre " + parametre_name, "GetlistParam");
                 //Parameters_Dictionnary.Add(parametre_name, "{0:0.00###}");
                 //Parameters_Dictionnary.Add(parametre_name, context.ParameterSetManager.GetParameterValue(parametersetkey, "STRING_FORMAT_DOUBLE").GetValueAsString());
-                get_string_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "", ref Parameters_Dictionnary);
+                Get_string_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "", ref Parameters_Dictionnary);
 
                 parametre_name = "ALMACAM_EDITOR_NAME";
                 //Alma_Log.Info("recuperation du parametre " + parametre_name, "GetlistParam");
                 //Parameters_Dictionnary.Add(parametre_name, context.ParameterSetManager.GetParameterValue(parametersetkey, "ALMACAM_EDITOR_NAME").GetValueAsString());
-                get_string_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "", ref Parameters_Dictionnary);
+                Get_string_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "", ref Parameters_Dictionnary);
 
                 //parametre export : chemin de sortie des devis
                 parametre_name = "_EXPORT_GP_DIRECTORY";
                 //Alma_Log.Info("recuperation du parametre " + parametre_name, "GetlistParam");
                 //Parameters_Dictionnary.Add(parametre_name, context.ParameterSetManager.GetParameterValue("_EXPORT", "_EXPORT_GP_DIRECTORY").GetValueAsString());
-                get_string_Parameter_Dictionary_Value(context, "_EXPORT", parametre_name, "", ref Parameters_Dictionnary);
+                Get_string_Parameter_Dictionary_Value(context, "_EXPORT", parametre_name, "", ref Parameters_Dictionnary);
 
                 //repertoire de exports dpr
                 parametre_name = "_ACTCUT_DPR_DIRECTORY";
                 //Alma_Log.Info("recuperation du parametre " + parametre_name, "GetlistParam");
                 //Parameters_Dictionnary.Add(parametre_name, context.ParameterSetManager.GetParameterValue("_EXPORT", "_ACTCUT_DPR_DIRECTORY").GetValueAsString());
-                get_string_Parameter_Dictionary_Value(context, "_EXPORT", parametre_name, "", ref Parameters_Dictionnary);
+                Get_string_Parameter_Dictionary_Value(context, "_EXPORT", parametre_name, "", ref Parameters_Dictionnary);
 
                 //Champs Spécifique a reporter à partir des information des pieces à produire et de lors de l'import gpao dans les pieces2d (reference almacam)
                 //entrez l'information du nom de champs 2d puis le nom du champs du line_dictionnary
@@ -616,7 +608,7 @@ namespace AF_Clipper_Dll
                 Alma_Log.Info("verification de l'existance des path " , "GetlistParam");
                 if (CheckClipperFolderExists() == false) { throw new System.ApplicationException("Certains chemin d'echanges de la Passerelle AlmaCam-clipper ne sont pas accessibles"); };
                 ///string AlmaCAmVersion = Directory.GetCurrentDirectory().ToString() + Parameters_Dictionnary.Values("");///
-                if (ckeckCompatibilityVersion() == false) { throw new System.ApplicationException("Version de la Dll clipper n'est pas validée pour cette version d'AlmaCam"); }
+                if (CkeckCompatibilityVersion() == false) { throw new System.ApplicationException("Version de la Dll clipper n'est pas validée pour cette version d'AlmaCam"); }
 
 
                 //verification des chemins
@@ -624,8 +616,7 @@ namespace AF_Clipper_Dll
                 parametre_name = "EXPLODE_MULTIPLICITY";
                 Get_bool_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "", ref Parameters_Dictionnary,false);
 
-
-
+               
                 return true;
             }
 
@@ -678,6 +669,29 @@ namespace AF_Clipper_Dll
         }
 
         /// <summary>
+        /// ecrit la valeur de la clé recherché dans les paramètres
+        /// </summary>
+        /// <typeparam name="T">type générique </typeparam>
+        /// <param name="context">contexte </param>
+        /// <param name="PathVariable">clé a rechercher</param>
+        /// <returns></returns>
+        public static void SetParam<T>(this IDictionary<string, object> dic, string key, T value)
+        {
+            try {
+                if (Parameters_Dictionnary.ContainsKey(key))
+                {
+                    dic[key]=value;
+                }
+                  
+
+            }
+            catch (Exception ie)
+            {
+                MessageBox.Show( ie.Message, "Clipper Param  : SetParam ERROR");
+            }
+            
+        }
+        /// <summary>
         /// recuperation des parametres de type string
         /// </summary>
         /// <param name="contextlocal">contexte a etudier</param>
@@ -686,7 +700,7 @@ namespace AF_Clipper_Dll
         /// <param name="parameterkeyname">nom de la clé almacam stockant le parametre</param>
         /// <param name="parameters_dictionnary">nom du dictionnaire</param>
         /// <returns></returns>
-        public static bool get_string_Parameter_Dictionary_Value(IContext contextlocal,string parametersetkey,string parameter_name, string parameterkeyname, ref Dictionary<string, object> parameters_dictionnary)
+        public static bool Get_string_Parameter_Dictionary_Value(IContext contextlocal,string parametersetkey,string parameter_name, string parameterkeyname, ref Dictionary<string, object> parameters_dictionnary)
         {
             try
             {
@@ -880,7 +894,7 @@ namespace AF_Clipper_Dll
         }
 
 
-        public static string get_string_format_double()
+        public static string Get_string_format_double()
         {
 
             string key = "STRING_FORMAT_DOUBLE";
@@ -895,7 +909,7 @@ namespace AF_Clipper_Dll
         /// True : tole ou n fichiers pour une mutliplicité n
         /// </summary>
         /// <returns></returns>
-        public static bool get_Multiplicity_Mode()
+        public static bool Get_Multiplicity_Mode()
         {
             
             string key = "EXPLODE_MULTIPLICITY";
@@ -904,20 +918,20 @@ namespace AF_Clipper_Dll
 
         }
 
-        public static string get_application1()
+        public static string Get_application1()
         {
             string key = "APPLICATION1";
             //GetlistParam(context);//
             if (Parameters_Dictionnary.ContainsKey(key)) { return (string)@Parameters_Dictionnary[key]; } else { return "Undef model PATH"; }
         }
 
-        public static bool getVerbose_Log()
+        public static bool GetVerbose_Log()
         {
             string key = "VERBOSE_LOG"; //log verbeux
             if (Parameters_Dictionnary.ContainsKey(key)) { return (bool)Parameters_Dictionnary[key]; } else { return true; }
         }
 
-        public static string get_Clipper_Machine_Cf()
+        public static string Get_Clipper_Machine_Cf()
         {
             string key = "CLIPPER_MACHINE_CF"; //log verbeux
             //GetlistParam(context);//
@@ -926,7 +940,7 @@ namespace AF_Clipper_Dll
         }
 
 
-        public static string get_AlmaCamEditorName()
+        public static string Get_AlmaCamEditorName()
         {
             string key = "ALMACAM_EDITOR_NAME"; //log verbeux
             //GetlistParam(context);//
@@ -1009,7 +1023,7 @@ namespace AF_Clipper_Dll
         /// retourne la verison de la dll clipperDll.dll
         /// </summary>
         /// <returns></returns>
-        public static string getClipperDllVersion()
+        public static string GetClipperDllVersion()
         {
             return Application.ProductVersion.ToString().Substring(0, 3);
         }
@@ -1018,7 +1032,7 @@ namespace AF_Clipper_Dll
         /// retourn la version compatible almacam indiquee dans les ressources almacam
         /// </summary>
         /// <returns></returns>
-        public static string getAlmaCAMCompatibleVerion() {
+        public static string GetAlmaCAMCompatibleVerion() {
             return Properties.Resources.Almcam_Version.ToString();
 
         }
@@ -1027,7 +1041,7 @@ namespace AF_Clipper_Dll
         /// la version est bloquée par une infos des ressources de la dll clipper_dll
         /// </summary>
         /// <returns>true si le test est accepté</returns>
-        public static Boolean ckeckCompatibilityVersion()
+        public static Boolean CkeckCompatibilityVersion()
         {
             bool res = false;
 
@@ -1036,7 +1050,7 @@ namespace AF_Clipper_Dll
 
                 bool compatible = false;
                 string versionalmacam;
-                string almacameditorfullpath = Directory.GetCurrentDirectory().ToString() + "\\" + get_AlmaCamEditorName();
+                string almacameditorfullpath = Directory.GetCurrentDirectory().ToString() + "\\" + Get_AlmaCamEditorName();
                 string almacamCompatibleversion = Properties.Resources.Almcam_Version.ToString();
                 //get version//
                 versionalmacam = FileVersionInfo.GetVersionInfo(almacameditorfullpath).ProductVersion.ToString();
@@ -1455,14 +1469,14 @@ namespace AF_Clipper_Dll
             }
 
             ///creation du dictionnaire des machines installées   
-            if (cf.DefaultValue != "" && machine.DefaultValue != "" && Clipper_Param.get_Clipper_Machine_Cf() != null
+            if (cf.DefaultValue != "" && machine.DefaultValue != "" && Clipper_Param.Get_Clipper_Machine_Cf() != null
                 )
             {
                 if (CentreFrais_Dictionnary.ContainsKey(cf.DefaultValue) == false) { CentreFrais_Dictionnary.Add(cf.DefaultValue, machine.DefaultValue); }
 
-                if (cf.DefaultValue == Clipper_Param.get_Clipper_Machine_Cf())
+                if (cf.DefaultValue == Clipper_Param.Get_Clipper_Machine_Cf())
                 {
-                    if (Clipper_Param.get_Clipper_Machine_Cf() != "Undef clipper machine")
+                    if (Clipper_Param.Get_Clipper_Machine_Cf() != "Undef clipper machine")
                     {
                         Clipper_Centre_Frais = cf;
                         Clipper_Machine = machine;
@@ -2310,7 +2324,7 @@ namespace AF_Clipper_Dll
                 //verification standards
                 //creation du timetag d'import
                 string timetag = string.Format("{0:d_M_yyyy_HH_mm_ss}", DateTime.Now);
-                Alma_Log.Create_Log(Clipper_Param.getVerbose_Log());
+                Alma_Log.Create_Log(Clipper_Param.GetVerbose_Log());
                 //bool import_sans_donnee_technique = false;
                 Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": importe tag :" + timetag);
                 //ouverture du fichier csv lancement du curseur
@@ -2578,13 +2592,13 @@ namespace AF_Clipper_Dll
             {
                 IEntity cf = machine.GetFieldValueAsEntity("CENTREFRAIS_MACHINE");
                 ///creation du dictionnaire des machines installées   
-                if (cf.DefaultValue != "" && machine.DefaultValue != "" && Clipper_Param.get_Clipper_Machine_Cf() != null)
+                if (cf.DefaultValue != "" && machine.DefaultValue != "" && Clipper_Param.Get_Clipper_Machine_Cf() != null)
                 {
 
                     CentreFrais_Dictionnary.Add(cf.DefaultValue, machine.DefaultValue);
-                    if (cf.DefaultValue == Clipper_Param.get_Clipper_Machine_Cf())
+                    if (cf.DefaultValue == Clipper_Param.Get_Clipper_Machine_Cf())
                     {
-                        if (Clipper_Param.get_Clipper_Machine_Cf() != "Undef clipper machine")
+                        if (Clipper_Param.Get_Clipper_Machine_Cf() != "Undef clipper machine")
                         {
                             Clipper_Centre_Frais = cf;
                             Clipper_Machine = machine;
@@ -3100,7 +3114,7 @@ namespace AF_Clipper_Dll
         /// <param name="contextlocal">context</param>
         /// <param name="item">ientity item </param>
         /// <param name="line_dictionnary">dictionnaire de ligne</param>
-        public void update_Item(IContext contextlocal, IEntity item, Dictionary<string, object> line_dictionnary)
+        public void Update_Item(IContext contextlocal, IEntity item, Dictionary<string, object> line_dictionnary)
         {
             try
             {
@@ -3474,12 +3488,7 @@ namespace AF_Clipper_Dll
             string methodename = MethodBase.GetCurrentMethod().Name;
            
             try
-            {  //creation du timetag d'import
-                string timetag = string.Format("{0:d_M_yyyy_HH_mm_ss}", DateTime.Now);
-                //creation du log
-                bool testlog = Alma_Log.Create_Log(Clipper_Param.getVerbose_Log());
-                long ligneNumber = 0;
-                Alma_Log.Write_Log(methodename + ": time tag:  " + timetag);
+            {  
                 //ouverture du fichier csv lancement du curseur
                 //Set cursor as hourglass
                 Cursor.Current = Cursors.WaitCursor;
@@ -3490,10 +3499,18 @@ namespace AF_Clipper_Dll
                 ///definiton des path
                // if (!Clipper_Param.GetlistParam(contextlocal)) { throw new Exception (ClipperExit.Close()); };
                 Clipper_Param.GetlistParam(contextlocal);// ? true : ClipperExit.Close; //
+
+                //creation du timetag d'import
+                string timetag = string.Format("{0:d_M_yyyy_HH_mm_ss}", DateTime.Now);
+                //creation du log
+                bool testlog = Alma_Log.Create_Log(Clipper_Param.GetVerbose_Log());
+                long ligneNumber = 0;
+                Alma_Log.Write_Log(methodename + ": time tag:  " + timetag);
                 string CsvImportPath = Clipper_Param.GetPath("IMPORT_DM");
                 Alma_Log.Write_Log("[Import du stock ]:" + CsvImportPath);
                 string DataModelString = Clipper_Param.GetModelDM();
                 Alma_Log.Write_Log("lecture du DataModel du stock:Success !!!");
+                Alma_Log.Write_Log_Important(" DataModel du stock valide.");
 
                 using (StreamReader csvfile = new StreamReader(CsvImportPath, Encoding.Default, true))
                 {
@@ -3762,7 +3779,7 @@ namespace AF_Clipper_Dll
                         stockommitted.Save();
                     }
 
-
+                    //rendre obsoletre les qtés nulles
 
                     // Set cursor as default arrow
                     Cursor.Current = Cursors.Default;
@@ -3770,6 +3787,7 @@ namespace AF_Clipper_Dll
                     //ImportTools.File_Tools.Rename_Csv(CsvImportPath);
                     File_Tools.Rename_Csv(CsvImportPath, timetag);
                     Alma_Log.Write_Log(methodename + " fichier   " + CsvImportPath + " renommé");
+                    Alma_Log.Write_Log_Important(" import du stock terminé avec succes.");
                     Alma_Log.Final_Open_Log(ligneNumber);
                 }
             }
@@ -3803,6 +3821,7 @@ namespace AF_Clipper_Dll
             }
             catch(Exception ie)
             {
+                Alma_Log.Write_Log(ie.Message);
                 return null;
             }
                     
@@ -3812,7 +3831,20 @@ namespace AF_Clipper_Dll
 
 
         }
+        /// <summary>
+        /// cette methode rends le stock null obsolette afin de liberer les filtres sur le stock
+        /// </summary>
+        /// <param name="contextlocal"></param>
+         public void SetNullQtyToObsolet(Context contextlocal)
+        {
+            string methodename = MethodBase.GetCurrentMethod().Name;
+            try {
+                IEntityList stockslist = contextlocal.EntityManager.GetEntityList("_STOCK", LogicOperator.And, "IDCLIP", ConditionOperator.NotEqual, string.Empty, "_QUANTITY", ConditionOperator.Equal, 0);//.GetEntityList("_STOCK", "_QUANTITY", ConditionOperator.Greater, 0);
 
+
+            }
+            catch (Exception ie) { System.Windows.Forms.MessageBox.Show(ie.Message, "erreur " + methodename); }
+        }
 
     }
     #endregion
@@ -3986,167 +4018,138 @@ namespace AF_Clipper_Dll
 
     }
 
-
+    ////
+    //
     /// <summary>
-    /// retour gp generique
-    /// on suppose que les toles sont deja associées
+    /// creer un fichier avec une  extension .planning en vue des preparation ds planning machine et des preparations des toles
     /// </summary>
     /// 
-            /*
-            public class Clipper_DoOnAction : IDisposable
+
+    public class Clipper_DoOnAction_AfterSendToWorkshop_ForPlanning : AfterSendToWorkshopEvent
+    {
+
+        //cette fonction est lancée autant de fois qu'il y a de selection
+        //la multiselection n'est pas controlée
+        public override void OnAfterSendToWorkshopEvent(IContext contextlocal, AfterSendToWorkshopArgs args)
+        {
+            try
             {
-                public void Dispose()
-                {
-                    ///purge
-                    GC.SuppressFinalize(this);
-                }
+                execute(args.NestingEntity);
+            }
 
 
-                /// <summary>
-                /// retourne le fichier de sortie clip a partir des arguments de l'evenement vefroe send to workshop
-                /// </summary>
-                /// <param name="contextlocal"></param>
-                /// <param name="nesting">nom du placement</param>
-                public void Export(IContext contextlocal, IEntity nesting)
-                {
-
-                    //string stage = "_TO_CUT_NESTING";
-                    //string sheet_type= "_TO_CUT_SHEET";
-                    //creation du fichier de sortie
-
-                    //recupere les path
-                    Clipper_Param.GetlistParam(contextlocal);
-
-                    string export_gpao_path = Clipper_Param.GetPath("Export_GPAO") + "\\" + nesting.DefaultValue.ToString() + ".txt";
-
-                    //ecriture du fichier d'echange
-                    using (StreamWriter export_gpao_file = new StreamWriter(@export_gpao_path))
-                    {
-
-
-                    }
+            catch (Exception ie)
+            {
+                MessageBoxEx.ShowError(ie.Message);
+            }
+        }
 
 
 
-
-                }
-
-                /// <summary>
-                /// retourne le fichier clipper a partie de la boite de dialogue de la ploateforme
-                /// </summary>
-                /// <param name="contextlocal"></param>
-                public void Export(IContext contextlocal)
-                {
-
-                    string stage = "_TO_CUT_NESTING";
-                    //creation du fichier de sortie
-                    //recupere les path
-                    Clipper_Param.GetlistParam(contextlocal);
-                    IEntitySelector nestingselector = null;
-
-                    nestingselector = new EntitySelector();
-
-                    //entity type pointe sur la list d'objet du model
-                    nestingselector.Init(contextlocal, contextlocal.Kernel.GetEntityType("_TO_CUT_NESTING"));
-                    nestingselector.MultiSelect = true;
+        /// <summary>
+        /// creation auto du fichier texte à  la cloture
+        /// </summary>
+        /// <param name="args"></param>
+        public void execute(IEntity entity)
+        {
+            //recuperation des path
+            Clipper_Param.GetlistParam(entity.Context);
+            string export_gpao_path = Clipper_Param.GetPath("Export_GPAO");
 
 
-                    if (nestingselector.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                    {
-                        foreach (IEntity nesting in nestingselector.SelectedEntity)
-                        {
+            {
+                Clipper_Infos current_clipper_nestinfos = new Clipper_Infos();
+                //current_clipper_nestinfos.GetNestInfosBySheet(entity);
+
+                current_clipper_nestinfos.GetNestInfosByNesting(entity.Context, entity, "_TO_CUT_NESTING");
+                current_clipper_nestinfos.Export_NestInfosToFilePlanning(export_gpao_path);
+                //validation du stock
 
 
-                            string export_gpao_path = Clipper_Param.GetPath("Export_GPAO") + "\\" + nesting.DefaultValue.ToString() + ".txt";
-
-                            //ecriture du fichier d'echange
-                            using (StreamWriter export_gpao_file = new StreamWriter(@export_gpao_path))
-                            {
-                                //Lecture
-                                using (Clipper_NestInfos current_clipper_nestinfos = new Clipper_NestInfos())
-                                {  //on set le context
-                                    current_clipper_nestinfos.Export_NestInfosToFile(ref contextlocal, stage, nesting.DefaultValue, export_gpao_file);
-
-                                }
-
-                            }
-
-                        }
+                current_clipper_nestinfos = null;
+            }
 
 
-                    }
-                    else { return; }
+        }
 
 
-                }
 
+
+        
+
+
+    }
+    
+
+
+
+    /// <summary>
+    /// retour gp à L ENVOIE A L ATELIER
+    /// </summary>
+    /// 
+
+
+    /*
+        public class Clipper_DoOnAction_AfterSendToWorkshop : AfterSendToWorkshopEvent
+        {
+            public override void OnAfterSendToWorkshopEvent(IContext contextlocal, AfterSendToWorkshopArgs args)
+            {
+
+                //this.execute(contextlocal, args.NestingEntity);
 
             }
 
 
-            */
+        }
+        */
+
+
+    /// <summary>
+    /// retour gp AVANT L ENVOIE A L ATELIER
+    /// </summary>
+    /// MyBeforeSendToWorkshopEvent : BeforeSendToWorkshopEvent
+    /// 
+    /// 
+    /// public class Clipper_DoOnAction_BeforeSendToWorkshop : BeforeSendToWorkshopEvent
+    /// 
+
+    /*
+    {
+
+        public override void OnBeforeSendToWorkshopEvent(IContext context, BeforeSendToWorkshopArgs args)
+        {
 
 
 
-            /// <summary>
-            /// retour gp à L ENVOIE A L ATELIER
-            /// </summary>
-            /// 
+        }
 
-
-            /*
-                public class Clipper_DoOnAction_AfterSendToWorkshop : AfterSendToWorkshopEvent
-                {
-                    public override void OnAfterSendToWorkshopEvent(IContext contextlocal, AfterSendToWorkshopArgs args)
-                    {
-
-                        //this.execute(contextlocal, args.NestingEntity);
-
-                    }
-
-
-                }
-                */
-
-            /// <summary>
-            /// retour gp AVANT L ENVOIE A L ATELIER
-            /// </summary>
-            /// MyBeforeSendToWorkshopEvent : BeforeSendToWorkshopEvent
-            /// 
-            /// 
-            /// public class Clipper_DoOnAction_BeforeSendToWorkshop : BeforeSendToWorkshopEvent
-            /// 
-
-            /*
-            {
-
-                public override void OnBeforeSendToWorkshopEvent(IContext context, BeforeSendToWorkshopArgs args)
-                {
+    }
+    */
 
 
 
-                }
-
-            }
-            */
+    #endregion
 
 
 
-            #endregion
+    #region export clipper gpao : retour tole
 
-
-
-            #region export clipper gpao : retour tole
-
-            //creation des clipper infos issue des generic gp infos
-        public class Clipper_Infos : Generic_GP_Infos
+    //creation des clipper infos issue des generic gp infos
+    public class Clipper_Infos : Generic_GP_Infos
     {
         public override void Export_NestInfosToFile(string export_gpao_path)
         {
             base.Export_NestInfosToFile(export_gpao_path);
             /***/
-           bool explodMultiplicity = Clipper_Param.get_Multiplicity_Mode();
-           string stringformatdouble= Clipper_Param.get_string_format_double();
+            bool explodMultiplicity = Clipper_Param.Get_Multiplicity_Mode();
+
+            
+            //si la fonction est lancer par la méthode planning alors le fichier de sortie aura l'opiton .planning
+            //ce pour ne pas polluer les problemes de produciton
+            string extension = ".txt"; 
+           
+            string stringformatdouble= Clipper_Param.Get_string_format_double();
+
             ///recuperation des placements selectionnés
             ///
             switch (explodMultiplicity)
@@ -4155,7 +4158,7 @@ namespace AF_Clipper_Dll
                     {
                         //concatenation du placement dans un seul fichier
                         Nest_Infos_2 currentnestinfos =this.nestinfoslist.FirstOrDefault();
-                        using (StreamWriter export_gpao_file = new StreamWriter(@export_gpao_path + "\\" + currentnestinfos.Tole_Nesting.To_Cut_Sheet_Name + ".txt"))
+                        using (StreamWriter export_gpao_file = new StreamWriter(@export_gpao_path + "\\" + currentnestinfos.Tole_Nesting.To_Cut_Sheet_Name + extension))
                         {
 
 
@@ -4184,14 +4187,14 @@ namespace AF_Clipper_Dll
                             //multiplicité
                             currentnestinfos.Tole_Nesting.Mutliplicity + Separator +
                              // temps de chargement
-                             String.Format(Clipper_Param.get_string_format_double(), (currentnestinfos.NestingSheet_loadingTimeInit / 60)) + Separator +
+                             String.Format(Clipper_Param.Get_string_format_double(), (currentnestinfos.NestingSheet_loadingTimeInit / 60)) + Separator +
                             currentnestinfos.Nesting_CentreFrais_Machine + Separator +
                             "" + Separator + //on ignore le pdf
                             currentnestinfos.Tole_Nesting.Sheet_EmfFile + Separator +
                            //numero lot
                            NUMMATLOT + Separator +
                            // String.Format(Clipper_Param.get_string_format_double(), (Alma_Time.minutes(this.Sheet_loadingTimeInit + this.Sheet_loadingTimeEnd)));
-                           String.Format(Clipper_Param.get_string_format_double(), (currentnestinfos.NestingSheet_loadingTimeInit + currentnestinfos.NestingSheet_loadingTimeEnd) / 60) +
+                           String.Format(Clipper_Param.Get_string_format_double(), (currentnestinfos.NestingSheet_loadingTimeInit + currentnestinfos.NestingSheet_loadingTimeEnd) / 60) +
                               "";
                             export_gpao_file.WriteLine(Header_Line.Replace(",", "."));
 
@@ -4204,7 +4207,7 @@ namespace AF_Clipper_Dll
                                 clipperpart.Nested_PartInfo_specificFields.Get<string>("IDLNROUT", out string idlnrout);
                                
                                 clipperpart.Nested_PartInfo_specificFields.Get<string>("IDLNBOM", out string idlnbom);
-                                string CuttingTime = (currentnestinfos.Calculus_Parts_Total_Time == 0) == false ? String.Format(Clipper_Param.get_string_format_double(), clipperpart.Part_Time * clipperpart.Nested_Quantity / currentnestinfos.Calculus_Parts_Total_Time) : "0";
+                                string CuttingTime = (currentnestinfos.Calculus_Parts_Total_Time == 0) == false ? String.Format(Clipper_Param.Get_string_format_double(), clipperpart.Part_Time * clipperpart.Nested_Quantity / currentnestinfos.Calculus_Parts_Total_Time) : "0";
 
                                 string detail_Line =
                                 "DETAIL" + Separator +
@@ -4213,10 +4216,10 @@ namespace AF_Clipper_Dll
                                  clipperpart.Nested_Quantity + Separator +
                                  clipperpart.Height + Separator +
                                  clipperpart.Width + Separator +
-                                 String.Format(Clipper_Param.get_string_format_double(), clipperpart.Part_Balanced_Weight * clipperpart.Nested_Quantity / (currentnestinfos.Tole_Nesting.Sheet_Weight * currentnestinfos.Tole_Nesting.Mutliplicity)) + Separator +// * Tole_Nesting.Mutliplicity)) + Separator +
+                                 String.Format(Clipper_Param.Get_string_format_double(), clipperpart.Part_Balanced_Weight * clipperpart.Nested_Quantity / (currentnestinfos.Tole_Nesting.Sheet_Weight * currentnestinfos.Tole_Nesting.Mutliplicity)) + Separator +// * Tole_Nesting.Mutliplicity)) + Separator +
                                                                                                                                                                                                                                                                   // clipperpart.Width + Separator;//+
                                                                                                                                                                                                                                                                   //String.Format(Clipper_Param.get_string_format_double(), clipperpart.Part_Balanced_Weight * clipperpart.Nested_Quantity / (currentnestinfos.Tole_Nesting.Sheet_Weight * currentnestinfos.Tole_Nesting.Mutliplicity)) + Separator +
-                                String.Format(Clipper_Param.get_string_format_double(), clipperpart.Weight * 0.001) + Separator +
+                                String.Format(Clipper_Param.Get_string_format_double(), clipperpart.Weight * 0.001) + Separator +
                         ///String.Format(Clipper_Param.get_string_format_double(), clipperpart.Part_Time * clipperpart.Nested_Quantity / currentnestinfos.Calculus_Parts_Total_Time);//current_clipper_nestinfos.Nesting_TotalTime);
                         CuttingTime;
                                 export_gpao_file.WriteLine(detail_Line.Replace(",", "."));
@@ -4246,7 +4249,7 @@ namespace AF_Clipper_Dll
                             largeur + Separator +
                             currentoffcut.Mutliplicity + Separator +
                             //calcul du ratio
-                            String.Format(Clipper_Param.get_string_format_double(), (currentoffcut.Sheet_Surface / currentnestinfos.Tole_Nesting.Sheet_Total_Surface)) + Separator +
+                            String.Format(Clipper_Param.Get_string_format_double(), (currentoffcut.Sheet_Surface / currentnestinfos.Tole_Nesting.Sheet_Total_Surface)) + Separator +
                              // currentoffcut.rectangular + Separator +
                              IsRectagular + Separator +
                             //clipperoffcut.Rectangular = true ? "1" : "0" + Separator +
@@ -4254,7 +4257,7 @@ namespace AF_Clipper_Dll
                             //Separator +--> chemin vers dpr (n'a pas d'utilité dans clip)
                             "" + Separator +
                             currentoffcut.Sheet_EmfFile + Separator +
-                            String.Format(Clipper_Param.get_string_format_double(), currentoffcut.Sheet_Weight * 0.001);
+                            String.Format(Clipper_Param.Get_string_format_double(), currentoffcut.Sheet_Weight * 0.001);
                                 export_gpao_file.WriteLine(offcut_Line.Replace(",", "."));
 
                                 //validaton du stock sur les chutes
@@ -4288,7 +4291,7 @@ namespace AF_Clipper_Dll
                         foreach (Nest_Infos_2 currentnestinfos in this.nestinfoslist)
                         {
                         ///explosion placement
-                            using (StreamWriter export_gpao_file = new StreamWriter(@export_gpao_path + "\\" + currentnestinfos.Tole_Nesting.To_Cut_Sheet_Name + ".txt"))
+                            using (StreamWriter export_gpao_file = new StreamWriter(@export_gpao_path + "\\" + currentnestinfos.Tole_Nesting.To_Cut_Sheet_Name + extension))
                             {
 
 
@@ -4317,7 +4320,7 @@ namespace AF_Clipper_Dll
                                 //currentnestinfos.Tole_Nesting.Mutliplicity + Separator +
                                 "1" + Separator+
                                  // temps de chargement
-                                 String.Format(Clipper_Param.get_string_format_double(), (currentnestinfos.NestingSheet_loadingTimeInit/60))+ Separator +
+                                 String.Format(Clipper_Param.Get_string_format_double(), (currentnestinfos.NestingSheet_loadingTimeInit/60))+ Separator +
                                 currentnestinfos.Nesting_CentreFrais_Machine + Separator +
                                 "" + Separator + //on ignore le pdf
                                 currentnestinfos.Tole_Nesting.Sheet_EmfFile + Separator +
@@ -4325,7 +4328,7 @@ namespace AF_Clipper_Dll
                                NUMMATLOT + Separator +
                                     // String.Format(Clipper_Param.get_string_format_double(), (Alma_Time.minutes(this.Sheet_loadingTimeInit + this.Sheet_loadingTimeEnd)));
                                 //(currentnestinfos.NestingSheet_loadingTimeInit + currentnestinfos.NestingSheet_loadingTimeEnd) / 60+
-                                    String.Format(Clipper_Param.get_string_format_double(), (currentnestinfos.NestingSheet_loadingTimeInit + currentnestinfos.NestingSheet_loadingTimeEnd) / 60) +
+                                    String.Format(Clipper_Param.Get_string_format_double(), (currentnestinfos.NestingSheet_loadingTimeInit + currentnestinfos.NestingSheet_loadingTimeEnd) / 60) +
 
                                   "";
                                export_gpao_file.WriteLine(Header_Line.Replace(",", "."));
@@ -4339,7 +4342,7 @@ namespace AF_Clipper_Dll
                         clipperpart.Nested_PartInfo_specificFields.Get<string>("IDLNROUT", out string idlnrout);
                         //string idlnbom;
                         clipperpart.Nested_PartInfo_specificFields.Get<string>("IDLNBOM", out string idlnbom);
-                        string CuttingTime = (currentnestinfos.Calculus_Parts_Total_Time==0) == false? String.Format(Clipper_Param.get_string_format_double(), clipperpart.Part_Time * clipperpart.Nested_Quantity / currentnestinfos.Calculus_Parts_Total_Time) : "0";
+                        string CuttingTime = (currentnestinfos.Calculus_Parts_Total_Time==0) == false? String.Format(Clipper_Param.Get_string_format_double(), clipperpart.Part_Time * clipperpart.Nested_Quantity / currentnestinfos.Calculus_Parts_Total_Time) : "0";
 
                         string detail_Line =
                         "DETAIL" + Separator +
@@ -4348,10 +4351,10 @@ namespace AF_Clipper_Dll
                          clipperpart.Nested_Quantity + Separator +
                          clipperpart.Height + Separator +
                          clipperpart.Width + Separator +
-                         String.Format(Clipper_Param.get_string_format_double(), clipperpart.Part_Balanced_Weight * clipperpart.Nested_Quantity / (currentnestinfos.Tole_Nesting.Sheet_Weight * currentnestinfos.Tole_Nesting.Mutliplicity)) + Separator +// * Tole_Nesting.Mutliplicity)) + Separator +
+                         String.Format(Clipper_Param.Get_string_format_double(), clipperpart.Part_Balanced_Weight * clipperpart.Nested_Quantity / (currentnestinfos.Tole_Nesting.Sheet_Weight * currentnestinfos.Tole_Nesting.Mutliplicity)) + Separator +// * Tole_Nesting.Mutliplicity)) + Separator +
                         // clipperpart.Width + Separator;//+
                         //String.Format(Clipper_Param.get_string_format_double(), clipperpart.Part_Balanced_Weight * clipperpart.Nested_Quantity / (currentnestinfos.Tole_Nesting.Sheet_Weight * currentnestinfos.Tole_Nesting.Mutliplicity)) + Separator +
-                        String.Format(Clipper_Param.get_string_format_double(), clipperpart.Weight * 0.001) + Separator +
+                        String.Format(Clipper_Param.Get_string_format_double(), clipperpart.Weight * 0.001) + Separator +
                         ///String.Format(Clipper_Param.get_string_format_double(), clipperpart.Part_Time * clipperpart.Nested_Quantity / currentnestinfos.Calculus_Parts_Total_Time);//current_clipper_nestinfos.Nesting_TotalTime);
                         CuttingTime;
                         export_gpao_file.WriteLine(detail_Line.Replace(",", "."));
@@ -4380,7 +4383,7 @@ namespace AF_Clipper_Dll
                         largeur + Separator +
                         currentoffcut.Mutliplicity + Separator +
                         //calcul du ratio
-                        String.Format(Clipper_Param.get_string_format_double(), (currentoffcut.Sheet_Surface / currentnestinfos.Tole_Nesting.Sheet_Total_Surface)) + Separator +
+                        String.Format(Clipper_Param.Get_string_format_double(), (currentoffcut.Sheet_Surface / currentnestinfos.Tole_Nesting.Sheet_Total_Surface)) + Separator +
                          // currentoffcut.rectangular + Separator +
                          IsRectagular + Separator +
                         //clipperoffcut.Rectangular = true ? "1" : "0" + Separator +
@@ -4388,7 +4391,7 @@ namespace AF_Clipper_Dll
                         //Separator +--> chemin vers dpr (n'a pas d'utilité dans clip)
                         "" + Separator +
                         currentoffcut.Sheet_EmfFile + Separator +
-                        String.Format(Clipper_Param.get_string_format_double(), currentoffcut.Sheet_Weight * 0.001);
+                        String.Format(Clipper_Param.Get_string_format_double(), currentoffcut.Sheet_Weight * 0.001);
                         export_gpao_file.WriteLine(offcut_Line.Replace(",", "."));
 
                         //validaton du stock sur les chutes
@@ -4423,12 +4426,301 @@ namespace AF_Clipper_Dll
 
         }
 
+        public override void Export_NestInfosToFilePlanning(string export_gpao_path)
+        {
+            base.Export_NestInfosToFile(export_gpao_path);
+            /***/
+            bool explodMultiplicity = Clipper_Param.Get_Multiplicity_Mode();
+
+
+            //si la fonction est lancer par la méthode planning alors le fichier de sortie aura l'opiton .planning
+            //ce pour ne pas polluer les problemes de produciton
+            string extension = ".planning";
+
+            string stringformatdouble = Clipper_Param.Get_string_format_double();
+
+            ///recuperation des placements selectionnés
+            ///
+            switch (explodMultiplicity)
+            {///normalement on conidere le premier placement
+                case false:
+                    {
+                        //concatenation du placement dans un seul fichier
+                        Nest_Infos_2 currentnestinfos = this.nestinfoslist.FirstOrDefault();
+                        using (StreamWriter export_gpao_file = new StreamWriter(@export_gpao_path + "\\" + currentnestinfos.Tole_Nesting.To_Cut_Sheet_Name + extension))
+                        {
+
+
+                            string Separator = ";";
+                            //recuperaiton des champs specifiques
+                            //string NUMMATLOT = "";
+                            currentnestinfos.Tole_Nesting.Specific_Tole_Fields.Get<string>("NUMMATLOT", out string NUMMATLOT);
+                            if (NUMMATLOT == "Undef")
+                            {
+                                NUMMATLOT = string.Empty;
+                            }
+                            //ecriture des entetes de nesting
+                            string Header_Line = "HEADER" + Separator +
+                            //currentnestinfos.Tole_Nesting.To_Cut_Sheet_Name + Separator +
+                            //ecriture des entetes de nesting
+                            // currentnestinfos.Tole_Nesting.Sheet_Reference + Separator +
+                            currentnestinfos.Tole_Nesting.Stock_Name + Separator +
+                            //longeur
+                            currentnestinfos.Tole_Nesting.Sheet_Length + Separator +
+                            //largeur
+                            currentnestinfos.Tole_Nesting.Sheet_Width + Separator +
+                            //epaisseur
+                            currentnestinfos.Tole_Nesting.Thickness + Separator +
+                            //nuance
+                            currentnestinfos.Tole_Nesting.GradeName + Separator +
+                            //multiplicité
+                            currentnestinfos.Tole_Nesting.Mutliplicity + Separator +
+                             // temps de chargement
+                             String.Format(Clipper_Param.Get_string_format_double(), (currentnestinfos.NestingSheet_loadingTimeInit / 60)) + Separator +
+                            currentnestinfos.Nesting_CentreFrais_Machine + Separator +
+                            "" + Separator + //on ignore le pdf
+                            currentnestinfos.Tole_Nesting.Sheet_EmfFile + Separator +
+                           //numero lot
+                           NUMMATLOT + Separator +
+                           // String.Format(Clipper_Param.get_string_format_double(), (Alma_Time.minutes(this.Sheet_loadingTimeInit + this.Sheet_loadingTimeEnd)));
+                           String.Format(Clipper_Param.Get_string_format_double(), (currentnestinfos.NestingSheet_loadingTimeInit + currentnestinfos.NestingSheet_loadingTimeEnd) / 60) +
+                              "";
+                            export_gpao_file.WriteLine(Header_Line.Replace(",", "."));
+
+
+                            //ecriture des details pieces
+                            //recue
+                            foreach (Nested_PartInfo clipperpart in currentnestinfos.Nested_Part_Infos_List)
+                            {
+                                ///string idlnrout;
+                                clipperpart.Nested_PartInfo_specificFields.Get<string>("IDLNROUT", out string idlnrout);
+
+                                clipperpart.Nested_PartInfo_specificFields.Get<string>("IDLNBOM", out string idlnbom);
+                                string CuttingTime = (currentnestinfos.Calculus_Parts_Total_Time == 0) == false ? String.Format(Clipper_Param.Get_string_format_double(), clipperpart.Part_Time * clipperpart.Nested_Quantity / currentnestinfos.Calculus_Parts_Total_Time) : "0";
+
+                                string detail_Line =
+                                "DETAIL" + Separator +
+                                 idlnrout + Separator +
+                                 idlnbom + Separator +
+                                 clipperpart.Nested_Quantity + Separator +
+                                 clipperpart.Height + Separator +
+                                 clipperpart.Width + Separator +
+                                 String.Format(Clipper_Param.Get_string_format_double(), clipperpart.Part_Balanced_Weight * clipperpart.Nested_Quantity / (currentnestinfos.Tole_Nesting.Sheet_Weight * currentnestinfos.Tole_Nesting.Mutliplicity)) + Separator +// * Tole_Nesting.Mutliplicity)) + Separator +
+                                                                                                                                                                                                                                                                  // clipperpart.Width + Separator;//+
+                                                                                                                                                                                                                                                                  //String.Format(Clipper_Param.get_string_format_double(), clipperpart.Part_Balanced_Weight * clipperpart.Nested_Quantity / (currentnestinfos.Tole_Nesting.Sheet_Weight * currentnestinfos.Tole_Nesting.Mutliplicity)) + Separator +
+                                String.Format(Clipper_Param.Get_string_format_double(), clipperpart.Weight * 0.001) + Separator +
+                        ///String.Format(Clipper_Param.get_string_format_double(), clipperpart.Part_Time * clipperpart.Nested_Quantity / currentnestinfos.Calculus_Parts_Total_Time);//current_clipper_nestinfos.Nesting_TotalTime);
+                        CuttingTime;
+                                export_gpao_file.WriteLine(detail_Line.Replace(",", "."));
+
+                            }
+
+
+                            //ecriture  des chutes
+                            foreach (Tole currentoffcut in currentnestinfos.Offcut_infos_List)
+                            {
+                                string IsRectagular = (currentoffcut.Sheet_Length == currentoffcut.Sheet_Width) == true ? "1" : "0";
+                                double longueur, largeur;
+                                //si la tole est tournée, on inverse longueur et largeur
+                                longueur = currentoffcut.Sheet_Length;
+                                largeur = currentoffcut.Sheet_Width;
+
+                                if (currentoffcut.Sheet_Is_rotated)
+                                {
+                                    longueur = currentoffcut.Sheet_Width;
+                                    largeur = currentoffcut.Sheet_Length;
+                                }
+
+                                string offcut_Line =
+                            "CHUTE" + Separator +
+
+                            longueur + Separator +
+                            largeur + Separator +
+                            currentoffcut.Mutliplicity + Separator +
+                            //calcul du ratio
+                            String.Format(Clipper_Param.Get_string_format_double(), (currentoffcut.Sheet_Surface / currentnestinfos.Tole_Nesting.Sheet_Total_Surface)) + Separator +
+                             // currentoffcut.rectangular + Separator +
+                             IsRectagular + Separator +
+                            //clipperoffcut.Rectangular = true ? "1" : "0" + Separator +
+                            /*chemin vers dpr  */
+                            //Separator +--> chemin vers dpr (n'a pas d'utilité dans clip)
+                            "" + Separator +
+                            currentoffcut.Sheet_EmfFile + Separator +
+                            String.Format(Clipper_Param.Get_string_format_double(), currentoffcut.Sheet_Weight * 0.001);
+                                export_gpao_file.WriteLine(offcut_Line.Replace(",", "."));
+
+                                //validaton du stock sur les chutes
+                                //ecriture du SHEET_FILENAME
+                                IEntityList Sheets_To_Update;
+                                IEntity Sheet_To_Update;
+                                Sheets_To_Update = currentoffcut.SheetEntity.Context.EntityManager.GetEntityList("_SHEET", "ID", ConditionOperator.Equal, currentoffcut.Sheet_Id);///NestingStockEntity.Id);
+                                Sheets_To_Update.Fill(false);
+                                //construction de la liste des chutes
+                                Sheet_To_Update = SimplifiedMethods.GetFirtOfList(Sheets_To_Update);
+                                Sheet_To_Update.SetFieldValue("FILENAME", currentoffcut.Sheet_EmfFile);
+                                Sheet_To_Update.Save();
+
+
+
+
+                            }
+
+
+
+
+                        }
+
+
+
+                        break;
+                    }
+
+                case true:
+                    {
+                        foreach (Nest_Infos_2 currentnestinfos in this.nestinfoslist)
+                        {
+                            ///explosion placement
+                            using (StreamWriter export_gpao_file = new StreamWriter(@export_gpao_path + "\\" + currentnestinfos.Tole_Nesting.To_Cut_Sheet_Name + extension))
+                            {
+
+
+                                string Separator = ";";
+                                //recuperaiton des champs specifiques
+                                //string NUMMATLOT="";
+                                currentnestinfos.Tole_Nesting.Specific_Tole_Fields.Get<string>("NUMMATLOT", out string NUMMATLOT);
+                                if (NUMMATLOT == "Undef")
+                                {
+                                    NUMMATLOT = string.Empty;
+                                }
+                                //ecriture des entetes de nesting
+                                string Header_Line = "HEADER" + Separator +
+                                //currentnestinfos.Tole_Nesting.To_Cut_Sheet_Name + Separator +
+                                //ecriture des entetes de nesting
+                                // currentnestinfos.Tole_Nesting.Sheet_Reference + Separator +
+                                currentnestinfos.Tole_Nesting.Stock_Name + Separator +
+                                //longeur
+                                currentnestinfos.Tole_Nesting.Sheet_Length + Separator +
+                                //largeur
+                                currentnestinfos.Tole_Nesting.Sheet_Width + Separator +
+                                //epaisseur
+                                currentnestinfos.Tole_Nesting.Thickness + Separator +
+                                //nuance
+                                currentnestinfos.Tole_Nesting.GradeName + Separator +
+                                //multiplicité
+                                //currentnestinfos.Tole_Nesting.Mutliplicity + Separator +
+                                "1" + Separator +
+                                 // temps de chargement
+                                 String.Format(Clipper_Param.Get_string_format_double(), (currentnestinfos.NestingSheet_loadingTimeInit / 60)) + Separator +
+                                currentnestinfos.Nesting_CentreFrais_Machine + Separator +
+                                "" + Separator + //on ignore le pdf
+                                currentnestinfos.Tole_Nesting.Sheet_EmfFile + Separator +
+                               //numero lot
+                               NUMMATLOT + Separator +
+                                    // String.Format(Clipper_Param.get_string_format_double(), (Alma_Time.minutes(this.Sheet_loadingTimeInit + this.Sheet_loadingTimeEnd)));
+                                    //(currentnestinfos.NestingSheet_loadingTimeInit + currentnestinfos.NestingSheet_loadingTimeEnd) / 60+
+                                    String.Format(Clipper_Param.Get_string_format_double(), (currentnestinfos.NestingSheet_loadingTimeInit + currentnestinfos.NestingSheet_loadingTimeEnd) / 60) +
+
+                                  "";
+                                export_gpao_file.WriteLine(Header_Line.Replace(",", "."));
+
+
+                                //ecriture des details pieces
+                                //recue
+                                foreach (Nested_PartInfo clipperpart in currentnestinfos.Nested_Part_Infos_List)
+                                {
+                                    //string idlnrout; 
+                                    clipperpart.Nested_PartInfo_specificFields.Get<string>("IDLNROUT", out string idlnrout);
+                                    //string idlnbom;
+                                    clipperpart.Nested_PartInfo_specificFields.Get<string>("IDLNBOM", out string idlnbom);
+                                    string CuttingTime = (currentnestinfos.Calculus_Parts_Total_Time == 0) == false ? String.Format(Clipper_Param.Get_string_format_double(), clipperpart.Part_Time * clipperpart.Nested_Quantity / currentnestinfos.Calculus_Parts_Total_Time) : "0";
+
+                                    string detail_Line =
+                                    "DETAIL" + Separator +
+                                     idlnrout + Separator +
+                                     idlnbom + Separator +
+                                     clipperpart.Nested_Quantity + Separator +
+                                     clipperpart.Height + Separator +
+                                     clipperpart.Width + Separator +
+                                     String.Format(Clipper_Param.Get_string_format_double(), clipperpart.Part_Balanced_Weight * clipperpart.Nested_Quantity / (currentnestinfos.Tole_Nesting.Sheet_Weight * currentnestinfos.Tole_Nesting.Mutliplicity)) + Separator +// * Tole_Nesting.Mutliplicity)) + Separator +
+                                                                                                                                                                                                                                                                      // clipperpart.Width + Separator;//+
+                                                                                                                                                                                                                                                                      //String.Format(Clipper_Param.get_string_format_double(), clipperpart.Part_Balanced_Weight * clipperpart.Nested_Quantity / (currentnestinfos.Tole_Nesting.Sheet_Weight * currentnestinfos.Tole_Nesting.Mutliplicity)) + Separator +
+                                    String.Format(Clipper_Param.Get_string_format_double(), clipperpart.Weight * 0.001) + Separator +
+                        ///String.Format(Clipper_Param.get_string_format_double(), clipperpart.Part_Time * clipperpart.Nested_Quantity / currentnestinfos.Calculus_Parts_Total_Time);//current_clipper_nestinfos.Nesting_TotalTime);
+                        CuttingTime;
+                                    export_gpao_file.WriteLine(detail_Line.Replace(",", "."));
+
+                                }
+
+
+                                //ecriture  des chutes
+                                foreach (Tole currentoffcut in currentnestinfos.Offcut_infos_List)
+                                {
+                                    string IsRectagular = (currentoffcut.Sheet_Length == currentoffcut.Sheet_Width) == true ? "1" : "0";
+                                    double longueur, largeur;
+                                    //si la tole est tournée, on inverse longueur et largeur
+                                    longueur = currentoffcut.Sheet_Length;
+                                    largeur = currentoffcut.Sheet_Width;
+
+                                    if (currentoffcut.Sheet_Is_rotated)
+                                    {
+                                        longueur = currentoffcut.Sheet_Width;
+                                        largeur = currentoffcut.Sheet_Length;
+                                    }
+
+                                    string offcut_Line =
+                                "CHUTE" + Separator +
+
+                                longueur + Separator +
+                                largeur + Separator +
+                                currentoffcut.Mutliplicity + Separator +
+                                //calcul du ratio
+                                String.Format(Clipper_Param.Get_string_format_double(), (currentoffcut.Sheet_Surface / currentnestinfos.Tole_Nesting.Sheet_Total_Surface)) + Separator +
+                                 // currentoffcut.rectangular + Separator +
+                                 IsRectagular + Separator +
+                                //clipperoffcut.Rectangular = true ? "1" : "0" + Separator +
+                                /*chemin vers dpr  */
+                                //Separator +--> chemin vers dpr (n'a pas d'utilité dans clip)
+                                "" + Separator +
+                                currentoffcut.Sheet_EmfFile + Separator +
+                                String.Format(Clipper_Param.Get_string_format_double(), currentoffcut.Sheet_Weight * 0.001);
+                                    export_gpao_file.WriteLine(offcut_Line.Replace(",", "."));
+
+                                    //validaton du stock sur les chutes
+                                    //ecriture du SHEET_FILENAME
+                                    IEntityList Sheets_To_Update;
+                                    IEntity Sheet_To_Update;
+                                    Sheets_To_Update = currentoffcut.SheetEntity.Context.EntityManager.GetEntityList("_SHEET", "ID", ConditionOperator.Equal, currentoffcut.Sheet_Id);///NestingStockEntity.Id);
+                                    Sheets_To_Update.Fill(false);
+                                    //construction de la liste des chutes
+                                    Sheet_To_Update = SimplifiedMethods.GetFirtOfList(Sheets_To_Update);
+                                    Sheet_To_Update.SetFieldValue("FILENAME", currentoffcut.Sheet_EmfFile);
+                                    Sheet_To_Update.Save();
+
+
+
+
+                                }
+
+
+
+
+                            }
+                        }
+                        break;
+                    }
+
+
+
+            }
+
+
+
+        }
+
+
         #endregion
 
-        //public string Numlot { get; set; }
-        //public string NumMatlot { get; set; }
-
-
+     
         /// <summary>
         /// inforlmation specifique a recuperer
         /// </summary>
@@ -4523,7 +4815,7 @@ namespace AF_Clipper_Dll
             //verification standards
             //creation du timetag d'import
             string timetag = string.Format("{0:d_M_yyyy_HH_mm_ss}", DateTime.Now);
-            Alma_Log.Create_Log(Clipper_Param.getVerbose_Log());
+            Alma_Log.Create_Log(Clipper_Param.GetVerbose_Log());
             //bool import_sans_donnee_technique = false;
             Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": importe tag :" + timetag);
             //ouverture du fichier csv lancement du curseur
@@ -4601,7 +4893,7 @@ public class MissingParameterException : Exception
 
     public MissingParameterException(string parametername) 
     {
-        if (AF_Clipper_Dll.Clipper_Param.getVerbose_Log()==true) { 
+        if (AF_Clipper_Dll.Clipper_Param.GetVerbose_Log()==true) { 
 
             MessageBox.Show("Il manque le parametres" + parametername +" dans la base almacam");
             Alma_Log.Write_Log_Important("Il manque le parametres " + parametername + " dans la base almacam");

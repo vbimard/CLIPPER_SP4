@@ -61,6 +61,15 @@ namespace AF_Import_ODBC_Clipper_AlmaCam.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à AF_ImportVis.log.
+        /// </summary>
+        public static string ImportFournitureLog {
+            get {
+                return ResourceManager.GetString("ImportFournitureLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à AF_ImportMatiere.log.
         /// </summary>
         public static string ImportMatiereLog {

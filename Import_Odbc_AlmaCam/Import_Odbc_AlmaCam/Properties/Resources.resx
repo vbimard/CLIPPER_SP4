@@ -117,6 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ImportFournitureLog" xml:space="preserve">
+    <value>AF_ImportVis.log</value>
+    <comment>contient les logs d'import des vis</comment>
+  </data>
   <data name="ImportMatiereLog" xml:space="preserve">
     <value>AF_ImportMatiere.log</value>
     <comment>contient les logs d'import des matieres</comment>

@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AF_Export_Devis_Clipper", "AF_Export_Devis_Clipper.csproj", "{F0341273-C289-4933-B13C-4AA604148B74}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App_Export_Devis", "..\App_Export_Devis\App_Export_Devis.csproj", "{CAFDEBBD-D92F-4989-AE4A-1C2FAFF63949}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AF_Export_Devis", "..\App_Export_Devis\AF_Export_Devis.csproj", "{CAFDEBBD-D92F-4989-AE4A-1C2FAFF63949}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AF_ImportTools", "..\..\..\GENERIQUE\AF_ImportTools\AF_ImportTools.csproj", "{49768C4B-0F89-40E8-943E-2977EF65834F}"
 EndProject

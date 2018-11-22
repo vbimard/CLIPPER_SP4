@@ -12,6 +12,7 @@ using Newtonsoft.Json.Linq;
 using Wpm.Implement.Manager;
 
 
+
 namespace ConsoleApp2
 {
 
@@ -21,17 +22,31 @@ namespace ConsoleApp2
     {
         static void Main(string[] args)
         {
-            bool import_matiere = true;
-            bool tube_rond = true;
-            bool rond =true;
-            bool tube_rectangle = true;
-            bool tube_carre = true;
-            bool tube_flat = true;
-            bool tube_speciaux = true;
+            bool import_matiere = false;
+            bool tube_rond = false;
+            bool rond = false;
+            bool tube_rectangle = false;
+            bool tube_carre = false;
+            bool tube_flat = false;
+            bool tube_speciaux = false;
+            bool Vis = true;
 
+            /*
             Clipper_ImportTubes_Processor tubeimporter = new Clipper_ImportTubes_Processor(import_matiere,  tube_rond,  rond,  tube_rectangle,  tube_carre, tube_flat,  tube_speciaux);
-            tubeimporter.Execute();
+            //tubeimporter.Execute();
+            tubeimporter.Execute();*/
+            IContext contextlocal = null;
+            contextlocal=AlmaCamTool.GetContext(contextlocal);
+            Clipper_Import_Fournitures_Divers_Processor FournitureImporter = new Clipper_Import_Fournitures_Divers_Processor();
+            FournitureImporter.Import(contextlocal);
 
+
+
+            //tubeimporter.Execute();
+
+            //VisImporter.Execute();
+
+            //VisImporter.ExecuteContext(IContext);
 
         }
     }

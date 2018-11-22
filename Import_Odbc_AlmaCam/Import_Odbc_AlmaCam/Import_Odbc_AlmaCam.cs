@@ -15,29 +15,31 @@ using Newtonsoft.Json.Linq;
 namespace AF_Import_ODBC_Clipper_AlmaCam
 
 {
-   //= new TextWriterTraceListener(System.IO.Path.GetTempPath() + "\\" + Properties.Resources.ImportTubeLog);
+    //= new TextWriterTraceListener(System.IO.Path.GetTempPath() + "\\" + Properties.Resources.ImportTubeLog);
     #region  commandes
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// <summary>
     /// creation des commandes d'imports
     /// using (Clipper_Import_Matiere Update_Material = new Clipper_Import_Matiere())
-     ///    {
-     ///                try
-     ///                {
-     ///           Update_Material.Almacam_Update_Material(contextlocal);
-        ///        Update_Material.Close();
-        ///         Cursor.Current = Cursors.Default;
-        ///
-        ///             }
+    ///    {
+    ///                try
+    ///                {
+    ///           Update_Material.Almacam_Update_Material(contextlocal);
+    ///        Update_Material.Close();
+    ///         Cursor.Current = Cursors.Default;
+    ///
+    ///             }
     ///              catch { Cursor.Current = Cursors.Default; }
     //      }
     /// </summary>
     //section des commandes
 
+    
 
 
-
-
+    /// <summary>
+    /// bouton d'import des matieres
+    /// </summary>
     public class Clipper_ImportMatiere_Processor : CommandProcessor
     {
         public override bool Execute()
@@ -50,10 +52,10 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                 using (Clipper_Import_Matiere Update_Material = new Clipper_Import_Matiere())
                 {
                     try {
+
+                       
                     Cursor.Current = Cursors.WaitCursor;
-                    string DbName = Alma_RegitryInfos.GetLastDataBase();
-                    IModelsRepository modelsRepository = new ModelsRepository();
-                    IContext contextlocal = modelsRepository.GetModelContext(DbName);
+                    IContext contextlocal = AlmaCamTool.GetContext(Context);
 
                     Update_Material.Almacam_Update_Material(contextlocal);
                     Update_Material.Close();
@@ -74,20 +76,135 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
         }
     }
 
+    /// <summary>
+    /// bouton d'import des vis
+    /// </summary>
+    public class Clipper_Vis_Processor : CommandProcessor
+    {
 
-/// <summary>
-    
-    //    bool import_matiere = true;
-    // bool tube_rond = true;
+        public override bool Execute()
+        {
+
+            try
+            {
+                //creation des logs
+                TextWriterTraceListener logFile;
+              
+                //string DbName = Alma_RegitryInfos.GetLastDataBase();
+                //IModelsRepository modelsRepository = new ModelsRepository();
+                //IContext contextlocal = Context;//modelsRepository.GetModelContext(DbName);
+
+                IContext contextlocal =Context;
+                Import(Context);
+                return base.Execute();
+            }
+            catch
+            {
+                return base.Execute();
+            }
+
+        }
+
+        public bool Import(IContext contextlocal)
+        {
+            try {
+                using (Clipper_Import_Vis UpdateVis = new Clipper_Import_Vis(contextlocal))
+                {
+                    try
+                    {
+
+
+                        Cursor.Current = Cursors.WaitCursor;
+
+
+                        UpdateVis.ReadScrew();
+                        UpdateVis.WriteVis();
+                        //Update_Material.Close();
+                        Cursor.Current = Cursors.Default;
+                    }
+                    catch { Cursor.Current = Cursors.Default; }
+                }
+
+                return true; } catch { return false; }
+        }
+
+
+    }
+
+
+    /// <summary>
+    /// bouton d'import des vis
+    /// </summary>
+    public class Clipper_Import_Fournitures_Divers_Processor : CommandProcessor
+    {
+
+        public override bool Execute()
+        {
+
+            try
+            {
+                //creation des logs
+                TextWriterTraceListener logFile;
+
+                //string DbName = Alma_RegitryInfos.GetLastDataBase();
+                //IModelsRepository modelsRepository = new ModelsRepository();
+                //IContext contextlocal = Context;//modelsRepository.GetModelContext(DbName);
+
+                IContext contextlocal = Context;
+                Import(Context);
+                return base.Execute();
+            }
+            catch
+            {
+                return base.Execute();
+            }
+
+        }
+
+        public bool Import(IContext contextlocal)
+        {
+            try
+            {
+                using (Clipper_Import_Fournitures_Divers UpdateFourniture = new Clipper_Import_Fournitures_Divers(contextlocal))
+                {
+                    try
+                    {
+
+
+                        Cursor.Current = Cursors.WaitCursor;
+
+
+                        UpdateFourniture.Read();
+                        UpdateFourniture.Write();
+
+                        Cursor.Current = Cursors.Default;
+                    }
+                    catch { Cursor.Current = Cursors.Default; }
+                }
+
+                return true;
+            }
+            catch { return false; }
+        }
+
+
+    }
+
+
+
+    /// <summary>
+
+    //bool import_matiere = true;
+    //bool tube_rond = true;
     //bool rond = true;
     //bool tube_rectangle = true;
     //bool tube_carre = true;
     //bool tube_flat = true;
     //bool tube_speciaux = true;
-    //  Clipper_ImportTubes_Processor tubeimporter = new Clipper_ImportTubes_Processor(import_matiere, tube_rond, rond, tube_rectangle, tube_carre, tube_flat, tube_speciaux);
-    //  tubeimporter.Execute();
+    //Clipper_ImportTubes_Processor tubeimporter = new Clipper_ImportTubes_Processor(import_matiere, tube_rond, rond, tube_rectangle, tube_carre, tube_flat, tube_speciaux);
+    //tubeimporter.Execute();
 
-/// </summary>
+    /// </summary>
 
     public class Clipper_ImportTubes_Processor : CommandProcessor
     {
@@ -327,6 +444,34 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
         Speciaux = 6
     }
 
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// routine d'import satndards, matiere, tubes.. toles, vis......
+    /// </summary>
+    //section des commandes
+    public enum UniteGestion
+    {
+        u = 1,
+        le_dix = 10,
+        le_cent = 100,
+          
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// type de vis
+    /// </summary>
+    //section des commandes
+    public enum TypeVis
+    {
+        Vis = 1,
+        Ecrou = 10,
+        
+    }
+
     /// <summary>
     ///   class Clipper_Material.. class de stockage des matieres
     /// </summary>
@@ -349,7 +494,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
         //string clippernuancecode;
         //string clipperetatcode;
         //string Cofou;
-        //string Cofa;
+        //string COFA;
         //double Dernierprix;
         //public double Price=0;
         //DateTime Dateso;
@@ -558,7 +703,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
 
             //////
             ///////detection des qualités a creer//// 
-            logFile.WriteLine("creation dela liste des qualité de clipper ");
+            logFile.WriteLine("creation dela liste des qualités de clipper ");
             foreach (Clipper_Material m in MATERIAL_LIST)
             {
                
@@ -704,39 +849,60 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
         //creation du listener
 
             public IContext contextlocal;
-
-            public string Coarti = "UNDEF"; //code etat (nuance epaisseur)
-            public double Prixart;// prixart
+            public long AMCLEUNIK;
+        //fournisseur
+            public string FOURN;
+            public string UniteGest = "u"; //unite de gestion : u ou le cent , le dix...
+            public string COARTI = "UNDEF"; //code etat (nuance epaisseur)
+            public double PRIXART;// prixart
             public double Densite;//
             public IEntity Material;
             public string Nuance;
             public string Etat = "";
             //public double Thickness = 0;  //DIM3
             public string Name = "UNDEF";
-            public string Cofa = "undef";
+            public string COFA = "UNDEF";
+            public string DESA1 = "";
+            public string DESA2 = "";
+
             private string DSN;
-            // private string SQL;
-            // private string SQL_TUBE;
+                
             public OdbcDataReader TABLE_ARTICLEM;//TABLE_ARTICLEM;
-                                                      //public OdbcDataReader TABLE_ARTICLEM_ROND;
             public OdbcConnection DbConnection;
             public OdbcCommand DbCommand;
+            public JsonTools JSTOOLS;
 
-            public void Dispose()
+        public void Dispose()
             {
             TABLE_ARTICLEM = null;
             //TABLE_ARTICLEM_ROND = null;
             DSN = null;
             }
-        public JsonTools JSTOOLS;
-       
+            
         IList<Clipper_Material> TUBE_LIST = new List<Clipper_Material>();
 
         public Clipper_Article()
         {
             
-           // Odbc_Connexion();//
+          
         }
+
+         public virtual void Read()
+        {
+
+            
+        }
+        public virtual void Write()
+        {
+
+           
+        }
+        public virtual void Update()
+        {
+
+            
+        }
+
 
         public void Odbc_Connexion()
         {    ///premier paramertre dsn = clipper dsn= data source name
@@ -759,14 +925,16 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
 
 
             }
-            catch
+            catch (Exception ex)
             {
-
+                string methode = System.Reflection.MethodBase.GetCurrentMethod().Name;
+                MessageBox.Show(methode ,  ex.Message);
+                Environment.Exit(0);
             }
         }
 
 
-        public string getSqlNumericValue(string fieldname)
+     public string getSqlNumericValue(string fieldname)
         {
             try
             {
@@ -775,7 +943,14 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                 else { return TABLE_ARTICLEM[fieldname].ToString().Trim(); }
 
             }
-            catch { return "0"; }
+            // catch { return "0"; }
+            catch (Exception ex)
+            {
+                string methode = System.Reflection.MethodBase.GetCurrentMethod().Name;
+                MessageBox.Show(methode, ex.Message);
+                return "0";
+                //Environment.Exit(0);
+            }
 
         }
 
@@ -783,18 +958,12 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
 
         public void Close()
         {
-
             
-
-
             DSN = "";
             //SQL = "";
             TABLE_ARTICLEM.Close();
-
             DbConnection.Dispose();
             DbCommand.Dispose();
-            //IList<Material> MATERIAL_LIST = new List<Material>();
-
             DbCommand.Dispose();
             DbConnection.Close();
            
@@ -806,7 +975,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
 
         }
 
-
+        #region Matiere
         public IEntity GetGrade(IContext contextlocal, string nuance, string etat)
         {
             try
@@ -840,14 +1009,81 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
             }
             catch (Exception ie) { return null; }
         }
-      
+
+
+        public double GetPrice(string unitegestion, double price)
+        {
+            try
+            {
+
+                switch (unitegestion)
+                {
+                    case "le cent":
+                        price = price / 100;
+                        break;
+
+                    case "le dix":
+                        price = price / 10;
+                        break;
+                    default:
+                        price = price;
+                        break;
+                }
+
+
+                return price;
+
+
+            }
+            catch { return 0; }
+        }
 
     }
+
+
+
+    #endregion
+
+    #region class des fourniture (vis, ecrous.... cartons)
+    /// <summary>
+    /// specifique visserie
+    /// </summary>
+    public class Visserie : Clipper_Article, IDisposable
+    {
+        //private List<TubeRond>listeTubeRond;
+        //private TypeTube type = TypeTube.Rond;
+        public double Pas;
+        public double Longueur;
+        public double Diametre;
+        //public TypeVis typevis = TypeVis.Vis;
+       
+      
+
+        //private List<TubeRond> List_Tube_Ronds;
+    }
+
+    /// <summary>
+    /// propriété specifiques founitures divers
+    /// </summary>
+    public class Founiture_Divers : Clipper_Article, IDisposable
+    {
+      
+    }
+
+    #endregion
+
+
+    #region class des tole (vis, ecrous.... cartons)
+    #endregion
+
+
+
+    #region Class des Tubes
 
     /// <summary>
     ///   class Clipper_Article_Tube.. derive de clipper article
     /// </summary>
-    public class Clipper_Article_Tube :Clipper_Article
+    public class Clipper_Article_Tube :Clipper_Article, IDisposable
     {
         //string prefix; // prefixe article matiere
         //creation du listener
@@ -973,7 +1209,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                     sections = contextlocal.EntityManager.GetExtendedEntityList(contextlocal.Kernel.GetEntityType(section_key));
                     sections.Fill(false);
 
-                    foreach (IExtendedEntity s in sections.AsExtendedEntityList)
+                    foreach (IExtendedEntity s in sections)
                     {
                         object o = s.GetFieldValue(section_key + "\\IMPLEMENT__SECTION\\_NAME");
                         if (o.ToString() == section_name) {
@@ -1020,7 +1256,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                     sections = contextlocal.EntityManager.GetExtendedEntityList(contextlocal.Kernel.GetEntityType(section_key));
                     sections.Fill(false);
 
-                    foreach (IExtendedEntity s in sections.AsExtendedEntityList)
+                    foreach (IExtendedEntity s in sections)
                     
                     {
                         object o = s.GetFieldValue(section_key + "\\IMPLEMENT__SECTION\\_NAME");
@@ -1069,7 +1305,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
     /// class tube rond
     /// on ajoute longeur et diametre
     /// </summary>
-    public class TubeRond : Clipper_Article
+    public class TubeRond : Clipper_Article, IDisposable
     {
         
 
@@ -1081,12 +1317,10 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
 
 
     }
-
-
     /// <summary>
     /// class TubeRec.. derive de clipper article
     /// </summary>
-    public class TubeRec : Clipper_Article
+    public class TubeRec : Clipper_Article, IDisposable
     {
 
         //private List<TubeRond>listeTubeRond;
@@ -1098,7 +1332,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
 
     }
 
-    public class TubeSpe : Clipper_Article
+    public class TubeSpe : Clipper_Article, IDisposable
     {
 
         //private List<TubeRond>listeTubeRond;
@@ -1109,6 +1343,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
         
        
     }
+
 
 
 
@@ -1129,27 +1364,25 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
         public double Diametre;
         public double Longueur;
         private List<TubeRond> List_Tube_Ronds;
-     
+
         TextWriterTraceListener logFileTubeRond = new TextWriterTraceListener(System.IO.Path.GetTempPath() + "\\" + "TUBE_ROND_" + Properties.Resources.ImportTubeLog);
 
         /// <summary>
         /// constructeur obligatoire pour ajuster les elements a controler
         /// </summary>
         /// <param name="context"></param>
-        public Clipper_Import_Tube_Rond(IContext context){
+        public Clipper_Import_Tube_Rond(IContext context)
+        {
 
             this.contextlocal = context;
-            Section_Key= "_SECTION_CIRCLE";
+            Section_Key = "_SECTION_CIRCLE";
             SectionExclusion = getSectionExclusionList(Section_Key);
             TubeExclusion = getExclusionList("_BARTUBE", "_REFERENCE");
 
         }
-       
-
-        
 
         /// <summary>
-        /// recuperation des ronds dans une liste de d'objet rond
+        /// recuperation des ronds dans une liste de d'objet rond de la base clipper
         /// </summary>
         /// <returns>List<TubeRond></returns>
         public override void ReadTubes()
@@ -1164,7 +1397,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                 this.List_Tube_Ronds = new List<TubeRond>();
                 //recuperation des tube rectangluaires
                 string sql_tube_rec = this.JSTOOLS.getJsonStringParametres("sql.TubeRond");
-                logFileTubeRond.Write("requete utilisée pour l'import des tubes \r\n "+ sql_tube_rec);
+                logFileTubeRond.Write("requete utilisée pour l'import des tubes \r\n " + sql_tube_rec);
                 int ii = 0;
                 this.DbCommand.CommandText = sql_tube_rec;
 
@@ -1174,19 +1407,19 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                 {
                     ii++;
                     TubeRond tuberond = new TubeRond();
-                    tuberond.Coarti = TABLE_ARTICLEM["COARTI"].ToString().Trim();
+                    tuberond.COARTI = TABLE_ARTICLEM["COARTI"].ToString().Trim();
                     tuberond.Nuance = TABLE_ARTICLEM["CODENUANCE"].ToString().Trim(); //CODEETAT, Tech_NuanceMatiere.Nuance AS CODENUANCE
                     tuberond.Etat = TABLE_ARTICLEM["CODEETAT"].ToString().Trim();
-                    tuberond.Prixart = Convert.ToDouble(getSqlNumericValue("PRIXART"));
+                    tuberond.PRIXART = Convert.ToDouble(getSqlNumericValue("PRIXART"));
                     //tuberond.Thickness = Convert.ToDouble(TABLE_ARTICLEM_TUBE["EPAISSEUR"]);
                     tuberond.Densite = Convert.ToDouble(getSqlNumericValue("DENSITE"));
                     tuberond.Longueur = Convert.ToDouble(getSqlNumericValue("LNG"));
                     tuberond.Diametre = Convert.ToDouble(getSqlNumericValue("DIAM"));
-                    tuberond.epaisseur= Convert.ToDouble(getSqlNumericValue("EPAISSEUR"));
-                    tuberond.Cofa = TABLE_ARTICLEM["COFA"].ToString().Trim(); ;
+                    tuberond.epaisseur = Convert.ToDouble(getSqlNumericValue("EPAISSEUR"));
+                    tuberond.COFA = TABLE_ARTICLEM["COFA"].ToString().Trim(); ;
                     tuberond.Name = TABLE_ARTICLEM["COARTI"].ToString().Trim() + "*" + getSqlNumericValue("LNG");
                     this.List_Tube_Ronds.Add(tuberond);
-                    logFileTubeRond.Write("Tube : " + tuberond.Coarti + " capturé");
+                    logFileTubeRond.Write("Tube : " + tuberond.COARTI + " capturé");
 
                 };
 
@@ -1194,7 +1427,9 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                 //return listeTubeRond;
             }
 
-            catch (Exception ie) { List_Tube_Ronds = null;
+            catch (Exception ie)
+            {
+                List_Tube_Ronds = null;
 
                 logFileTubeRond.Close();
 
@@ -1203,88 +1438,80 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
 
         }
 
-        
-        //public void create(IContext contextlocal,string section_name, double diam, double ep, double lng, double cost)
-        public override  void WriteTubes()
+        /// <summary>
+        /// ecriture dans la base almacam
+        /// </summary>
+        public override void WriteTubes()
         {
 
 
-            if (List_Tube_Ronds.Any()) { 
-
-            foreach (TubeRond tuberond in List_Tube_Ronds)
+            if (List_Tube_Ronds.Any())
             {
-                   
-            //creation de la section (type...)//
-            IEntity sectionEntity;
-            string key = Guid.NewGuid().ToString();
-            //creation de la section
-            sectionEntity = contextlocal.EntityManager.CreateEntity(Section_Key);
 
-             IEntity sectionQuality = contextlocal.EntityManager.CreateEntity("_SECTION_QUALITY");
-             sectionEntity.GetImplementEntity("_SECTION").SetFieldValue("_KEY", key);
-             string name = String.Format("Tube_Rond*{0}*{1}", tuberond.Diametre, tuberond.epaisseur);
-             sectionEntity.GetImplementEntity("_SECTION").SetFieldValue("_NAME", name);// +"x"+ep.ToString());;
+                foreach (TubeRond tuberond in List_Tube_Ronds)
+                {
 
-             
-            sectionEntity.GetImplementEntity("_SECTION").SetFieldValue("_STANDARD", true);
-            sectionEntity.SetFieldValue("_P_D", tuberond.Diametre);
-            sectionEntity.SetFieldValue("_P_T", tuberond.epaisseur);
-             //descpription //
-             string description=String.Format("Tube Rond Diamete={0} mm Eaisseur={1} mm", tuberond.Diametre, tuberond.epaisseur);
+                    //creation de la section (type...)//
+                    IEntity sectionEntity;
+                    string key = Guid.NewGuid().ToString();
+                    //creation de la section
+                    sectionEntity = contextlocal.EntityManager.CreateEntity(Section_Key);
 
-            sectionEntity.GetImplementEntity("_SECTION").SetFieldValue("_DESCRIPTION", description);
+                    IEntity sectionQuality = contextlocal.EntityManager.CreateEntity("_SECTION_QUALITY");
+                    sectionEntity.GetImplementEntity("_SECTION").SetFieldValue("_KEY", key);
+                    string name = String.Format("Tube_Rond*{0}*{1}", tuberond.Diametre, tuberond.epaisseur);
+                    sectionEntity.GetImplementEntity("_SECTION").SetFieldValue("_NAME", name);// +"x"+ep.ToString());;
 
-            //sectionEntity.SetFieldValue("_P_T", this.ep);           
-            sectionEntity.Complete = true;
-             
-            logFileTubeRond.Write("Tube : " + tuberond.Coarti + " sauvegarde");
+
+                    sectionEntity.GetImplementEntity("_SECTION").SetFieldValue("_STANDARD", true);
+                    sectionEntity.SetFieldValue("_P_D", tuberond.Diametre);
+                    sectionEntity.SetFieldValue("_P_T", tuberond.epaisseur);
+                    //descpription //
+                    string description = String.Format("Tube Rond Diamete={0} mm Eaisseur={1} mm", tuberond.Diametre, tuberond.epaisseur);
+
+                    sectionEntity.GetImplementEntity("_SECTION").SetFieldValue("_DESCRIPTION", description);
+
+                    //sectionEntity.SetFieldValue("_P_T", this.ep);           
+                    sectionEntity.Complete = true;
+
+                    logFileTubeRond.Write("Tube : " + tuberond.COARTI + " sauvegarde");
                     //creation de la qualité
-            tuberond.Material = tuberond.GetGrade(contextlocal, tuberond.Nuance, tuberond.Etat);
-              
+                    tuberond.Material = tuberond.GetGrade(contextlocal, tuberond.Nuance, tuberond.Etat);
+
                     //recuperation de la section
                     if (SectionExclusion.Contains(name) == false)
 
                     {   //si n existe pas on recupere la nouvelle section //
                         sectionEntity.Save();
-                        sectionQuality.SetFieldValue("_SECTION", sectionEntity.Id32); }
-                    else  
+                        sectionQuality.SetFieldValue("_SECTION", sectionEntity.Id32);
+                    }
+                    else
                     //si elle existe deja on recupere la section //
-                    {   sectionQuality.SetFieldValue("_SECTION", getExistingSection(name, Section_Key));}
-            
+                    { sectionQuality.SetFieldValue("_SECTION", getExistingSection(name, Section_Key)); }
 
-           if (TubeExclusion.Contains(tuberond.Coarti) == false) {
-                    sectionQuality.SetFieldValue("_QUALITY", tuberond.Material.Id32);
-                    sectionQuality.SetFieldValue("_BUY_COST", tuberond.Prixart);
-                    sectionQuality.Save();
-                    logFileTubeRond.Write("section "+description+" sauvegardée");
-                    //creation DE LA BARRE
-                    IEntity barreEntity;
-                    string keybar = Guid.NewGuid().ToString();
-                    barreEntity = contextlocal.EntityManager.CreateEntity("_BARTUBE");
-                    barreEntity.SetFieldValue("_REFERENCE", tuberond.Coarti);
-                    barreEntity.SetFieldValue("_QUALITY", tuberond.Material.Id32);
-                    barreEntity.SetFieldValue("_LENGTH", tuberond.Longueur);
-                    //ATTENTION recuperation des infos de l'implemented section
-                    barreEntity.SetFieldValue("_SECTION", sectionEntity.GetImplementEntity("_SECTION").Id); //sectionEntity.GetImplementEntity("_SECTION").Id
-                    barreEntity.Save();
-            }
-             logFileTubeRond.Write("section " + description +"lng " + tuberond.Longueur + " sauvegardée");
-            }
+
+                    if (TubeExclusion.Contains(tuberond.COARTI) == false)
+                    {
+                        sectionQuality.SetFieldValue("_QUALITY", tuberond.Material.Id32);
+                        sectionQuality.SetFieldValue("_BUY_COST", tuberond.PRIXART);
+                        sectionQuality.Save();
+                        logFileTubeRond.Write("section " + description + " sauvegardée");
+                        //creation DE LA BARRE
+                        IEntity barreEntity;
+                        string keybar = Guid.NewGuid().ToString();
+                        barreEntity = contextlocal.EntityManager.CreateEntity("_BARTUBE");
+                        barreEntity.SetFieldValue("_REFERENCE", tuberond.COARTI);
+                        barreEntity.SetFieldValue("_QUALITY", tuberond.Material.Id32);
+                        barreEntity.SetFieldValue("_LENGTH", tuberond.Longueur);
+                        //ATTENTION recuperation des infos de l'implemented section
+                        barreEntity.SetFieldValue("_SECTION", sectionEntity.GetImplementEntity("_SECTION").Id); //sectionEntity.GetImplementEntity("_SECTION").Id
+                        barreEntity.Save();
+                    }
+                    logFileTubeRond.Write("section " + description + "lng " + tuberond.Longueur + " sauvegardée");
+                }
             }
 
         }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1312,7 +1539,8 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public Clipper_Import_Rond(IContext context) {
+        public Clipper_Import_Rond(IContext context)
+        {
             this.contextlocal = context;
             Section_Key = "_SECTION_PLAIN_ROUND";
             SectionExclusion = getSectionExclusionList(Section_Key);
@@ -1347,19 +1575,19 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                 {
                     ii++;
                     TubeRond tuberond = new TubeRond();
-                    tuberond.Coarti = TABLE_ARTICLEM["COARTI"].ToString().Trim();
+                    tuberond.COARTI = TABLE_ARTICLEM["COARTI"].ToString().Trim();
                     tuberond.Nuance = TABLE_ARTICLEM["CODENUANCE"].ToString().Trim(); //CODEETAT, Tech_NuanceMatiere.Nuance AS CODENUANCE
                     tuberond.Etat = TABLE_ARTICLEM["CODEETAT"].ToString().Trim();
-                    tuberond.Prixart = Convert.ToDouble(getSqlNumericValue("PRIXART"));
+                    tuberond.PRIXART = Convert.ToDouble(getSqlNumericValue("PRIXART"));
                     //tuberond.Thickness = Convert.ToDouble(TABLE_ARTICLEM_TUBE["EPAISSEUR"]);
                     tuberond.Densite = Convert.ToDouble(getSqlNumericValue("DENSITE"));
                     tuberond.Longueur = Convert.ToDouble(getSqlNumericValue("LNG"));
                     tuberond.Diametre = Convert.ToDouble(getSqlNumericValue("DIAM"));
                     //tuberond.epaisseur= Convert.ToDouble(getSqlNumericValue("EPAISSEUR"));
-                    tuberond.Cofa = TABLE_ARTICLEM["COFA"].ToString().Trim(); ;
+                    tuberond.COFA = TABLE_ARTICLEM["COFA"].ToString().Trim(); ;
                     tuberond.Name = TABLE_ARTICLEM["COARTI"].ToString().Trim() + "*" + getSqlNumericValue("LNG");
                     this.List_Ronds.Add(tuberond);
-                    logFileRond.Write("Tube : " + tuberond.Coarti + " capturé");
+                    logFileRond.Write("Tube : " + tuberond.COARTI + " capturé");
 
                 };
 
@@ -1389,7 +1617,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                 foreach (TubeRond tuberond in List_Ronds)
                 {
                     //tuberond.create(contextlocal);
-                
+
                     //creation de la section (type...)//
                     IEntity sectionEntity;
                     string key = Guid.NewGuid().ToString();
@@ -1403,14 +1631,14 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
 
                     sectionEntity.GetImplementEntity("_SECTION").SetFieldValue("_STANDARD", true);
                     sectionEntity.SetFieldValue("_P_D", tuberond.Diametre);
-                 
+
                     //descpription //
-          
+
                     sectionEntity.GetImplementEntity("_SECTION").SetFieldValue("_DESCRIPTION", String.Format("Rond Diametre={0} mm", tuberond.Diametre, tuberond.epaisseur));
-              
+
                     sectionEntity.Complete = true;
                     sectionEntity.Save();
-                    logFileRond.Write("Tube : " + tuberond.Coarti + " sauvegarde");
+                    logFileRond.Write("Tube : " + tuberond.COARTI + " sauvegarde");
                     //creation de la qualité
                     tuberond.Material = tuberond.GetGrade(contextlocal, tuberond.Nuance, tuberond.Etat);
 
@@ -1425,11 +1653,11 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                     //si elle existe deja on recupere la section //
                     { sectionQuality.SetFieldValue("_SECTION", getExistingSection(name, Section_Key)); }
 
-                    if (TubeExclusion.Contains(tuberond.Coarti) == false)
+                    if (TubeExclusion.Contains(tuberond.COARTI) == false)
                     {
                         sectionQuality.SetFieldValue("_SECTION", sectionEntity.Id32);
                         sectionQuality.SetFieldValue("_QUALITY", tuberond.Material.Id32);
-                        sectionQuality.SetFieldValue("_BUY_COST", tuberond.Prixart);
+                        sectionQuality.SetFieldValue("_BUY_COST", tuberond.PRIXART);
 
                         sectionQuality.Save();
                         logFileRond.Write("section " + name + " sauvegardée");
@@ -1437,7 +1665,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                         IEntity barreEntity;
                         string keybar = Guid.NewGuid().ToString();
                         barreEntity = contextlocal.EntityManager.CreateEntity("_BARTUBE");
-                        barreEntity.SetFieldValue("_REFERENCE", tuberond.Coarti);
+                        barreEntity.SetFieldValue("_REFERENCE", tuberond.COARTI);
                         barreEntity.SetFieldValue("_QUALITY", tuberond.Material.Id32);
                         barreEntity.SetFieldValue("_LENGTH", tuberond.Longueur);
                         //ATTENTION recuperation des infos de l'implemented section
@@ -1474,12 +1702,13 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
         TextWriterTraceListener logFileRec = new TextWriterTraceListener(System.IO.Path.GetTempPath() + "\\" + "_REC_" + Properties.Resources.ImportTubeLog);
 
 
-        public Clipper_Import_Tube_Rectangle(IContext context){
-             this.contextlocal = context;
-            Section_Key= "_SECTION_SHARP_RECTANGLE";
+        public Clipper_Import_Tube_Rectangle(IContext context)
+        {
+            this.contextlocal = context;
+            Section_Key = "_SECTION_SHARP_RECTANGLE";
             SectionExclusion = getSectionExclusionList(Section_Key);
             TubeExclusion = getExclusionList("_BARTUBE", "_REFERENCE");
-       }
+        }
 
         /// <summary>
         /// recuperation des ronds dans une liste de d'objet rond
@@ -1506,21 +1735,21 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                 while (TABLE_ARTICLEM.Read())
                 {
                     ii++;
-                    TubeRec tuberec= new TubeRec();
-                    tuberec.Coarti = TABLE_ARTICLEM["COARTI"].ToString().Trim();
+                    TubeRec tuberec = new TubeRec();
+                    tuberec.COARTI = TABLE_ARTICLEM["COARTI"].ToString().Trim();
                     tuberec.Nuance = TABLE_ARTICLEM["CODENUANCE"].ToString().Trim(); //CODEETAT, Tech_NuanceMatiere.Nuance AS CODENUANCE
                     tuberec.Etat = TABLE_ARTICLEM["CODEETAT"].ToString().Trim();
-                    tuberec.Prixart = Convert.ToDouble(getSqlNumericValue("PRIXART"));
+                    tuberec.PRIXART = Convert.ToDouble(getSqlNumericValue("PRIXART"));
                     //tuberond.Thickness = Convert.ToDouble(TABLE_ARTICLEM["EPAISSEUR"]);
                     tuberec.Densite = Convert.ToDouble(getSqlNumericValue("DENSITE"));
                     tuberec.Hauteur = Convert.ToDouble(getSqlNumericValue("HAUTEUR"));
                     tuberec.Largeur = Convert.ToDouble(getSqlNumericValue("LARGEUR"));
-                    tuberec.epaisseur= Convert.ToDouble(getSqlNumericValue("EPAISSEUR"));
+                    tuberec.epaisseur = Convert.ToDouble(getSqlNumericValue("EPAISSEUR"));
                     tuberec.Longueur = Convert.ToDouble(getSqlNumericValue("LNG"));
-                    tuberec.Cofa = TABLE_ARTICLEM["COFA"].ToString().Trim(); ;
+                    tuberec.COFA = TABLE_ARTICLEM["COFA"].ToString().Trim(); ;
                     tuberec.Name = TABLE_ARTICLEM["COARTI"].ToString().Trim() + "*" + getSqlNumericValue("LNG");
                     this.List_Recs.Add(tuberec);
-                    logFileRec.Write("Tube : " + tuberec.Coarti + " capturé");
+                    logFileRec.Write("Tube : " + tuberec.COARTI + " capturé");
 
                 };
 
@@ -1543,13 +1772,13 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
 
 
         //public void create(IContext contextlocal,string section_name, double diam, double ep, double lng, double cost)
-        public override  void WriteTubes()
+        public override void WriteTubes()
         {
             if (List_Recs.Any())
             {
                 foreach (TubeRec tuberec in List_Recs)
                 {
-                   
+
                     //creation de la section (type...)//
                     IEntity sectionEntity;
                     string key = Guid.NewGuid().ToString();
@@ -1558,7 +1787,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                     sectionEntity = contextlocal.EntityManager.CreateEntity(Section_Key);
                     IEntity sectionQuality = contextlocal.EntityManager.CreateEntity("_SECTION_QUALITY");
                     sectionEntity.GetImplementEntity("_SECTION").SetFieldValue("_KEY", key);
-                    string name = String.Format("Rec*{0}*{1}*{2}", tuberec.Largeur,tuberec.Hauteur,tuberec.epaisseur);
+                    string name = String.Format("Rec*{0}*{1}*{2}", tuberec.Largeur, tuberec.Hauteur, tuberec.epaisseur);
                     sectionEntity.GetImplementEntity("_SECTION").SetFieldValue("_NAME", name);// +"x"+ep.ToString());
                     sectionEntity.GetImplementEntity("_SECTION").SetFieldValue("_STANDARD", true);
                     sectionEntity.SetFieldValue("_P_B", tuberec.Largeur);
@@ -1568,7 +1797,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                     sectionEntity.GetImplementEntity("_SECTION").SetFieldValue("_DESCRIPTION", String.Format("Rec hauteur={1} mm Larg={0} mm  Ep={2} mm", tuberec.Hauteur, tuberec.Largeur, tuberec.epaisseur));
                     sectionEntity.Complete = true;
                     sectionEntity.Save();
-                    logFileRec.Write("Tube : " + tuberec.Coarti + " sauvegarde");
+                    logFileRec.Write("Tube : " + tuberec.COARTI + " sauvegarde");
                     //creation de la qualité
                     tuberec.Material = tuberec.GetGrade(contextlocal, tuberec.Nuance, tuberec.Etat);
                     //recuperation de la section
@@ -1581,25 +1810,25 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                     else
                     //si elle existe deja on recupere la section //
                     { sectionQuality.SetFieldValue("_SECTION", getExistingSection(name, Section_Key)); }
-                    if (TubeExclusion.Contains(tuberec.Coarti) == false)
+                    if (TubeExclusion.Contains(tuberec.COARTI) == false)
                     {
-                                sectionQuality.SetFieldValue("_SECTION", sectionEntity.Id32);
-                                sectionQuality.SetFieldValue("_QUALITY", tuberec.Material.Id32);
-                                sectionQuality.SetFieldValue("_BUY_COST", tuberec.Prixart);
-                                sectionQuality.Save();
-                                logFileRec.Write("section " + name + " sauvegardée");
-                                //creation DE LA BARRE
-                                IEntity barreEntity;
-                                string keybar = Guid.NewGuid().ToString();
-                                barreEntity = contextlocal.EntityManager.CreateEntity("_BARTUBE");
-                                barreEntity.SetFieldValue("_REFERENCE", tuberec.Coarti);
-                                barreEntity.SetFieldValue("_QUALITY", tuberec.Material.Id32);
-                                barreEntity.SetFieldValue("_LENGTH", tuberec.Longueur);
-                                barreEntity.SetFieldValue("_COMMENTS", string.Format("REC*{0}*{1}*{2}*{3}", tuberec.Hauteur, tuberec.Largeur, tuberec.epaisseur, tuberec.Longueur));
-                                //ATTENTION recuperation des infos de l'implemented section
-                                barreEntity.SetFieldValue("_SECTION", sectionEntity.GetImplementEntity("_SECTION").Id); //sectionEntity.GetImplementEntity("_SECTION").Id
-                                barreEntity.Save();
-                                logFileRec.Write("section " + name + "lng " + tuberec.Hauteur + " sauvegardée");
+                        sectionQuality.SetFieldValue("_SECTION", sectionEntity.Id32);
+                        sectionQuality.SetFieldValue("_QUALITY", tuberec.Material.Id32);
+                        sectionQuality.SetFieldValue("_BUY_COST", tuberec.PRIXART);
+                        sectionQuality.Save();
+                        logFileRec.Write("section " + name + " sauvegardée");
+                        //creation DE LA BARRE
+                        IEntity barreEntity;
+                        string keybar = Guid.NewGuid().ToString();
+                        barreEntity = contextlocal.EntityManager.CreateEntity("_BARTUBE");
+                        barreEntity.SetFieldValue("_REFERENCE", tuberec.COARTI);
+                        barreEntity.SetFieldValue("_QUALITY", tuberec.Material.Id32);
+                        barreEntity.SetFieldValue("_LENGTH", tuberec.Longueur);
+                        barreEntity.SetFieldValue("_COMMENTS", string.Format("REC*{0}*{1}*{2}*{3}", tuberec.Hauteur, tuberec.Largeur, tuberec.epaisseur, tuberec.Longueur));
+                        //ATTENTION recuperation des infos de l'implemented section
+                        barreEntity.SetFieldValue("_SECTION", sectionEntity.GetImplementEntity("_SECTION").Id); //sectionEntity.GetImplementEntity("_SECTION").Id
+                        barreEntity.Save();
+                        logFileRec.Write("section " + name + "lng " + tuberec.Hauteur + " sauvegardée");
                     }
                 }
             }
@@ -1635,8 +1864,9 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
         TextWriterTraceListener logFileCar = new TextWriterTraceListener(System.IO.Path.GetTempPath() + "\\" + "_REC_" + Properties.Resources.ImportTubeLog);
 
 
-        
-        public Clipper_Import_Tube_Carre(IContext context) {
+
+        public Clipper_Import_Tube_Carre(IContext context)
+        {
             this.contextlocal = context;
             Section_Key = "_SECTION_SHARP_RECTANGLE";
             SectionExclusion = getSectionExclusionList(Section_Key);
@@ -1669,20 +1899,20 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                 {
                     ii++;
                     TubeRec tuberec = new TubeRec();
-                    tuberec.Coarti = TABLE_ARTICLEM["COARTI"].ToString().Trim();
+                    tuberec.COARTI = TABLE_ARTICLEM["COARTI"].ToString().Trim();
                     tuberec.Nuance = TABLE_ARTICLEM["CODENUANCE"].ToString().Trim(); //CODEETAT, Tech_NuanceMatiere.Nuance AS CODENUANCE
                     tuberec.Etat = TABLE_ARTICLEM["CODEETAT"].ToString().Trim();
-                    tuberec.Prixart = Convert.ToDouble(getSqlNumericValue("PRIXART"));
+                    tuberec.PRIXART = Convert.ToDouble(getSqlNumericValue("PRIXART"));
                     //tuberond.Thickness = Convert.ToDouble(TABLE_ARTICLEM["EPAISSEUR"]);
                     tuberec.Densite = Convert.ToDouble(getSqlNumericValue("DENSITE"));
                     tuberec.Hauteur = Convert.ToDouble(getSqlNumericValue("LARGEUR"));
                     tuberec.Largeur = Convert.ToDouble(getSqlNumericValue("LARGEUR"));
                     tuberec.epaisseur = Convert.ToDouble(getSqlNumericValue("EPAISSEUR"));
                     tuberec.Longueur = Convert.ToDouble(getSqlNumericValue("LNG"));
-                    tuberec.Cofa = TABLE_ARTICLEM["COFA"].ToString().Trim(); ;
+                    tuberec.COFA = TABLE_ARTICLEM["COFA"].ToString().Trim(); ;
                     tuberec.Name = TABLE_ARTICLEM["COARTI"].ToString().Trim() + "*" + getSqlNumericValue("LNG");
                     this.List_Recs.Add(tuberec);
-                    logFileCar.Write("Tube : " + tuberec.Coarti + " capturé");
+                    logFileCar.Write("Tube : " + tuberec.COARTI + " capturé");
 
                 };
 
@@ -1730,7 +1960,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                     sectionEntity.GetImplementEntity("_SECTION").SetFieldValue("_DESCRIPTION", String.Format("Car hauteur={1} mm Larg={0} mm  Ep={2} mm", tuberec.Hauteur, tuberec.Largeur, tuberec.epaisseur));
                     sectionEntity.Complete = true;
                     sectionEntity.Save();
-                    logFileCar.Write("Tube : " + tuberec.Coarti + " sauvegarde");
+                    logFileCar.Write("Tube : " + tuberec.COARTI + " sauvegarde");
                     //creation de la qualité
                     tuberec.Material = tuberec.GetGrade(contextlocal, tuberec.Nuance, tuberec.Etat);
 
@@ -1744,11 +1974,11 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                     else
                     //si elle existe deja on recupere la section //
                     { sectionQuality.SetFieldValue("_SECTION", getExistingSection(name, Section_Key)); }
-                    if (TubeExclusion.Contains(tuberec.Coarti) == false)
+                    if (TubeExclusion.Contains(tuberec.COARTI) == false)
                     {
                         sectionQuality.SetFieldValue("_SECTION", sectionEntity.Id32);
                         sectionQuality.SetFieldValue("_QUALITY", tuberec.Material.Id32);
-                        sectionQuality.SetFieldValue("_BUY_COST", tuberec.Prixart);
+                        sectionQuality.SetFieldValue("_BUY_COST", tuberec.PRIXART);
 
                         sectionQuality.Save();
                         logFileCar.Write("section " + name + " sauvegardée");
@@ -1756,7 +1986,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                         IEntity barreEntity;
                         string keybar = Guid.NewGuid().ToString();
                         barreEntity = contextlocal.EntityManager.CreateEntity("_BARTUBE");
-                        barreEntity.SetFieldValue("_REFERENCE", tuberec.Coarti);
+                        barreEntity.SetFieldValue("_REFERENCE", tuberec.COARTI);
                         barreEntity.SetFieldValue("_QUALITY", tuberec.Material.Id32);
                         barreEntity.SetFieldValue("_LENGTH", tuberec.Longueur);
                         barreEntity.SetFieldValue("_COMMENTS", string.Format("CAR*{0}*{2}*{3}", tuberec.Hauteur, tuberec.Largeur, tuberec.epaisseur, tuberec.Longueur));
@@ -1802,8 +2032,9 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
         public double Diametre;
         public double Longueur;
         private List<TubeRec> List_Recs;
-        
-        public Clipper_Import_Tube_Flat(IContext context) {
+
+        public Clipper_Import_Tube_Flat(IContext context)
+        {
             this.contextlocal = context;
             Section_Key = "_SECTION_FLAT";
             SectionExclusion = getSectionExclusionList(Section_Key);
@@ -1838,20 +2069,20 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                 {
                     ii++;
                     TubeRec tuberec = new TubeRec();
-                    tuberec.Coarti = TABLE_ARTICLEM["COARTI"].ToString().Trim();
+                    tuberec.COARTI = TABLE_ARTICLEM["COARTI"].ToString().Trim();
                     tuberec.Nuance = TABLE_ARTICLEM["CODENUANCE"].ToString().Trim(); //CODEETAT, Tech_NuanceMatiere.Nuance AS CODENUANCE
                     tuberec.Etat = TABLE_ARTICLEM["CODEETAT"].ToString().Trim();
-                    tuberec.Prixart = Convert.ToDouble(getSqlNumericValue("PRIXART"));
+                    tuberec.PRIXART = Convert.ToDouble(getSqlNumericValue("PRIXART"));
                     //tuberond.Thickness = Convert.ToDouble(TABLE_ARTICLEM["EPAISSEUR"]);
                     tuberec.Densite = Convert.ToDouble(getSqlNumericValue("DENSITE"));
                     tuberec.Hauteur = Convert.ToDouble(getSqlNumericValue("HAUTEUR"));
                     tuberec.Largeur = Convert.ToDouble(getSqlNumericValue("LARGEUR"));
                     tuberec.epaisseur = 0;
                     tuberec.Longueur = Convert.ToDouble(getSqlNumericValue("LNG"));
-                    tuberec.Cofa = TABLE_ARTICLEM["COFA"].ToString().Trim(); ;
+                    tuberec.COFA = TABLE_ARTICLEM["COFA"].ToString().Trim(); ;
                     tuberec.Name = TABLE_ARTICLEM["COARTI"].ToString().Trim() + "*" + getSqlNumericValue("LNG");
                     this.List_Recs.Add(tuberec);
-                    logFileFlat.Write("Tube : " + tuberec.Coarti + " capturé");
+                    logFileFlat.Write("Tube : " + tuberec.COARTI + " capturé");
 
                 };
 
@@ -1872,7 +2103,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
 
         }
 
-        public override  void WriteTubes()
+        public override void WriteTubes()
         {
             if (List_Recs.Any())
             {
@@ -1897,7 +2128,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                     sectionEntity.GetImplementEntity("_SECTION").SetFieldValue("_DESCRIPTION", String.Format("Flat  Largeur={1} mm hauteur={0} mm ", tuberec.Hauteur, tuberec.Largeur, tuberec.epaisseur));
                     sectionEntity.Complete = true;
                     sectionEntity.Save();
-                    logFileFlat.Write("Tube : " + tuberec.Coarti + " sauvegarde");
+                    logFileFlat.Write("Tube : " + tuberec.COARTI + " sauvegarde");
                     //creation de la qualité
                     tuberec.Material = tuberec.GetGrade(contextlocal, tuberec.Nuance, tuberec.Etat);
 
@@ -1911,18 +2142,18 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                     //si elle existe deja on recupere la section //
                     { sectionQuality.SetFieldValue("_SECTION", getExistingSection(name, Section_Key)); }
 
-                    if (TubeExclusion.Contains(tuberec.Coarti) == false)
+                    if (TubeExclusion.Contains(tuberec.COARTI) == false)
                     {
                         sectionQuality.SetFieldValue("_SECTION", sectionEntity.Id32);
                         sectionQuality.SetFieldValue("_QUALITY", tuberec.Material.Id32);
-                        sectionQuality.SetFieldValue("_BUY_COST", tuberec.Prixart);
+                        sectionQuality.SetFieldValue("_BUY_COST", tuberec.PRIXART);
                         sectionQuality.Save();
                         logFileFlat.Write("section " + name + " sauvegardée");
                         //creation DE LA BARRE
                         IEntity barreEntity;
                         string keybar = Guid.NewGuid().ToString();
                         barreEntity = contextlocal.EntityManager.CreateEntity("_BARTUBE");
-                        barreEntity.SetFieldValue("_REFERENCE", tuberec.Coarti);
+                        barreEntity.SetFieldValue("_REFERENCE", tuberec.COARTI);
                         barreEntity.SetFieldValue("_QUALITY", tuberec.Material.Id32);
                         barreEntity.SetFieldValue("_LENGTH", tuberec.Longueur);
                         barreEntity.SetFieldValue("_COMMENTS", string.Format("FLAT*{0}*{1}*{3}", tuberec.Hauteur, tuberec.Largeur, tuberec.epaisseur, tuberec.Longueur));
@@ -1964,7 +2195,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
         private TypeTube type = TypeTube.Speciaux;
         private List<TubeSpe> List_Spe;
 
-        
+
         public Clipper_Import_Tube_Speciaux(IContext context)
         {
             this.contextlocal = context;
@@ -1972,8 +2203,8 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
             TubeExclusion = new List<string>();
             // Section_Key = typeTube; // "_SECTION_FLAT";
             //construction de la liste d'exclusion sur les section ci dessous
-            getExclusionList( ref TubeExclusion, "_BARTUBE", "_REFERENCE");
-          
+            getExclusionList(ref TubeExclusion, "_BARTUBE", "_REFERENCE");
+
             /*
               getExclusionList(ref TubeExclusion, "_BARTUBE", "_REFERENCE", "SECTION_IPN"); 
               getExclusionList(ref TubeExclusion, "_BARTUBE", "_REFERENCE", "SECTION_IPE"); 
@@ -2045,7 +2276,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
         /// <param name="exclusionlist">list cumule d'exclusion.. </param>
         /// 
         /// <returns></returns>
-        public void getRestrictedExclusionList( ref List<string> exclusion, string entitype, string uid_field, string section_key)
+        public void getRestrictedExclusionList(ref List<string> exclusion, string entitype, string uid_field, string section_key)
         {
             try
             {
@@ -2059,10 +2290,12 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                 // Find material           
                 //Entity currentQuality = qualitylist.Where(q => q.DefaultValue.Equals(quality)).FirstOrDefault();
 
-                if (exclusionlist.Count>0){ 
-                        foreach (IEntity ex in exclusionlist)
+                if (exclusionlist.Count > 0)
+                {
+                    foreach (IEntity ex in exclusionlist)
+                    {
+                        if (ex.GetFieldValueAsString(uid_field) != null & ex.GetFieldValueAsEntity("_SECTION").ImplementedEntityType.Key == section_key)
                         {
-                            if   (ex.GetFieldValueAsString(uid_field) != null & ex.GetFieldValueAsEntity("_SECTION").ImplementedEntityType.Key== section_key) { 
                             string uid = ex.GetFieldValueAsString(uid_field).Trim();
                             exclusion.Add(uid);
 
@@ -2079,39 +2312,41 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
 
             catch (Exception ie)
             {
-                
+
                 MessageBox.Show(ie.Message);
                 // return null;
             }
 
 
         }
-      //traduit du code article les inforamtions en decomposant le code article
-        private TubeSpe getTubeInfos(string coda) {
+        //traduit du code article les inforamtions en decomposant le code article
+        private TubeSpe getTubeInfos(string coda)
+        {
 
-            try {  
+            try
+            {
 
                 TubeSpe sp = new TubeSpe();
                 string[] infos = null;
 
-                if (coda!=null || coda != string.Empty)
-               //recuperation de la section spe du tube
-              
-                infos= coda.Split('*');
-                long dim = infos.Count()-1;
-                sp.Section= infos[0].Trim();
+                if (coda != null || coda != string.Empty)
+                    //recuperation de la section spe du tube
+
+                    infos = coda.Split('*');
+                long dim = infos.Count() - 1;
+                sp.Section = infos[0].Trim();
                 sp.Longueur = Convert.ToDouble(infos[dim]);
                 //section
-                if (sp.Section.Contains("IPN")) { sp.Section_Spe_Key = "_SECTION_IPN";    }
-                else if (sp.Section.Contains("IPE"))  { sp.Section_Spe_Key = "_SECTION_IPE";    }
-                else if (sp.Section.Contains("UPN")) { sp.Section_Spe_Key = "_SECTION_UPN";    }
-                else if (sp.Section.Contains("UPE"))  { sp.Section_Spe_Key = "_SECTION_UPE";    }
-                else if (sp.Section == "L")  { sp.Section_Spe_Key = "_SECTION_L";      }
-                else if (sp.Section.Contains("LROUND"))   { sp.Section_Spe_Key = "_SECTION_LROUND";  }
+                if (sp.Section.Contains("IPN")) { sp.Section_Spe_Key = "_SECTION_IPN"; }
+                else if (sp.Section.Contains("IPE")) { sp.Section_Spe_Key = "_SECTION_IPE"; }
+                else if (sp.Section.Contains("UPN")) { sp.Section_Spe_Key = "_SECTION_UPN"; }
+                else if (sp.Section.Contains("UPE")) { sp.Section_Spe_Key = "_SECTION_UPE"; }
+                else if (sp.Section == "L") { sp.Section_Spe_Key = "_SECTION_L"; }
+                else if (sp.Section.Contains("LROUND")) { sp.Section_Spe_Key = "_SECTION_LROUND"; }
                 else { sp.Section_Spe_Key = string.Empty; }
-                sp.Coarti = coda;
+                sp.COARTI = coda;
                 return sp;
-                
+
             }
 
             catch (Exception ie)
@@ -2122,7 +2357,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
 
         }
 
-        TextWriterTraceListener logFilSpe= new TextWriterTraceListener(System.IO.Path.GetTempPath() + "\\" + "_SPE_" + Properties.Resources.ImportTubeLog);
+        TextWriterTraceListener logFilSpe = new TextWriterTraceListener(System.IO.Path.GetTempPath() + "\\" + "_SPE_" + Properties.Resources.ImportTubeLog);
         /// <summary>
         /// recuperation des ronds dans une liste de d'objet rond
         /// </summary>
@@ -2148,20 +2383,20 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                 while (TABLE_ARTICLEM.Read())
                 {
                     ii++;
-                    TubeSpe tubespe = new TubeSpe();                    
-                    //tubespe.Coarti = TABLE_ARTICLEM["COARTI"].ToString().Trim();
+                    TubeSpe tubespe = new TubeSpe();
+                    //tubespe.COARTI = TABLE_ARTICLEM["COARTI"].ToString().Trim();
                     tubespe = getTubeInfos(TABLE_ARTICLEM["COARTI"].ToString().Trim());
                     tubespe.Nuance = TABLE_ARTICLEM["CODENUANCE"].ToString().Trim(); //CODEETAT, Tech_NuanceMatiere.Nuance AS CODENUANCE
                     tubespe.Etat = TABLE_ARTICLEM["CODEETAT"].ToString().Trim();
-                    tubespe.Prixart = Convert.ToDouble(getSqlNumericValue("PRIXART"));
+                    tubespe.PRIXART = Convert.ToDouble(getSqlNumericValue("PRIXART"));
                     //tuberond.Thickness = Convert.ToDouble(TABLE_ARTICLEM["EPAISSEUR"]);
                     tubespe.Densite = Convert.ToDouble(getSqlNumericValue("DENSITE"));
 
                     tubespe.Longueur = Convert.ToDouble(getSqlNumericValue("LNG"));
-                    tubespe.Cofa = TABLE_ARTICLEM["COFA"].ToString().Trim(); ;
+                    tubespe.COFA = TABLE_ARTICLEM["COFA"].ToString().Trim(); ;
                     tubespe.Name = TABLE_ARTICLEM["COARTI"].ToString().Trim() + "*" + getSqlNumericValue("LNG");
                     this.List_Spe.Add(tubespe);
-                    logFilSpe.Write("Tube : " + tubespe.Coarti + " capturé");
+                    logFilSpe.Write("Tube : " + tubespe.COARTI + " capturé");
 
                 };
 
@@ -2199,16 +2434,16 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                     /*
                     IEntityList sectionEntityList;
                     IEntity sectionEntity;
-                    sectionEntityList = contextlocal.EntityManager.GetEntityList(tubespe.Coarti);
+                    sectionEntityList = contextlocal.EntityManager.GetEntityList(tubespe.COARTI);
                     sectionEntityList.Fill(false);
                     sectionEntity = sectionEntityList.FirstOrDefault();*/
-                   
+
                     //+ @"\IMPLEMENTED_SECTION", "_NAME", ConditionOperator.Equal, tubespe.Section
-                    //logFilSpe.Write("Tube : " + tubespe.Coarti + " trouvée");
+                    //logFilSpe.Write("Tube : " + tubespe.COARTI + " trouvée");
                     //onne creer que ce qui n'existe pas
 
 
-                    if (TubeExclusion.Contains(tubespe.Coarti) == false)
+                    if (TubeExclusion.Contains(tubespe.COARTI) == false)
                     {
                         //si elle existe deja on recupere la section //
                         IEntityList sectionQualityList, sectionEntityList;
@@ -2221,21 +2456,15 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                         //sectionQualityList.Fill(false);
                         //sectionQuality = sectionQualityList.FirstOrDefault();
                         //recuperation de la section
-                        sectionEntityid= getExistingImplementedSection(tubespe.Section, tubespe.Section_Spe_Key);
-                        /*
-                        sectionQuality.SetFieldValue("_SECTION", getExistingSection(tubespe.Section, tubespe.Section_Spe_Key));
-                        sectionQuality.SetFieldValue("_SECTION", sectionEntity.Id32);
-                        sectionQuality.SetFieldValue("_QUALITY", tubespe.Material.Id32);
-                        sectionQuality.SetFieldValue("_BUY_COST", tubespe.Prixart);
-                        sectionQuality.Save();
-                        logFilSpe.Write("section " + tubespe.Section + " sauvegardée");*/
+                        sectionEntityid = getExistingImplementedSection(tubespe.Section, tubespe.Section_Spe_Key);
+
 
 
                         //creation DE LA BARRE
                         IEntity barreEntity;
                         string keybar = Guid.NewGuid().ToString();
                         barreEntity = contextlocal.EntityManager.CreateEntity("_BARTUBE");
-                        barreEntity.SetFieldValue("_REFERENCE", tubespe.Coarti);
+                        barreEntity.SetFieldValue("_REFERENCE", tubespe.COARTI);
                         barreEntity.SetFieldValue("_QUALITY", tubespe.Material.Id32);
                         barreEntity.SetFieldValue("_LENGTH", tubespe.Longueur);
                         barreEntity.SetFieldValue("_COMMENTS", string.Format("section: {0} matiere: {1} longeur: {2}", tubespe.Section, tubespe.Material.GetFieldValueAsString("_NAME"), tubespe.Longueur));
@@ -2246,30 +2475,652 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                         logFilSpe.Write("section " + tubespe.Section + "lng " + tubespe.Longueur + " sauvegardée");
                     }
 
-                   
-                    }
+
                 }
             }
-
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
+        }
 
 
     }
 
 
+
+
+
+    #endregion
+
+
+    #region Founitures
+    /**/
+    /// <summary>
+    /// import specifique des vis
+    /// </summary>
+    public class Clipper_Import_Vis : Clipper_Article, IDisposable
+    {
+        //
+        public double Diametre;
+        public double Longueur;
+        private List<Visserie> Liste_Visserie;
+
+        public string Key; //"_SECTION_CIRCLE" or....
+        public List<string> SectionExclusion = new List<string>();
+        public List<string> VisExclusion = new List<string>();
+
+        TextWriterTraceListener logFileVis = new TextWriterTraceListener(System.IO.Path.GetTempPath() + "\\" + "VIS_" + Properties.Resources.ImportFournitureLog);
+
+        /// <summary>
+        /// constructeur obligatoire pour ajuster les elements a controler
+        /// </summary>
+        /// <param name="context"></param>
+        public Clipper_Import_Vis(IContext context)
+        {
+
+
+
+            this.contextlocal = context;
+            Key = "_SCREW_SUPPLY";
+            //SectionExclusion = getSectionExclusionList(Section_Key);
+            VisExclusion = getExclusionList(Key);
+
+            Odbc_Connexion();
+
+        }
+
+        
+
+        /// <summary>
+        /// retourn une liste d'exclusion des sections ou des tubes
+        /// </summary>
+        /// <param name="entitype"></param>
+        /// <param name="entity_uniquestring_field"></param>
+        /// <returns></returns>
+        public List<string> getExclusionList(string entitype)
+        {
+            try
+            {
+
+                IEntityList exclusionlist;
+                exclusionlist = contextlocal.EntityManager.GetEntityList(entitype);
+                exclusionlist.Fill(false);
+                List<string> exclusion = new List<string>();
+                // Find material           
+                //Entity currentQuality = qualitylist.Where(q => q.DefaultValue.Equals(quality)).FirstOrDefault();
+                foreach (IEntity ex in exclusionlist)
+                {
+                    
+                    string uid = ex.GetImplementEntity("_SUPPLY").GetFieldValueAsString("_REFERENCE").Trim();
+                    //ex.GetImplementEntity(Key);
+
+                    if (exclusion.Contains(uid) == false && string.IsNullOrEmpty(uid)==false )
+                    {
+                        exclusion.Add(uid);
+                    }
+
+                }
+
+
+                return exclusion;
+            }
+
+            catch
+            {
+
+                return null;
+            }
+        }
+
+        
+        /// <summary>
+        /// recuperation des ronds dans une liste de d'objet vis de la base clipper
+        /// </summary>
+        /// <returns>List<TubeRond></returns>
+        public void ReadScrew()
+            {
+            //creation de la liste des tube ronds
+            //List<TubeRond> listeTubeRond;//= new List<TubeRond>();
+
+            try
+            {
+                //creation de la liste des tube ronds
+                //listeTubeRond = new List<TubeRond>();
+                this.Liste_Visserie = new List<Visserie>();
+                //recuperation des tube rectangluaires
+                string sql_vis = this.JSTOOLS.getJsonStringParametres("sql.Vis");
+                logFileVis.Write("requete utilisée pour l'import des vis \r\n " + sql_vis);
+                int ii = 0;
+                this.DbCommand.CommandText = sql_vis;
+
+                TABLE_ARTICLEM = DbCommand.ExecuteReader();
+
+                while (TABLE_ARTICLEM.Read())
+                {
+                    ii++;
+                    Visserie vis = new Visserie();
+                    vis.COARTI = TABLE_ARTICLEM["COARTI"].ToString().Trim();
+                    vis.Nuance = TABLE_ARTICLEM["CODENUANCE"].ToString().Trim(); //CODEETAT, Tech_NuanceMatiere.Nuance AS CODENUANCE
+                    vis.Etat = TABLE_ARTICLEM["CODEETAT"].ToString().Trim();
+                   //tuberond.Thickness = Convert.ToDouble(TABLE_ARTICLEM_TUBE["EPAISSEUR"]);
+                    vis.Densite = Convert.ToDouble(getSqlNumericValue("DENSITE"));
+                    vis.Longueur = Convert.ToDouble(getSqlNumericValue("LNG"));
+                    vis.Diametre = Convert.ToDouble(getSqlNumericValue("DIAM"));
+                    vis.Pas = 0;
+                    vis.UniteGest = TABLE_ARTICLEM["UniteGest"].ToString().Trim();
+                    vis.PRIXART =Math.Round( GetPrice(vis.UniteGest, Convert.ToDouble(getSqlNumericValue("PRIXART"))),5);
+                    vis.COFA = TABLE_ARTICLEM["COFA"].ToString().Trim(); ;
+                    vis.Name = TABLE_ARTICLEM["COARTI"].ToString().Trim() + "*" + getSqlNumericValue("LNG");
+                    this.Liste_Visserie.Add(vis);
+                    logFileVis.Write("vis : " + vis.COARTI + " capturé");
+
+                };
+
+                TABLE_ARTICLEM.Close();
+                //return listeTubeRond;
+            }
+
+            catch (Exception ie)
+            {
+                Liste_Visserie = null;
+
+                logFileVis.Close();
+
+               
+            }
+
+        }
+
+        /// <summary>
+        /// ecriture dans la base almacam
+        /// </summary>
+        /// 
+        //ecriturze des vis
+
+        public void WriteVis()
+        {
+            try {
+                        if (Liste_Visserie.Any())
+                        {
+
+                                foreach (Visserie vis in Liste_Visserie)
+                                {
+                                    IEntity screwEntity;
+
+                        //string key = Guid.NewGuid().ToString();
+                        //creation de la section
+                        //screwEntity = contextlocal.EntityManager.CreateEntity(Key);
+                        screwEntity = contextlocal.EntityManager.CreateEntity("_SUPPLY");
+                                    screwEntity.SetFieldValue("_REFERENCE", vis.Name);
+                                    //screwEntity.SetFieldValue("_DESIGNATION", vis.);
+                                    screwEntity.SetFieldValue("_BUY_COST", vis.PRIXART);
+                                    screwEntity.SetFieldValue("_DIAMETER", vis.Diametre);
+                                    screwEntity.SetFieldValue("_LENGTH", vis.Longueur);
+                                    screwEntity.SetFieldValue("_FINITION", vis.Nuance);
+                                    screwEntity.Save();
+                    }
+
+
+                    }
+
+                }
+
+
+            catch {
+
+            }
+
+        }
+            /*
+            public  void WriteVis()
+            {
+
+                ///si la liste n'est pas vide
+                if (Liste_Visserie.Any())
+                {
+
+                    foreach (Visserie vis in Liste_Visserie)
+                    {
+
+                        //creation de la section (type...)//
+                        IEntity sectionEntity;
+                        string key = Guid.NewGuid().ToString();
+                        //creation de la section
+                        sectionEntity = contextlocal.EntityManager.CreateEntity(Section_Key);
+
+                        IEntity sectionQuality = contextlocal.EntityManager.CreateEntity("_SECTION_QUALITY");
+                        sectionEntity.GetImplementEntity("_SECTION").SetFieldValue("_KEY", key);
+                        string name = String.Format("Tube_Rond*{0}*{1}", tuberond.Diametre, tuberond.epaisseur);
+                        sectionEntity.GetImplementEntity("_SECTION").SetFieldValue("_NAME", name);// +"x"+ep.ToString());;
+
+
+                        sectionEntity.GetImplementEntity("_SECTION").SetFieldValue("_STANDARD", true);
+                        sectionEntity.SetFieldValue("_P_D", tuberond.Diametre);
+                        sectionEntity.SetFieldValue("_P_T", tuberond.epaisseur);
+                        //descpription //
+                        string description = String.Format("Tube Rond Diamete={0} mm Eaisseur={1} mm", tuberond.Diametre, tuberond.epaisseur);
+
+                        sectionEntity.GetImplementEntity("_SECTION").SetFieldValue("_DESCRIPTION", description);
+
+                        //sectionEntity.SetFieldValue("_P_T", this.ep);           
+                        sectionEntity.Complete = true;
+
+                        logFileTubeRond.Write("Tube : " + tuberond.COARTI + " sauvegarde");
+                        //creation de la qualité
+                        tuberond.Material = tuberond.GetGrade(contextlocal, tuberond.Nuance, tuberond.Etat);
+
+                        //recuperation de la section
+                        if (SectionExclusion.Contains(name) == false)
+
+                        {   //si n existe pas on recupere la nouvelle section //
+                            sectionEntity.Save();
+                            sectionQuality.SetFieldValue("_SECTION", sectionEntity.Id32);
+                        }
+                        else
+                        //si elle existe deja on recupere la section //
+                        { sectionQuality.SetFieldValue("_SECTION", getExistingSection(name, Section_Key)); }
+
+
+                        if (TubeExclusion.Contains(tuberond.COARTI) == false)
+                        {
+                            sectionQuality.SetFieldValue("_QUALITY", tuberond.Material.Id32);
+                            sectionQuality.SetFieldValue("_BUY_COST", tuberond.PRIXART);
+                            sectionQuality.Save();
+                            logFileTubeRond.Write("section " + description + " sauvegardée");
+                            //creation DE LA BARRE
+                            IEntity barreEntity;
+                            string keybar = Guid.NewGuid().ToString();
+                            barreEntity = contextlocal.EntityManager.CreateEntity("_BARTUBE");
+                            barreEntity.SetFieldValue("_REFERENCE", tuberond.COARTI);
+                            barreEntity.SetFieldValue("_QUALITY", tuberond.Material.Id32);
+                            barreEntity.SetFieldValue("_LENGTH", tuberond.Longueur);
+                            //ATTENTION recuperation des infos de l'implemented section
+                            barreEntity.SetFieldValue("_SECTION", sectionEntity.GetImplementEntity("_SECTION").Id); //sectionEntity.GetImplementEntity("_SECTION").Id
+                            barreEntity.Save();
+                        }
+                        logFileTubeRond.Write("section " + description + "lng " + tuberond.Longueur + " sauvegardée");
+                    }
+                }
+
+            }
+            */
+
+
+        }
+
+    /// <summary>
+    /// import specifique des vis
+    /// </summary>
+    public class Clipper_Import_Fournitures_Divers : Clipper_Article, IDisposable
+    {
+        //
+        // public double Diametre;
+        //public double Longueur;
+
+        private List<Founiture_Divers> List_Fourniture;
+
+        public string Key; //"_SECTION_CIRCLE" or....
+        //public List<string> SectionExclusion = new List<string>();
+        public Dictionary<long, string> Founiture_Divers_Exclusion = new Dictionary<long, string>();
+
+        TextWriterTraceListener logFourniture = new TextWriterTraceListener(System.IO.Path.GetTempPath() + "\\" + "_SIMPLE_SUPPLY_" + Properties.Resources.ImportFournitureLog);
+
+        /// <summary>
+        /// constructeur obligatoire pour ajuster les elements a controler
+        /// </summary>
+        /// <param name="context"></param>
+        public Clipper_Import_Fournitures_Divers(IContext context)
+        {
+
+
+
+            this.contextlocal = context;
+            Key = "_SIMPLE_SUPPLY";
+            Founiture_Divers_Exclusion = getExclusionList(Key);
+
+            Odbc_Connexion();
+
+        }
+
+
+
+        /// <summary>
+        /// retourn une liste d'exclusion des sections ou des tubes
+        /// </summary>
+        /// <param name="entitype"></param>
+        /// <param name="entity_uniquestring_field"></param>
+        /// <returns></returns>
+        public Dictionary<long, string> getExclusionList(string entitypekey)
+        {
+            try
+            {
+
+                IEntityList exclusionlist;
+
+                exclusionlist = contextlocal.EntityManager.GetEntityList(entitypekey);
+                exclusionlist.Fill(false);
+                Dictionary<long,string> exclusion = new Dictionary<long, string>();
+                // Find material           
+                //Entity currentQuality = qualitylist.Where(q => q.DefaultValue.Equals(quality)).FirstOrDefault();
+                foreach (IEntity ex in exclusionlist)
+                {
+
+                    string coarti = ex.GetImplementEntity("_SUPPLY").GetFieldValueAsString("_REFERENCE").Trim();
+                    long uid = ex.GetImplementEntity("_SUPPLY").Id;
+                    //ex.GetImplementEntity(Key);
+
+                    if (exclusion.ContainsKey(uid) == false && string.IsNullOrEmpty(coarti) == false)
+                    {
+                        exclusion.Add(uid,coarti);
+                    }
+
+                }
+
+
+                return exclusion;
+            }
+
+            catch
+            {
+
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// recuperation des ronds dans une liste de d'objet vis de la base clipper
+        /// </summary>
+        /// <returns>List<TubeRond></returns>
+        public override void Read()
+        {
+            //creation de la liste des tube ronds
+            //List<TubeRond> listeTubeRond;//= new List<TubeRond>();
+
+            try
+            {
+                //creation de la liste des fournitures
+          
+                this.List_Fourniture = new List<Founiture_Divers>();
+                //recuperation des tube rectangluaires
+                string sql_vis = this.JSTOOLS.getJsonStringParametres("sql.Divers");
+                logFourniture.Write("requete utilisée pour l'import des vis \r\n " + sql_vis);
+                int ii = 0;
+                this.DbCommand.CommandText = sql_vis;
+
+                TABLE_ARTICLEM = DbCommand.ExecuteReader();
+
+                while (TABLE_ARTICLEM.Read())
+                {
+                    ii++;
+                    Founiture_Divers Fourniture = new Founiture_Divers();
+                    Fourniture.AMCLEUNIK= Convert.ToInt64( TABLE_ARTICLEM["AMCLEUNIK"]);
+                    Fourniture.COARTI= TABLE_ARTICLEM["COARTI"].ToString().Trim();
+                    Fourniture.Nuance = TABLE_ARTICLEM["CODENUANCE"].ToString().Trim(); //CODEETAT, Tech_NuanceMatiere.Nuance AS CODENUANCE
+                    Fourniture.Etat = TABLE_ARTICLEM["CODEETAT"].ToString().Trim();
+                    Fourniture.Densite = Convert.ToDouble(getSqlNumericValue("DENSITE"));
+                    Fourniture.UniteGest = TABLE_ARTICLEM["UniteGest"].ToString().Trim();
+                    Fourniture.PRIXART = Math.Round(GetPrice(Fourniture.UniteGest, Convert.ToDouble(getSqlNumericValue("PRIXART"))), 5);
+                    Fourniture.COFA = TABLE_ARTICLEM["COFA"].ToString().Trim(); ;
+                    Fourniture.Name = TABLE_ARTICLEM["COARTI"].ToString().Trim() + "*" + getSqlNumericValue("LNG");
+                    Fourniture.DESA1 = TABLE_ARTICLEM["DESA1"].ToString().Trim();
+                    
+                    this.List_Fourniture.Add(Fourniture);
+                    logFourniture.Write("Fourniture : " + Fourniture.COARTI + " capturé");
+
+                };
+
+                TABLE_ARTICLEM.Close();
+                //return listeTubeRond;
+            }
+
+            catch (Exception ie)
+            {
+                this.List_Fourniture = null;
+
+                logFourniture.Close();
+
+
+            }
+
+        }
+
+        /// <summary>
+        /// ecriture dans la base almacam
+        /// </summary>
+        /// 
+        //ecriture des fournitures
+
+        public override void Write()
+        {
+            try
+            {
+                
+                if (this.List_Fourniture.Any())
+                {
+                    
+
+                    foreach (Founiture_Divers fourniture in this.List_Fourniture)
+                    {   
+                        if (!Founiture_Divers_Exclusion.ContainsValue( fourniture.COARTI) ) {
+                         IEntity Fourniture_Entity;
+
+
+
+                            //Fourniture_Entity = contextlocal.EntityManager.CreateEntity("_SIMPLE_SUPPLY");
+                            //key = "_SIMPLE_SUPPLY";
+                            Fourniture_Entity = contextlocal.EntityManager.CreateEntity(Key);
+                        Fourniture_Entity.GetImplementEntity("_SUPPLY").SetFieldValue("_REFERENCE", fourniture.COARTI);
+                        Fourniture_Entity.GetImplementEntity("_SUPPLY").SetFieldValue("_DESIGNATION", fourniture.DESA1 );
+                        Fourniture_Entity.GetImplementEntity("_SUPPLY").SetFieldValue("_COMMENTS", fourniture.COFA);
+                        Fourniture_Entity.GetImplementEntity("_SUPPLY").SetFieldValue("_BUY_COST", fourniture.PRIXART);
+
+                        
+                        Fourniture_Entity.Save();
+                        }
+                        //update
+                        else {
+                            IEntity Fourniture_Entity;
+                            //recupere l'id et mets a jour les champs
+                            //FirstOrDefault(x => x.Value == "one").Key; 
+                            long uid =Founiture_Divers_Exclusion.FirstOrDefault(x => x.Value == fourniture.COARTI).Key;
+                            Fourniture_Entity = contextlocal.EntityManager.GetEntity(uid, "_SUPPLY");
+                            Fourniture_Entity.GetImplementEntity("_SUPPLY").SetFieldValue("_REFERENCE", fourniture.COARTI);
+                            Fourniture_Entity.GetImplementEntity("_SUPPLY").SetFieldValue("_DESIGNATION", fourniture.DESA1);
+                            Fourniture_Entity.GetImplementEntity("_SUPPLY").SetFieldValue("_COMMENTS", fourniture.COFA);
+                            Fourniture_Entity.GetImplementEntity("_SUPPLY").SetFieldValue("_BUY_COST", fourniture.PRIXART);
+
+                        }
+                    }
+
+
+                }
+
+            }
+
+
+            catch
+            {
+
+            }
+
+        }
+
+
+        /// <summary>
+        /// ecriture dans la base almacam
+        /// </summary>
+        /// 
+        //ecriturze des vis
+
+        public override void Update()
+        {
+            try
+            {
+                if (this.List_Fourniture.Any())
+                {
+
+                    foreach (Founiture_Divers fourniture in this.List_Fourniture)
+                    {
+                        IEntity Fourniture_Entity;
+
+                        //string key = Guid.NewGuid().ToString();
+                        //creation de la section
+                        //screwEntity = contextlocal.EntityManager.CreateEntity(Key);
+                        Fourniture_Entity = contextlocal.EntityManager.CreateEntity("_SUPPLY");
+                        Fourniture_Entity.SetFieldValue("_REFERENCE", fourniture.Name);
+                        Fourniture_Entity.SetFieldValue("_COMMENTS", "");
+                        //screwEntity.SetFieldValue("_BUY_COST", vis.PRIXART);
+                        //screwEntity.SetFieldValue("_DIAMETER", vis.Diametre);
+                        //screwEntity.SetFieldValue("_LENGTH", vis.Longueur);
+                        //screwEntity.SetFieldValue("_FINITION", vis.Nuance);
+                        Fourniture_Entity.Save();
+                    }
+
+
+                }
+
+            }
+
+
+            catch
+            {
+
+            }
+
+        }
+
+
+
+
+        /*
+        public  void WriteVis()
+        {
+
+            ///si la liste n'est pas vide
+            if (Liste_Visserie.Any())
+            {
+
+                foreach (Visserie vis in Liste_Visserie)
+                {
+
+                    //creation de la section (type...)//
+                    IEntity sectionEntity;
+                    string key = Guid.NewGuid().ToString();
+                    //creation de la section
+                    sectionEntity = contextlocal.EntityManager.CreateEntity(Section_Key);
+
+                    IEntity sectionQuality = contextlocal.EntityManager.CreateEntity("_SECTION_QUALITY");
+                    sectionEntity.GetImplementEntity("_SECTION").SetFieldValue("_KEY", key);
+                    string name = String.Format("Tube_Rond*{0}*{1}", tuberond.Diametre, tuberond.epaisseur);
+                    sectionEntity.GetImplementEntity("_SECTION").SetFieldValue("_NAME", name);// +"x"+ep.ToString());;
+
+
+                    sectionEntity.GetImplementEntity("_SECTION").SetFieldValue("_STANDARD", true);
+                    sectionEntity.SetFieldValue("_P_D", tuberond.Diametre);
+                    sectionEntity.SetFieldValue("_P_T", tuberond.epaisseur);
+                    //descpription //
+                    string description = String.Format("Tube Rond Diamete={0} mm Eaisseur={1} mm", tuberond.Diametre, tuberond.epaisseur);
+
+                    sectionEntity.GetImplementEntity("_SECTION").SetFieldValue("_DESCRIPTION", description);
+
+                    //sectionEntity.SetFieldValue("_P_T", this.ep);           
+                    sectionEntity.Complete = true;
+
+                    logFileTubeRond.Write("Tube : " + tuberond.COARTI + " sauvegarde");
+                    //creation de la qualité
+                    tuberond.Material = tuberond.GetGrade(contextlocal, tuberond.Nuance, tuberond.Etat);
+
+                    //recuperation de la section
+                    if (SectionExclusion.Contains(name) == false)
+
+                    {   //si n existe pas on recupere la nouvelle section //
+                        sectionEntity.Save();
+                        sectionQuality.SetFieldValue("_SECTION", sectionEntity.Id32);
+                    }
+                    else
+                    //si elle existe deja on recupere la section //
+                    { sectionQuality.SetFieldValue("_SECTION", getExistingSection(name, Section_Key)); }
+
+
+                    if (TubeExclusion.Contains(tuberond.COARTI) == false)
+                    {
+                        sectionQuality.SetFieldValue("_QUALITY", tuberond.Material.Id32);
+                        sectionQuality.SetFieldValue("_BUY_COST", tuberond.PRIXART);
+                        sectionQuality.Save();
+                        logFileTubeRond.Write("section " + description + " sauvegardée");
+                        //creation DE LA BARRE
+                        IEntity barreEntity;
+                        string keybar = Guid.NewGuid().ToString();
+                        barreEntity = contextlocal.EntityManager.CreateEntity("_BARTUBE");
+                        barreEntity.SetFieldValue("_REFERENCE", tuberond.COARTI);
+                        barreEntity.SetFieldValue("_QUALITY", tuberond.Material.Id32);
+                        barreEntity.SetFieldValue("_LENGTH", tuberond.Longueur);
+                        //ATTENTION recuperation des infos de l'implemented section
+                        barreEntity.SetFieldValue("_SECTION", sectionEntity.GetImplementEntity("_SECTION").Id); //sectionEntity.GetImplementEntity("_SECTION").Id
+                        barreEntity.Save();
+                    }
+                    logFileTubeRond.Write("section " + description + "lng " + tuberond.Longueur + " sauvegardée");
+                }
+            }
+
+        }
+        */
+
+
+    }
+
+    #endregion
+
+
+
 }
 
+#endregion
+
+#region Exception
+public class MissingJsonFile : Exception
+{
+
+    public void MissingJsonFileException(string parametername)
+    {
+        {
+
+            MessageBox.Show("Il manque le fichier Json " + parametername + " dans le repertoire almacam");
+
+
+        }
+
+    }
+
+}
+
+
+
+#endregion
+
+#region Tools
+public static class AlmaCamTool
+{
+    public static IContext GetContext(IContext context)
+    {
+        try
+        {
+
+            if (context == null)
+            {
+
+
+
+                string DbName = Alma_RegitryInfos.GetLastDataBase();
+                IModelsRepository modelsRepository = new ModelsRepository();
+                IContext contextlocal = modelsRepository.GetModelContext(DbName);
+                return contextlocal;
+
+            }
+            else
+            {
+                return context;
+            }
+        }
+        catch (Exception ie) { MessageBox.Show(ie.Message); return null; }
+    }
+}
 #endregion
