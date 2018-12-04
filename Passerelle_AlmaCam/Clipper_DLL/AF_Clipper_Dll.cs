@@ -521,6 +521,15 @@ namespace AF_Clipper_Dll
                 //Parameters_Dictionnary.Add(parametre_name, context.ParameterSetManager.GetParameterValue(parametersetkey, "IMPORT_AUTO").GetValueAsBoolean());                /**/
                 Get_bool_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "", ref Parameters_Dictionnary, false);
 
+
+
+                //description import
+                parametre_name = "ACTIVATE_OMISSION";
+                //Alma_Log.Info("recuperation du parametre " + parametre_name, "GetlistParam");
+                //Parameters_Dictionnary.Add(parametre_name, context.ParameterSetManager.GetParameterValue(parametersetkey, "IMPORT_AUTO").GetValueAsBoolean());                /**/
+                Get_bool_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "", ref Parameters_Dictionnary, false);
+
+                
                 parametre_name = "EMF_DIRECTORY";
                 //Alma_Log.Info("recuperation du parametre " + parametre_name, "GetlistParam");
                 //Parameters_Dictionnary.Add(parametre_name, context.ParameterSetManager.GetParameterValue(parametersetkey, "EMF_DIRECTORY").GetValueAsString());                /**/
@@ -918,6 +927,10 @@ namespace AF_Clipper_Dll
 
         }
 
+
+
+
+
         public static string Get_application1()
         {
             string key = "APPLICATION1";
@@ -939,6 +952,18 @@ namespace AF_Clipper_Dll
 
         }
 
+        /// <summary>
+        ///  Ce paramètre active ou descative m'omission 
+        /// </summary>
+        /// <returns></returns>
+        public static bool Get_Omission_Mode()
+        {
+
+            string key = "ACTIVATE_OMISSION";
+            //GetlistParam(context);//
+            if (Parameters_Dictionnary.ContainsKey(key)) { return (bool)Parameters_Dictionnary[key]; } else { return false; }
+
+        }
 
         public static string Get_AlmaCamEditorName()
         {
@@ -1877,13 +1902,17 @@ namespace AF_Clipper_Dll
                 if (line_dictionnary.ContainsKey("_MATERIAL") && line_dictionnary.ContainsKey("THICKNESS"))
                 {
                     material = Material.getMaterial_Entity(contextlocal, line_dictionnary["_MATERIAL"].ToString(), Convert.ToDouble(line_dictionnary["THICKNESS"]));
-                }/*
+                }
+                
+                
+                /*
                 materials = contextlocal.EntityManager.GetEntityList("_MATERIAL", "_NAME", ConditionOperator.Equal, material_name);
                 materials.Fill(false);
 
                 if (materials.Count() > 0 && materials.FirstOrDefault().Status.ToString() == "Normal")
                 { material = materials.FirstOrDefault(); }
-                else { material = null; }*/
+                else { material = null; }
+                */
 
 
                 return material;
@@ -2821,7 +2850,7 @@ namespace AF_Clipper_Dll
 
 
         /// <summary>
-        /// rxport un dossier technique
+        /// export un dossier technique
         /// </summary>
         /// <param name="contextlocal"></param>
         /// <param name="EngapiOnly">si false alors, la ligne de gamme n'est pas exportée</param>
@@ -2830,18 +2859,19 @@ namespace AF_Clipper_Dll
             //bool export ligne de gamme
             //bool export_ 
             //var answer= MessageBox.Show.   
-
-            DialogResult result1 = MessageBox.Show("Voulez vous exporter les informations de gammes?", "WARNING !!!", MessageBoxButtons.YesNo);
+          Clipper_Param.GetlistParam(contextlocal);
+          DialogResult result1 = MessageBox.Show("Voulez vous exporter les informations de gammes?", "WARNING !!!", MessageBoxButtons.YesNo);
 
             if (result1 == DialogResult.Yes)
-            { EngapiOnly = false;
+            {
+                EngapiOnly = false;
             }
 
 
             //recupere les path
 
             Clipper_Param.GetlistParam(contextlocal);
-            string CsvExportPath = Clipper_Param.GetPath("EXPORT_Dt") + "\\DonnesTech.txt";
+            string CsvExportPath = Clipper_Param.GetPath("EXPORT_DT") + "\\DonnesTech.txt";
             //chargement de la liste de piece a retourner
             IEntitySelector select_reference_list = new EntitySelector();
             IEntitySelector select_preparation_list = new EntitySelector();
@@ -3088,6 +3118,7 @@ namespace AF_Clipper_Dll
                 
             }
 
+           // MessageBox.Show(" Import terminé");
 
             return base.Execute();
         }
@@ -3224,10 +3255,16 @@ namespace AF_Clipper_Dll
                             case "_QUANTITY":
                                 //on recuepere  les quantités de la chute courante de la chute
                                 //on verifie si les il y a des quantité en prod
-                                //on requalifie les quantité
-                                if (stock.GetFieldValueAsInt("_USED_QUANTITY") != 0)
+                                //on requalifie les quantité (stock.GetFieldValueAsInt("_USED_QUANTITY")+ 
+                                //if (stock.GetFieldValueAsInt("_BOOKED_QUANTITY") == 0 )
+                                // si la tole est utilisé dans un placement, ne jamais mettre a jour les qtés dans almacam
+                                if(stock.GetFieldValueAsEntity("_SHEET").GetFieldValueAsDouble("_IN_PRODUCTION_QUANTITY")==0)
                                 {
                                     stock.SetFieldValue(field.Key, field.Value);
+                                }
+                                else
+                                {
+                                    Alma_Log.Write_Log_Important("modification ignorée car la tole est en cours d'utilisation par almacam");
                                 }
                                 
 
@@ -3583,10 +3620,12 @@ namespace AF_Clipper_Dll
                         //material = GetMaterialEntity(contextlocal, material_name, ref line_Dictionnary);
                         material = GetMaterialEntity(contextlocal, ref line_Dictionnary);
                         Alma_Log.Write_Log(methodename + ": material success !!    ");
-                        
-                        //implementation de la liste sheetId_list_from_txt_file pour l'ommission
-                        sheetId_list_from_txt_file.Add(line_Dictionnary["IDCLIP"].ToString());
 
+                        //implementation de la liste sheetId_list_from_txt_file pour l'ommission
+                     
+                        //if(Clipper_Param.Get_Omission_Mode()) { 
+                            sheetId_list_from_txt_file.Add(line_Dictionnary["IDCLIP"].ToString());
+                        //}
                         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                         ///tole existante--> on ne fait que de la mise à jour
                         //on travail au maximum sur le stock
@@ -3686,6 +3725,7 @@ namespace AF_Clipper_Dll
                             {
                                 Alma_Log.Write_Log(methodename + " sheet trouvée ");
                                 if (sheets_to_update.FirstOrDefault().Status.ToString() == "Normal") {
+                                    //*//
                                     //le sheet existe on capture la premiere 
                                     sheet_to_update = sheets_to_update.FirstOrDefault();/**/
                                     CurrentSheetId = sheet_to_update.Id32;
@@ -3740,6 +3780,9 @@ namespace AF_Clipper_Dll
                         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                         //on set                          
                         //on set les valeurs
+                        //
+                        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
                         Update_Stock_Item(contextlocal, ref sheet_to_update, ref stock, ref line_Dictionnary, type_tole);
 
                         //sheet_to_update.Validate();
@@ -3771,14 +3814,14 @@ namespace AF_Clipper_Dll
 
                     //purge//
 
-
-                    foreach (string idclip in GetOmmittedSheet(sheetId_list_from_txt_file, sheetId_list_from_database))
-                    {
-                        IEntity stockommitted = SimplifiedMethods.GetFirtOfList(contextlocal.EntityManager.GetEntityList("_STOCK", "IDCLIP", ConditionOperator.Equal, idclip));
-                        stockommitted.SetFieldValue("_QUANTITY", 0);
-                        stockommitted.Save();
+                    if (Clipper_Param.Get_Omission_Mode()) {
+                            foreach (string idclip in GetOmmittedSheet(sheetId_list_from_txt_file, sheetId_list_from_database))
+                            {
+                                IEntity stockommitted = SimplifiedMethods.GetFirtOfList(contextlocal.EntityManager.GetEntityList("_STOCK", "IDCLIP", ConditionOperator.Equal, idclip));
+                                stockommitted.SetFieldValue("_QUANTITY", 0);
+                                stockommitted.Save();
+                            }
                     }
-
                     //rendre obsoletre les qtés nulles
 
                     // Set cursor as default arrow
