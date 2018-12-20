@@ -1,0 +1,10 @@
+C:\Users\debimard\source\DEV\API\ActcutClipperTest\bin\Debug\AlmaCamUser1.exe
+C:\Users\debimard\source\DEV\API\ActcutClipperTest\bin\Debug\AlmaCamUser1.pdb
+C:\AlmaCAM\Bin\AlmaCamUser2.exe
+C:\AlmaCAM\Bin\AlmaCamUser2.pdb
+C:\Users\debimard\source\DEV\API\ActcutClipperTest\obj\Debug\ActcutClipperTest.TestForm.resources
+C:\Users\debimard\source\DEV\API\ActcutClipperTest\obj\Debug\ActCutClipperTest.Properties.Resources.resources
+C:\Users\debimard\source\DEV\API\ActcutClipperTest\obj\Debug\ActcutClipperTest.csproj.GenerateResource.cache
+C:\Users\debimard\source\DEV\API\ActcutClipperTest\obj\Debug\ActcutClipperTest.csproj.CoreCompileInputs.cache
+C:\Users\debimard\source\DEV\API\ActcutClipperTest\obj\Debug\AlmaCamUser2.exe
+C:\Users\debimard\source\DEV\API\ActcutClipperTest\obj\Debug\AlmaCamUser2.pdb

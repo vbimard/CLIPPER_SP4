@@ -1,0 +1,7 @@
+C:\Users\debimard\source\DEV\API\Build\Bin\Debug\Actcut.ActcutClipperApi.dll
+C:\Users\debimard\source\DEV\API\Build\Bin\Debug\Actcut.ActcutClipperApi.pdb
+C:\AlmaCAM\Bin\Actcut.ActcutClipperApi.dll
+C:\AlmaCAM\Bin\Actcut.ActcutClipperApi.pdb
+C:\Users\debimard\source\DEV\API\ActcutClipperApi\obj\Debug\ActcutClipperApi.csproj.CoreCompileInputs.cache
+C:\Users\debimard\source\DEV\API\ActcutClipperApi\obj\Debug\Actcut.ActcutClipperApi.dll
+C:\Users\debimard\source\DEV\API\ActcutClipperApi\obj\Debug\Actcut.ActcutClipperApi.pdb
