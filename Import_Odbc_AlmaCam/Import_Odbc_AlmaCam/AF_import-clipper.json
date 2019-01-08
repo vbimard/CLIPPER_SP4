@@ -1,6 +1,6 @@
 {
 	"jsonFile": "Alma",
-	"dsn": "CLIPPER8_SERVEUR",
+	"dsn": "CLIPPER8",
 	"date": "20180514",
 	"multidim": true,
 	"sql": {

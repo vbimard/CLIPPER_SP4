@@ -239,9 +239,13 @@ namespace AlmaCamTrainingTest
 
         private void button9_Click(object sender, EventArgs e)
         {
+            //initialisation des listes
+            //IContext _Context;
+            //Param_Clipper.context = Context;
+           
 
             AF_Clipper_Dll.Clipper_Export_DT Export_dt = new AF_Clipper_Dll.Clipper_Export_DT();
-            Export_dt.Execute();
+            Export_dt.execute(_Context);
             /*
             Clipper_Dll.Clipper_RemonteeDt Remontee_Dt = new Clipper_Dll.Clipper_RemonteeDt();
             Remontee_Dt.Export_Piece_To_File(_Context);*/

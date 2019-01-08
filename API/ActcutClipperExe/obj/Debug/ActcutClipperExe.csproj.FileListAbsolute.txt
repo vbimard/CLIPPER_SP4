@@ -1,6 +1,11 @@
-C:\AlmaCAM\Bin\AlmaCamUser1.exe.config
-C:\AlmaCAM\Bin\AlmaCamUser1.exe
-C:\AlmaCAM\Bin\AlmaCamUser1.pdb
-C:\Users\debimard\source\DEV\API\ActcutClipperExe\obj\Debug\ActcutClipperExe.csproj.CoreCompileInputs.cache
-C:\Users\debimard\source\DEV\API\ActcutClipperExe\obj\Debug\AlmaCamUser1.exe
-C:\Users\debimard\source\DEV\API\ActcutClipperExe\obj\Debug\AlmaCamUser1.pdb
+C:\Users\alma\source\DEV\CLIPPER_SP4\API\ActcutClipperExe\obj\Debug\ActcutClipperExe.csprojResolveAssemblyReference.cache
+C:\Users\alma\source\DEV\CLIPPER_SP4\API\ActcutClipperExe\obj\Debug\ActcutClipperExe.csproj.CoreCompileInputs.cache
+C:\Users\alma\source\DEV\CLIPPER_SP4\API\Build\Bin\Debug\Actcut.ActcutClipperExe.exe.config
+C:\Users\alma\source\DEV\CLIPPER_SP4\API\Build\Bin\Debug\Actcut.ActcutClipperExe.exe
+C:\Users\alma\source\DEV\CLIPPER_SP4\API\Build\Bin\Debug\Actcut.ActcutClipperExe.pdb
+C:\Users\alma\source\DEV\CLIPPER_SP4\API\ActcutClipperExe\obj\Debug\ActcutClipperExe.csproj.CopyComplete
+C:\Users\alma\source\DEV\CLIPPER_SP4\API\ActcutClipperExe\obj\Debug\Actcut.ActcutClipperExe.exe
+C:\Users\alma\source\DEV\CLIPPER_SP4\API\ActcutClipperExe\obj\Debug\Actcut.ActcutClipperExe.pdb
+C:\AlmaCAM\Bin\Actcut.ActcutClipperExe.exe.config
+C:\AlmaCAM\Bin\Actcut.ActcutClipperExe.exe
+C:\AlmaCAM\Bin\Actcut.ActcutClipperExe.pdb

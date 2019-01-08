@@ -100,13 +100,7 @@ using System.IO;
 
 
 
-        //startProcess
-
-        /* //export d'un devis
-    //recuperation de la base
-    string dbname;
-    dbname =  txt_Database.Text;
-    IContext Context = ImportTools.DataBase.Connect(ref dbname);*/
+      
 
 
     }

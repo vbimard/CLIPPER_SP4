@@ -12,7 +12,8 @@ using Wpm.Schema.Kernel;
 using Wpm.Implement.Manager;
 using Wpm.Implement.ComponentEditor;
 
-using Actcut.ActcutClipperApi;
+
+using AF_Actcut.ActcutClipperApi;
 
 namespace Actcut.ActcutClipperExe
 {
@@ -84,13 +85,13 @@ namespace Actcut.ActcutClipperExe
 
             #region Get Quote
 
-            else if (action == "GetQuote" && db != null)
+            else if (action == "SelectQuoteUI" && db != null)
             {
                 bool ret = Init(db, user);
                 if (ret)
                 {
                     long quoteId;
-                    bool status = ClipperApi.GetQuote(out quoteId);
+                    bool status = ClipperApi.SelectQuoteUI(out quoteId);
                     Environment.ExitCode = (int)quoteId;
                 }
                 else
@@ -122,7 +123,7 @@ namespace Actcut.ActcutClipperExe
             if (ClipperApi == null)
             {
                 ClipperApi = new ClipperApi();
-                ClipperApi.Init(Context);
+                ClipperApi.InitAlmaCam(Context);
             }
 
             return true;
@@ -158,13 +159,13 @@ namespace Actcut.ActcutClipperExe
                                 Environment.Exit(0);
                             }
 
-                            if (action == "GetQuote")
+                            if (action == "SelectQuoteUI")
                             {
                                 ResultFile = Path.Combine(ParamFolder, ResultFile);
                                 if (File.Exists(ResultFile)) File.Delete(ResultFile);
 
                                 long quoteId;
-                                bool ret = ClipperApi.GetQuote(out quoteId);
+                                bool ret = ClipperApi.SelectQuoteUI(out quoteId);
                                 File.WriteAllText(ResultFile, quoteId.ToString());
                             }
 

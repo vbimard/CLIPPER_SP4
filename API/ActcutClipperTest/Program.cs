@@ -18,7 +18,7 @@ namespace ActcutClipperTest
         [STAThread]
         static void Main()
         {
-            AlmaCamBinFolder = @"C:\AlmaCam\Bin\";
+            AlmaCamBinFolder = @"C:\Developpement\Branches\AlmaCam\trunk\build\Bin\Debug";
 
             AppDomain currentDomain = AppDomain.CurrentDomain;
             currentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;

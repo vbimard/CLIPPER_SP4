@@ -30,29 +30,33 @@
         {
             this.BtnInitApi = new System.Windows.Forms.Button();
             this.BtnGetQuoteApi = new System.Windows.Forms.Button();
-            this.BtnGetQuote = new System.Windows.Forms.Button();
-            this.BtnInit = new System.Windows.Forms.Button();
-            this.BtnExportQuote = new System.Windows.Forms.Button();
-            this.BtnExit = new System.Windows.Forms.Button();
             this.BtnExportQuoteApi = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.Export = new System.Windows.Forms.Button();
+            this.Init = new System.Windows.Forms.Button();
+            this.txtQuoteid = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.comboDataBaseList = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.linkemf = new System.Windows.Forms.LinkLabel();
+            this.linkquote = new System.Windows.Forms.LinkLabel();
+            this.status = new System.Windows.Forms.Label();
+            this.Reset = new System.Windows.Forms.Button();
+            this.ExportUI = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // BtnInitApi
             // 
-            this.BtnInitApi.Location = new System.Drawing.Point(8, 24);
+            this.BtnInitApi.Location = new System.Drawing.Point(0, 0);
             this.BtnInitApi.Name = "BtnInitApi";
             this.BtnInitApi.Size = new System.Drawing.Size(75, 23);
             this.BtnInitApi.TabIndex = 0;
-            this.BtnInitApi.Text = "Init";
-            this.BtnInitApi.UseVisualStyleBackColor = true;
-            this.BtnInitApi.Click += new System.EventHandler(this.BtnInitApi_Click);
             // 
             // BtnGetQuoteApi
-            // 
+            //
+            /*
             this.BtnGetQuoteApi.Location = new System.Drawing.Point(96, 24);
             this.BtnGetQuoteApi.Name = "BtnGetQuoteApi";
             this.BtnGetQuoteApi.Size = new System.Drawing.Size(75, 23);
@@ -60,49 +64,9 @@
             this.BtnGetQuoteApi.Text = "Get Quote";
             this.BtnGetQuoteApi.UseVisualStyleBackColor = true;
             this.BtnGetQuoteApi.Click += new System.EventHandler(this.BtnGetQuoteApi_Click);
-            // 
-            // BtnGetQuote
-            // 
-            this.BtnGetQuote.Location = new System.Drawing.Point(96, 24);
-            this.BtnGetQuote.Name = "BtnGetQuote";
-            this.BtnGetQuote.Size = new System.Drawing.Size(75, 23);
-            this.BtnGetQuote.TabIndex = 3;
-            this.BtnGetQuote.Text = "Get Quote";
-            this.BtnGetQuote.UseVisualStyleBackColor = true;
-            this.BtnGetQuote.Click += new System.EventHandler(this.BtnGetQuote_Click);
-            // 
-            // BtnInit
-            // 
-            this.BtnInit.Location = new System.Drawing.Point(8, 24);
-            this.BtnInit.Name = "BtnInit";
-            this.BtnInit.Size = new System.Drawing.Size(75, 23);
-            this.BtnInit.TabIndex = 2;
-            this.BtnInit.Text = "Init";
-            this.BtnInit.UseVisualStyleBackColor = true;
-            this.BtnInit.Click += new System.EventHandler(this.BtnInit_Click);
-            // 
-            // BtnExportQuote
-            // 
-            this.BtnExportQuote.Location = new System.Drawing.Point(184, 24);
-            this.BtnExportQuote.Name = "BtnExportQuote";
-            this.BtnExportQuote.Size = new System.Drawing.Size(75, 23);
-            this.BtnExportQuote.TabIndex = 4;
-            this.BtnExportQuote.Text = "Export Quote";
-            this.BtnExportQuote.UseVisualStyleBackColor = true;
-            this.BtnExportQuote.Click += new System.EventHandler(this.BtnExportQuote_Click);
-            // 
-            // BtnExit
-            // 
-            this.BtnExit.Location = new System.Drawing.Point(8, 56);
-            this.BtnExit.Name = "BtnExit";
-            this.BtnExit.Size = new System.Drawing.Size(75, 23);
-            this.BtnExit.TabIndex = 5;
-            this.BtnExit.Text = "Exit";
-            this.BtnExit.UseVisualStyleBackColor = true;
-            this.BtnExit.Click += new System.EventHandler(this.BtnExit_Click);
-            // 
+            */// 
             // BtnExportQuoteApi
-            // 
+            /*
             this.BtnExportQuoteApi.Location = new System.Drawing.Point(184, 24);
             this.BtnExportQuoteApi.Name = "BtnExportQuoteApi";
             this.BtnExportQuoteApi.Size = new System.Drawing.Size(75, 23);
@@ -110,44 +74,150 @@
             this.BtnExportQuoteApi.Text = "Export Quote";
             this.BtnExportQuoteApi.UseVisualStyleBackColor = true;
             this.BtnExportQuoteApi.Click += new System.EventHandler(this.BtnExportQuoteApi_Click);
-            // 
+            */ 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.BtnInitApi);
-            this.groupBox1.Controls.Add(this.BtnGetQuoteApi);
-            this.groupBox1.Controls.Add(this.BtnExportQuoteApi);
-            this.groupBox1.Location = new System.Drawing.Point(8, 8);
+            this.groupBox1.Controls.Add(this.Init);
+            this.groupBox1.Controls.Add(this.Reset);
+            this.groupBox1.Controls.Add(this.ExportUI);
+            this.groupBox1.Location = new System.Drawing.Point(289, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(312, 56);
-            this.groupBox1.TabIndex = 7;
+            this.groupBox1.Size = new System.Drawing.Size(142, 151);
+            this.groupBox1.TabIndex = 20;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Api Test";
             // 
-            // groupBox2
+            // Export
             // 
-            this.groupBox2.Controls.Add(this.BtnInit);
-            this.groupBox2.Controls.Add(this.BtnGetQuote);
-            this.groupBox2.Controls.Add(this.BtnExportQuote);
-            this.groupBox2.Controls.Add(this.BtnExit);
-            this.groupBox2.Location = new System.Drawing.Point(8, 104);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(312, 88);
-            this.groupBox2.TabIndex = 8;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Exe Test";
+            this.Export.Location = new System.Drawing.Point(302, 70);
+            this.Export.Name = "Export";
+            this.Export.Size = new System.Drawing.Size(112, 23);
+            this.Export.TabIndex = 17;
+            this.Export.Text = "Export";
+            this.Export.UseVisualStyleBackColor = true;
+            this.Export.Click += new System.EventHandler(this.Export_Click);
+            // 
+            // Init
+            // 
+            this.Init.Location = new System.Drawing.Point(13, 12);
+            this.Init.Name = "Init";
+            this.Init.Size = new System.Drawing.Size(112, 23);
+            this.Init.TabIndex = 16;
+            this.Init.Text = "Init";
+            this.Init.UseVisualStyleBackColor = true;
+            this.Init.Click += new System.EventHandler(this.Init_Click);
+            // 
+            // txtQuoteid
+            // 
+            this.txtQuoteid.Location = new System.Drawing.Point(213, 39);
+            this.txtQuoteid.Name = "txtQuoteid";
+            this.txtQuoteid.Size = new System.Drawing.Size(52, 20);
+            this.txtQuoteid.TabIndex = 12;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(78, 41);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(43, 13);
+            this.label1.TabIndex = 11;
+            this.label1.Text = "IdDevis";
+            // 
+            // comboDataBaseList
+            // 
+            this.comboDataBaseList.FormattingEnabled = true;
+            this.comboDataBaseList.Location = new System.Drawing.Point(81, 12);
+            this.comboDataBaseList.Name = "comboDataBaseList";
+            this.comboDataBaseList.Size = new System.Drawing.Size(184, 21);
+            this.comboDataBaseList.TabIndex = 15;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(15, 102);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(37, 13);
+            this.label3.TabIndex = 19;
+            this.label3.Text = "Devis:";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(15, 124);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(28, 13);
+            this.label2.TabIndex = 18;
+            this.label2.Text = "Emf:";
+            // 
+            // linkemf
+            // 
+            this.linkemf.AutoSize = true;
+            this.linkemf.Location = new System.Drawing.Point(58, 124);
+            this.linkemf.Name = "linkemf";
+            this.linkemf.Size = new System.Drawing.Size(45, 13);
+            this.linkemf.TabIndex = 17;
+            this.linkemf.TabStop = true;
+            this.linkemf.Text = "C:\\temp";
+            // 
+            // linkquote
+            // 
+            this.linkquote.AutoSize = true;
+            this.linkquote.Location = new System.Drawing.Point(58, 102);
+            this.linkquote.Name = "linkquote";
+            this.linkquote.Size = new System.Drawing.Size(45, 13);
+            this.linkquote.TabIndex = 16;
+            this.linkquote.TabStop = true;
+            this.linkquote.Text = "C:\\temp";
+            // 
+            // status
+            // 
+            this.status.AutoSize = true;
+            this.status.Location = new System.Drawing.Point(14, 81);
+            this.status.Name = "status";
+            this.status.Size = new System.Drawing.Size(16, 13);
+            this.status.TabIndex = 14;
+            this.status.Text = "...";
+            // 
+            // Reset
+            // 
+            this.Reset.Location = new System.Drawing.Point(14, 120);
+            this.Reset.Name = "Reset";
+            this.Reset.Size = new System.Drawing.Size(112, 23);
+            this.Reset.TabIndex = 21;
+            this.Reset.Text = "Reset";
+            this.Reset.UseVisualStyleBackColor = true;
+            this.Reset.Click += new System.EventHandler(this.Reset_Click);
+            // 
+            // ExportUI
+            // 
+            this.ExportUI.Location = new System.Drawing.Point(14, 41);
+            this.ExportUI.Name = "ExportUI";
+            this.ExportUI.Size = new System.Drawing.Size(112, 23);
+            this.ExportUI.TabIndex = 22;
+            this.ExportUI.Text = " Export UI";
+            this.ExportUI.UseVisualStyleBackColor = true;
+            this.ExportUI.Click += new System.EventHandler(this.ExportUI_Click);
             // 
             // TestForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(329, 201);
-            this.Controls.Add(this.groupBox2);
+            this.ClientSize = new System.Drawing.Size(449, 155);
+            this.Controls.Add(this.Export);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.txtQuoteid);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.comboDataBaseList);
+            this.Controls.Add(this.linkemf);
+            this.Controls.Add(this.linkquote);
+            this.Controls.Add(this.status);
             this.Controls.Add(this.groupBox1);
             this.Name = "TestForm";
             this.Text = "Test Form";
+            this.Load += new System.EventHandler(this.TestForm_Load);
             this.groupBox1.ResumeLayout(false);
-            this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -155,13 +225,20 @@
 
         private System.Windows.Forms.Button BtnInitApi;
         private System.Windows.Forms.Button BtnGetQuoteApi;
-        private System.Windows.Forms.Button BtnGetQuote;
-        private System.Windows.Forms.Button BtnInit;
-        private System.Windows.Forms.Button BtnExportQuote;
-        private System.Windows.Forms.Button BtnExit;
         private System.Windows.Forms.Button BtnExportQuoteApi;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.LinkLabel linkemf;
+        private System.Windows.Forms.LinkLabel linkquote;
+        private System.Windows.Forms.ComboBox comboDataBaseList;
+        private System.Windows.Forms.Label status;
+        private System.Windows.Forms.TextBox txtQuoteid;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button Init;
+        private System.Windows.Forms.Button Export;
+        private System.Windows.Forms.Button Reset;
+        private System.Windows.Forms.Button ExportUI;
     }
 }
 

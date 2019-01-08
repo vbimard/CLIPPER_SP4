@@ -10,7 +10,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
 
-using Actcut.ActcutClipperApi;
+using AF_Actcut.ActcutClipperApi;
+using Wpm.Implement.Manager;
+//using AF_Actcut.ActcutClipperApi;
 
 namespace ActcutClipperTest
 {
@@ -25,49 +27,46 @@ namespace ActcutClipperTest
 
         private string AlmaCamDB = null;
         private string User = null;
-        private long quoteNumber = 0;
 
         public TestForm()
         {
             InitializeComponent();
 
-            ParamFolder = Program.AlmaCamBinFolder + @"ActcutClipperExeParam"; // ActcutClipperExeParam : nom de sous répertoire imposé
+            ParamFolder = Program.AlmaCamBinFolder + @"\ActcutClipperExeParam"; // ActcutClipperExeParam : nom de sous répertoire imposé
             ParamFile = ParamFolder + @"\Param.txt"; // Nom du fichier contenant les commandes : nom imposé
             ResultFile = ParamFolder + @"\Result.txt"; // Nom du fichier contenant les resultats : nom imposé
 
-            AlmaCamDB = "AlmaCam_Clipper_8_Sp4";
-            User = "SUPER";
         }
 
         #region Api Test
-
+        /*
         private void BtnInitApi_Click(object sender, EventArgs e)
         {
+            AlmaCamDB = comboDataBaseList.Text;///txt_Database.Text;;
+            User = "SUPER";
             ClipperApi = new ClipperApi();
-            ClipperApi.Init(AlmaCamDB, User);
+            ClipperApi.InitAlmaCam(AlmaCamDB, User);
         }
         private void BtnGetQuoteApi_Click(object sender, EventArgs e)
         {
             long quoteNumberReference = -1;
-            ClipperApi.GetQuote(out quoteNumberReference);
-            quoteNumber = quoteNumberReference;
+            ClipperApi.SelectQuoteUI(out quoteNumberReference);
         }
         private void BtnExportQuoteApi_Click(object sender, EventArgs e)
         {
-            ClipperApi.ExportQuote(quoteNumber, "ALMA", @"C:\Temp\"+quoteNumber+".txt");
+            ClipperApi.ExportQuote(307, "987", @"C:\Temp\toto.txt");
         }
-
+*/
         #endregion
 
         #region Exe Test
-
+        /*
         private void BtnInit_Click(object sender, EventArgs e)
         {
             Process[] processList = Process.GetProcesses();
             foreach (Process process in processList)
             {
-                //if (process.ProcessName == "Actcut.ActcutClipperExe")
-                if (process.ProcessName == "ActcutClipperExe")
+                if (process.ProcessName == "Actcut.ActcutClipperExe")
                 {
                     QuoteModelApiProcess = process;
                     MessageBox.Show("Actcut.ActcutClipperExe deja lancé");
@@ -78,9 +77,7 @@ namespace ActcutClipperTest
             if (File.Exists(ResultFile)) File.Delete(ResultFile);
 
             QuoteModelApiProcess = new System.Diagnostics.Process();
-            //QuoteModelApiProcess.StartInfo.FileName = Path.Combine(Program.AlmaCamBinFolder, "Actcut.ActcutClipperExe.exe");
-            //QuoteModelApiProcess.StartInfo.FileName = Path.Combine(Program.AlmaCamBinFolder, "Actcut.ActcutClipperExe.exe");
-            QuoteModelApiProcess.StartInfo.FileName = Path.Combine(Program.AlmaCamBinFolder, "AlmaCamUser1.exe");
+            QuoteModelApiProcess.StartInfo.FileName = Path.Combine(Program.AlmaCamBinFolder, "Actcut.ActcutClipperExe.exe");
             QuoteModelApiProcess.StartInfo.Arguments = "Action=Init User=" + User + " Db=" + AlmaCamDB;
             QuoteModelApiProcess.Start();
 
@@ -99,7 +96,7 @@ namespace ActcutClipperTest
             if (File.Exists(ParamFile)) File.Delete(ParamFile);
             if (File.Exists(ResultFile)) File.Delete(ResultFile);
 
-            File.WriteAllText(ParamFile, @"Action=ExportQuote QuoteNumber=7 OrderNumber=987 ExportFile=C:\Temp\toto.txt");
+            File.WriteAllText(ParamFile, @"Action=ExportQuote QuoteNumber=307 OrderNumber=987 ExportFile=C:\Temp\toto.txt");
             WaitResult(ResultFile);
         }
         private void BtnExit_Click(object sender, EventArgs e)
@@ -125,6 +122,80 @@ namespace ActcutClipperTest
             }
         }
 
+    */
         #endregion
+
+        private void TestForm_Load(object sender, EventArgs e)
+        {
+            this.Export.Enabled = false;
+            this.ExportUI.Enabled = false;
+            //IEntity quote = null;
+            List<IModel> listModel = new List<IModel>();
+
+
+            listModel = AF_ImportTools.DataBase.GetDataBaseList();
+
+            foreach (IModel model in listModel)
+            {
+                comboDataBaseList.Items.Add(model.DatabaseName);
+            }
+
+
+
+        }
+
+
+       
+
+        private void linkquote_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("explorer.exe ", linkquote.Text);
+        }
+
+        private void linkemf_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("explorer.exe ", linkemf.Text);
+        }
+
+        private void Init_Click(object sender, EventArgs e)
+        {
+            AlmaCamDB = comboDataBaseList.Text;///txt_Database.Text;;
+            User = "SUPER";
+            ClipperApi = new ClipperApi();
+            ClipperApi.ConnectAlmaCamDatabase(AlmaCamDB, User);
+
+            this.Init.Enabled = false;
+            this.Export.Enabled = true;
+            this.ExportUI.Enabled = true;
+        }
+
+        private void Export_Click(object sender, EventArgs e)
+        {
+            long quotenumber;
+            if(txtQuoteid.Text != null){
+                bool parsed = Int64.TryParse(txtQuoteid.Text, out quotenumber);
+                ClipperApi.ExportQuote(quotenumber, "CMD" + txtQuoteid.Text, @"C:\Temp\toto.txt");
+                if (!parsed)
+                MessageBox.Show("Int32.TryParse could not parse '{0}' to an int.");
+            }
+          
+               
+        }
+        
+        private void Reset_Click(object sender, EventArgs e)
+        {
+            ClipperApi = new ClipperApi();
+            ClipperApi.ExitAlmaCam();
+            this.Init.Enabled = true;
+            this.Export.Enabled = false;
+            this.ExportUI.Enabled = false;
+        }
+
+        private void ExportUI_Click(object sender, EventArgs e)
+        {
+            long quoteNumberReference = -1;
+            ClipperApi.SelectQuoteUI(out quoteNumberReference);
+            txtQuoteid.Text = quoteNumberReference.ToString();
+        }
     }
 }

@@ -154,7 +154,34 @@ namespace AF_Export_Devis_Clipper
             }
         }
 
-          
+        /// <summary>
+        /// export le devis texte de clipper et les dep
+        /// </summary>
+        /// <param name="contextelocal"></param>
+        /// <param name="iquote"></param>
+        /// <returns></returns>
+        public static bool ExportQuoteRequest(IContext contextelocal, IQuote iquote, string ExportFile)
+        {
+
+            //ExportDprFiles(IQuote iquote, string CustomDestinationPath)
+            ///on passe par une liste de iquote
+            ///
+            try
+            {
+                List<IQuote> quotelist = new List<IQuote>();
+                quotelist.Add(iquote);
+                //creation du fichier trans
+                CreateTransFile transfile = new CreateTransFile();
+                bool rst = transfile.Export(iquote.Context, quotelist, ExportFile);
+                //au besoin export des dpr
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         /// <summary>
         ///  validation des devis
         /// </summary>
@@ -211,6 +238,43 @@ namespace AF_Export_Devis_Clipper
         private bool _GlobalExported = false;
         //declaration du nouveau log //
 
+
+
+            /// <summary>
+            /// renvoie le nom du fichier trans
+            /// </summary>
+            /// <param name="context"></param>
+            /// <param name="id"></param>
+            /// <returns></returns>
+        public long GetTransFileName(IContext contextlocal, long id)
+        {
+            try {
+//
+                long id_decay = 0; 
+
+                bool getParam = contextlocal.ParameterSetManager.TryGetParameterValue("_EXPORT", "_CLIPPER_QUOTE_NUMBER_OFFSET", out IParameterValue p);
+                id_decay =id+Convert.ToInt64 (p.Value);
+
+                if (id_decay != 0)
+                {
+                    return id_decay;
+
+                } else { return 0; }
+
+
+
+            }
+
+
+            catch {
+                return 0;
+            }
+           
+
+            
+        
+
+        }
         /// <summary>
         /// export des données de devis
         /// </summary>
@@ -221,7 +285,7 @@ namespace AF_Export_Devis_Clipper
 
         ///devis exportable ou non
         ///
-       public static bool Validate_Quote(IQuote iquote)
+        public static bool Validate_Quote(IQuote iquote)
         {
             try
             {
@@ -494,10 +558,15 @@ namespace AF_Export_Devis_Clipper
 
                 if (QuoteList.Count() == 1)
                 {
-                   
 
-                    FileName = "Trans_" + QuoteList.First().QuoteEntity.Id.ToString("####") + ".txt"; // QuoteList.First().QuoteInformation.IncNo.ToString("####") + ".txt";
-                        IQuote quote = QuoteList.FirstOrDefault();
+                    //dpr_directory = quote.Context.ParameterSetManager.GetParameterValue("_EXPORT", "_ACTCUT_DPR_DIRECTORY").GetValueAsString();
+                    //construction de l'id de devis avec decalage
+                    //FileName = "Trans_" + QuoteList.First().QuoteEntity.Id.ToString("####") + ".txt";
+                    FileName = "Trans_" + GetTransFileName(Context, QuoteList.First().QuoteEntity.Id).ToString("####") + ".txt";
+                    
+
+                    // QuoteList.First().QuoteInformation.IncNo.ToString("####") + ".txt";
+                    IQuote quote = QuoteList.FirstOrDefault();
 
                     if (Validate_Quote(quote)) {
                         FullPath_FileName = Path.Combine(ExportDirectory, FileName);
@@ -534,6 +603,7 @@ namespace AF_Export_Devis_Clipper
 
         #region IQuoteGpExporter Membres
 
+        
         public  bool Export(IContext contextlocal, IEnumerable<IQuote> QuoteList, string ExportDirectory, string FileName)
         {
             try
@@ -556,8 +626,11 @@ namespace AF_Export_Devis_Clipper
                     {
                         IQuote quote = QuoteList.FirstOrDefault();
                         //verification du devis 
-                        if (Validate_Quote(quote)) { 
-                        FileName = "Trans_" + QuoteList.First().QuoteInformation.IncNo.ToString("####") + ".txt";
+                        if (Validate_Quote(quote)) {
+                            //FileName = "Trans_" + QuoteList.First().QuoteInformation.IncNo.ToString("####") + ".txt";
+
+                          FileName = "Trans_" + GetTransFileName(contextlocal, QuoteList.First().QuoteEntity.Id).ToString("####") + ".txt";
+
                         }
                         else
                         {
@@ -606,17 +679,21 @@ namespace AF_Export_Devis_Clipper
         /// <param name="quoteList"></param>
         /// <param name="clipperFileName">nom du fichier trans</param>
         /// <returns></returns>
-        internal bool InternalExport(IContext context, IEnumerable<IQuote> quoteList, string clipperFileName)
+        internal bool InternalExport(IContext context, IEnumerable<IQuote> quoteList, string FullPath_FileName)
         {
+
+            string file = "";
             NumberFormatInfo formatProvider = new CultureInfo("en-US", false).NumberFormat;
             formatProvider.CurrencyDecimalSeparator = ".";
             formatProvider.CurrencyGroupSeparator = "";
 
-            string file = "";
-            File.Delete(clipperFileName);
+            ///recuperation du nom de fichier
+            File.Delete(FullPath_FileName);
+            //file = FullPath_FileName;
+           
 
 
-            
+
 
             foreach (IQuote quote in quoteList)
             {
@@ -624,8 +701,8 @@ namespace AF_Export_Devis_Clipper
                 Dictionary<string, string> filelist= new Dictionary<string, string>();
                 // export systematique des dpr si le chemn d'export est defini//create dpr and directory
                
-                 _PathList.TryGetValue("Export_DPR_Directory", out string dpr_directory);
-                if (string.IsNullOrEmpty(dpr_directory))
+                _PathList.TryGetValue("Export_DPR_Directory", out string dpr_directory);
+                if (!string.IsNullOrEmpty(dpr_directory))
                 { 
                   filelist=ExportDprFiles(quote,"");
                 }
@@ -649,7 +726,7 @@ namespace AF_Export_Devis_Clipper
             }
             file = file + "Fin du fichier OK";
 
-            File.AppendAllText(clipperFileName, file, Encoding.Default);
+            File.AppendAllText(FullPath_FileName, file, Encoding.Default);
             return true;
         }
         /// <summary>
@@ -2656,6 +2733,15 @@ namespace AF_Export_Devis_Clipper
                     IParameter parameter = null;
                     if (parameterSet.ParameterList.TryGetValue("_CENTRE_FRAIS", out parameter))
                         centreFrais = subQuoteOperation.Context.ParameterSetManager.GetParameterValue(parameter).GetValueAsString();
+
+                    if ( string.IsNullOrEmpty(centreFrais)== true)
+                    {
+                        throw new Missing_almaquote_cost_center("Il manque le centre de frais sur la machine " + parameterSet.Name);
+
+                    }
+                    ///missing_almaquote_cost_center
+
+
                 }
             }
             return centreFrais;
@@ -2930,13 +3016,7 @@ namespace AF_Export_Devis_Clipper
                         string fullfileName = outputdirectory + "\\" + Path.GetFileName(document.FileName);
                         part_attachement_list.SaveAs(document, @fullfileName);
                     
-                    //stockTarget.FieldAddAttachment("_CCPU", tempfileName);
-                    //File.Delete(tempfileName);
-                    //repertoire export
-                    //
-                   
-                    
-                    file += "DOCUMENT¤3¤"+ @fullfileName + "¤"+Path.GetFileNameWithoutExtension(filename)+ "¤0¤\r\n";
+                     file += "DOCUMENT¤3¤"+ @fullfileName + "¤"+Path.GetFileNameWithoutExtension(filename)+ "¤0¤\r\n";
 
 
                     }
@@ -3031,6 +3111,22 @@ namespace AF_Export_Devis_Clipper
         public UnvalidatedQuoteConfigurations(string message) : base(message)
         {
             MessageBox.Show(base.Message, string.Format("Probleme de configuration d' AlmaCam :", "", DateTime.Now.ToLongTimeString()), MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
+
+
+    /// <summary>
+    /// missing_almaquote_cost_center
+    /// </summary>
+
+    /// <summary>
+    /// cas des devis non clos
+    /// </summary>
+    internal class Missing_almaquote_cost_center : Exception
+    {
+        public Missing_almaquote_cost_center(string message) : base(message)
+        {
+            MessageBox.Show(base.Message, string.Format("Probleme sur les centre de frais :", "", DateTime.Now.ToLongTimeString()), MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 

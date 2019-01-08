@@ -22,17 +22,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// <summary>
     /// creation des commandes d'imports
-    /// using (Clipper_Import_Matiere Update_Material = new Clipper_Import_Matiere())
-    ///    {
-    ///                try
-    ///                {
-    ///           Update_Material.Almacam_Update_Material(contextlocal);
-    ///        Update_Material.Close();
-    ///         Cursor.Current = Cursors.Default;
-    ///
-    ///             }
-    ///              catch { Cursor.Current = Cursors.Default; }
-    //      }
+   
     /// </summary>
     //section des commandes
 
@@ -89,8 +79,9 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
             }
             catch(Exception ie)
             {
-
-                // logFile.WriteLine ( System.Reflection.MethodBase.GetCurrentMethod.Name + " " +                       ie.Message)
+                MessageBox.Show(ie.Message, System.Reflection.MethodBase.GetCurrentMethod().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //logFile.WriteLine(System.Reflection.MethodBase.GetCurrentMethod().Name + " " + ie.Message);
+                //logFile.WriteLine(System.Reflection.MethodBase.GetCurrentMethod().Name + " " + ie.Message);
                 // return base.Execute();
             }
         }
@@ -267,7 +258,10 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                             tubesronds.Close();
 
                         }
-                        catch (Exception ie) { }
+                        catch (Exception ie) {
+                            MessageBox.Show(ie.Message, System.Reflection.MethodBase.GetCurrentMethod().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                        }
 
                     }
                 }
@@ -285,7 +279,9 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                                 tubesronds.Close();
 
                             }
-                            catch (Exception ie) { }
+                            catch (Exception ie) {
+                            MessageBox.Show(ie.Message, System.Reflection.MethodBase.GetCurrentMethod().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     
                         }
                 }
@@ -302,7 +298,10 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                                 tubesronds.Close();
 
                             }
-                            catch (Exception ie) { }
+                            catch (Exception ie) {
+                            MessageBox.Show(ie.Message, System.Reflection.MethodBase.GetCurrentMethod().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                        }
 
                         }
                 }
@@ -318,7 +317,9 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                                 tubesrectangle.Close();
 
                             }
-                            catch (Exception ie) { }
+                            catch (Exception ie) {
+                            MessageBox.Show(ie.Message, System.Reflection.MethodBase.GetCurrentMethod().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
 
 
                         }
@@ -333,7 +334,9 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                                 tubescar.Close();
 
                             }
-                            catch (Exception ie) { }
+                            catch (Exception ie) {
+                            MessageBox.Show(ie.Message, System.Reflection.MethodBase.GetCurrentMethod().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
 
 
                         }
@@ -349,10 +352,10 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                                 tubesflats.Close();
 
                             }
-                            catch (Exception ie) { }
+                            catch (Exception ie) { MessageBox.Show(ie.Message, System.Reflection.MethodBase.GetCurrentMethod().Name, MessageBoxButtons.OK, MessageBoxIcon.Error); }
 
-
-                            }
+                       
+                    }
                 }
 
                 
@@ -382,27 +385,35 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
 
             public string getJsonStringParametres(string ParameterName)
             {
-                string returnvalue = "";
-
-                using (StreamReader file = File.OpenText(this.PATH))
-                {
+                
+            try {
+                        string returnvalue = "";
+                        using (StreamReader file = File.OpenText(this.PATH))
+                        {
                    
                    
-                    using (JsonTextReader reader = new JsonTextReader(file))
-                    {
-                        JObject o = (JObject)JToken.ReadFrom(reader);
-
-
-                        returnvalue = (string)o.SelectToken(ParameterName);
-                    }
+                            using (JsonTextReader reader = new JsonTextReader(file))
+                            {
+                                JObject o = (JObject)JToken.ReadFrom(reader);
+                                returnvalue = (string)o.SelectToken(ParameterName);
+                            }
                     
 
+                        }
+
+                        return returnvalue;
                 }
 
-                return returnvalue;
+
+            catch (Exception ie) {
+
+                MessageBox.Show(ie.Message,"JsonTools Class" ,MessageBoxButtons.OK, MessageBoxIcon.Error );
+                return null;
 
 
             }
+
+        }
 
 
         }
@@ -559,8 +570,10 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                     logFile.WriteLine("DSN demandé"+ DSN);
 
 
-                if      (AlmaCamTool.Is_Odbc_Exists())
-                    { 
+                /// if      (AlmaCamTool.Is_Odbc_Exists())
+                
+                if      (AlmaCamTool.Is_Odbc_Exists(DSN))
+                {
 
 
                     DbConnection = null;
@@ -619,9 +632,10 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
             "LEFT JOIN Tech_EtatMatiere ON Tech_EtatMatiere.Libelle = ARTICLEM.ETATMAT "+ 
             "LEFT JOIN Tech_NuanceMatiere  ON Tech_NuanceMatiere.Libelle=ARTICLEM.NUANCE "+
             "WHERE  ARTICLEM.CHUTE<>'O' AND FAMILLE.DIMENSIONS=3; ";*/
-
-
             //recuperation des enregistrements
+
+
+
             TABLE_ARTICLEM_TOLE = DbCommand.ExecuteReader();
 
                 while (TABLE_ARTICLEM_TOLE.Read())
@@ -680,11 +694,14 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
         {
             //  logFile.WriteLine("mise a jour des matieres dans la base " + contextlocal.Model.DatabaseName);
             //ecrirture de la liste des matiere//
-            IEntityList qualityentitylist = contextlocal.EntityManager.GetEntityList("_QUALITY");
+
+                IEntityList qualityentitylist = contextlocal.EntityManager.GetEntityList("_QUALITY");
                 IList<string> qualities_To_Create = new List<string>();
                 qualityentitylist.Fill(false);
                 IList<IEntity> qualitylist = new List<IEntity>();
-                qualitylist = qualityentitylist.ToList();
+                //select distincte supprime les doublons
+                qualitylist = qualityentitylist.Distinct().ToList();
+
                 bool newdatabase = qualitylist.Count == 0;
             ////liste des qualité de materiaux
                 IDictionary<long,string> updatedstringqualitylist = new Dictionary<long,string>();
@@ -930,17 +947,17 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                 //recup parametre dsn
                 DSN = JSTOOLS.getJsonStringParametres("dsn");
 
-                //recupe requete
-                DbConnection = null;
-                DbCommand = null;
-                this.DbConnection = new OdbcConnection("DSN=" + DSN);
-                this.DbConnection.Open();
-                this.DbCommand = DbConnection.CreateCommand();
+                if (AlmaCamTool.Is_Odbc_Exists(DSN)) { 
 
-
-                contextlocal.TraceLogger.TraceInformation("Creation du lien ODBC..");
-                //logFile.WriteLine("connexion ok    : " + DSN);
-
+                        //recupe requete
+                        DbConnection = null;
+                        DbCommand = null;
+                        this.DbConnection = new OdbcConnection("DSN=" + DSN);
+                        this.DbConnection.Open();
+                        this.DbCommand = DbConnection.CreateCommand();
+                        contextlocal.TraceLogger.TraceInformation("Creation du lien ODBC..");
+                            //logFile.WriteLine("connexion ok    : " + DSN);
+                }
 
             }
             catch (Exception ex)
@@ -979,7 +996,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
         {
             try
             {
-                string value;
+                //string value;
                 if (TABLE_ARTICLEM[fieldname].ToString().Trim() == string.Empty) { return "0"; }
                 else { return TABLE_ARTICLEM[fieldname].ToString().Trim(); }
 
@@ -1046,7 +1063,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
 
 
             }
-            catch (Exception ie) { return null; }
+            catch (Exception ie) { MessageBox.Show(ie.Message, System.Reflection.MethodBase.GetCurrentMethod().Name, MessageBoxButtons.OK, MessageBoxIcon.Error); return null; }
         }
 
 
@@ -1065,7 +1082,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                         price = price / 10;
                         break;
                     default:
-                        price = price;
+                        //price = price;
                         break;
                 }
 
@@ -1256,7 +1273,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
 
 
             }
-            catch (Exception ie) { return 0; }
+            catch (Exception ie) { MessageBox.Show(ie.Message, System.Reflection.MethodBase.GetCurrentMethod().Name, MessageBoxButtons.OK, MessageBoxIcon.Error); return 0; }
 
 
         }
@@ -1269,7 +1286,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                 //nous verrons
 
                 IExtendedEntityList sections;
-                IExtendedEntity section = null;
+                //IExtendedEntity section = null;
                 long section_id = 0;
 
                 if (section_name != "")
@@ -1308,7 +1325,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
 
 
             }
-            catch (Exception ie) { return 0; }
+            catch (Exception ie) { MessageBox.Show(ie.Message, System.Reflection.MethodBase.GetCurrentMethod().Name, MessageBoxButtons.OK, MessageBoxIcon.Error); return 0; }
 
 
         }
@@ -1453,7 +1470,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
             catch (Exception ie)
             {
                 List_Tube_Ronds = null;
-
+                MessageBox.Show(ie.Message, System.Reflection.MethodBase.GetCurrentMethod().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 logFileTubeRond.Close();
 
                 /*return listeTubeRond;*/
@@ -1623,7 +1640,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
             catch (Exception ie)
             {
                 List_Ronds = null;
-
+                MessageBox.Show(ie.Message, System.Reflection.MethodBase.GetCurrentMethod().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 logFileRond.Close();
 
                 /*return listeTubeRond;*/
@@ -1785,7 +1802,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
             catch (Exception ie)
             {
                 List_Recs = null;
-
+                MessageBox.Show(ie.Message, System.Reflection.MethodBase.GetCurrentMethod().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 logFileRec.Close();
 
                 /*return listeTubeRond;*/
@@ -1948,7 +1965,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
             catch (Exception ie)
             {
                 List_Recs = null;
-
+                MessageBox.Show(ie.Message, System.Reflection.MethodBase.GetCurrentMethod().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 logFileCar.Close();
 
                 /*return listeTubeRond;*/
@@ -2118,7 +2135,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
             catch (Exception ie)
             {
                 List_Recs = null;
-
+                MessageBox.Show(ie.Message, System.Reflection.MethodBase.GetCurrentMethod().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 logFileFlat.Close();
 
                 /*return listeTubeRond;*/
@@ -2222,7 +2239,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
         public Clipper_Import_Tube_Speciaux(IContext context)
         {
             this.contextlocal = context;
-            string section_key;
+            //string section_key;
             TubeExclusion = new List<string>();
             // Section_Key = typeTube; // "_SECTION_FLAT";
             //construction de la liste d'exclusion sur les section ci dessous
@@ -2374,8 +2391,9 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
 
             catch (Exception ie)
             {
-                return null;
-                MessageBox.Show(ie.Message);
+                MessageBox.Show(ie.Message); return null;
+            
+                
             }
 
         }
@@ -2431,8 +2449,9 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
 
             catch (Exception ie)
             {
-                List_Spe = null;
 
+                List_Spe = null;
+                MessageBox.Show(ie.Message, System.Reflection.MethodBase.GetCurrentMethod().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 logFilSpe.Close();
 
                 /*return listeTubeRond;*/
@@ -2469,8 +2488,8 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                     if (TubeExclusion.Contains(tubespe.COARTI) == false)
                     {
                         //si elle existe deja on recupere la section //
-                        IEntityList sectionQualityList, sectionEntityList;
-                        IEntity sectionQuality, sectionEntity;
+                        //IEntityList sectionQualityList, sectionEntityList;
+                        //IEntity sectionQuality, sectionEntity;
                         long sectionEntityid;
 
                         //creation de la qualité
@@ -2648,7 +2667,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
             catch (Exception ie)
             {
                 this.List_Fourniture = null;
-
+                MessageBox.Show(ie.Message, System.Reflection.MethodBase.GetCurrentMethod().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 logFourniture.Close();
 
 
@@ -2842,7 +2861,12 @@ public static class AlmaCamTool
                 return context;
             }
         }
-        catch (Exception ie) { MessageBox.Show(ie.Message); return null; }
+        catch (Exception ie) {
+
+            string methode = System.Reflection.MethodBase.GetCurrentMethod().Name;
+            MessageBox.Show(ie.Message);
+
+            return null; }
     }
 
 
@@ -2875,6 +2899,37 @@ public static class AlmaCamTool
             
 
             
+        }
+    }
+    public static bool Is_Odbc_Exists(string DSN)
+    {
+
+        string CLIPPER_ODBC_INI_REG_PATH = "Software\\ODBC\\ODBCINST.INI\\"+DSN;
+        //string dsnname = "Clipper8_Serveur";
+        try
+        {
+            var sourcesKey = Registry.LocalMachine.OpenSubKey(CLIPPER_ODBC_INI_REG_PATH);
+            //String value = (String)sourcesKey.GetValue(dsnname+"\\Analyse");
+
+            bool rst = true;
+            if (sourcesKey == null)
+            {
+                rst = false;
+                throw new Missing_Obdc_Exception();
+
+            }
+
+            return rst;
+        }
+
+        catch (Exception ex)
+        {
+
+            MessageBox.Show(ex.Message);
+            return false;
+
+
+
         }
     }
 }
