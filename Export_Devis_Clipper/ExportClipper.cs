@@ -2701,9 +2701,20 @@ namespace AF_Export_Devis_Clipper
             IField machineField = null;
             string centreFrais = "";
 
-            if (subQuoteOperation.EntityType.Key == "_SIMPLE_QUOTE_OPE")
+            if (subQuoteOperation.EntityType.Key == "_SIMPLE_QUOTE_OPE" )
             {
                 IEntity opertationType = subQuoteOperation.GetFieldValueAsEntity("_SIMPLE_OPE_TYPE");
+                if (opertationType != null)
+                {
+                    IEntity centreFraisEntity = opertationType.GetFieldValueAsEntity("_CENTRE_FRAIS");
+                    if (centreFraisEntity != null)
+                        centreFrais = centreFraisEntity.GetFieldValueAsString("_CODE");
+                }
+            }
+
+            else if (subQuoteOperation.EntityType.Key == "_OTHER_QUOTE_OPE")
+            {
+                IEntity opertationType = subQuoteOperation.GetFieldValueAsEntity("_OTHER_OPE_TYPE");
                 if (opertationType != null)
                 {
                     IEntity centreFraisEntity = opertationType.GetFieldValueAsEntity("_CENTRE_FRAIS");

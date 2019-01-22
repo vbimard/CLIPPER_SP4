@@ -566,9 +566,17 @@ namespace AF_Clipper_Dll
                 parametre_name = "ACTIVATE_OMISSION";
                 //Alma_Log.Info("recuperation du parametre " + parametre_name, "GetlistParam");
                 //Parameters_Dictionnary.Add(parametre_name, context.ParameterSetManager.GetParameterValue(parametersetkey, "IMPORT_AUTO").GetValueAsBoolean());                /**/
-                Get_bool_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "", ref Parameters_Dictionnary, false);
+                Get_bool_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "", ref Parameters_Dictionnary, true);
 
-                
+
+
+                if (Convert.ToBoolean(Parameters_Dictionnary["ACTIVATE_OMISSION"]) == false)
+                {
+                    //Alma_Log.Write_Log("ATTENTION : Le traitement par omission du stock est desactivé.");
+                    Alma_Log.Warning("ATTENTION : Le traitement par omission du stock est desactivé.", "PARAMATER_DICTIONARY");
+                }
+
+
                 parametre_name = "EMF_DIRECTORY";
                 //Alma_Log.Info("recuperation du parametre " + parametre_name, "GetlistParam");
                 //Parameters_Dictionnary.Add(parametre_name, context.ParameterSetManager.GetParameterValue(parametersetkey, "EMF_DIRECTORY").GetValueAsString());                /**/
@@ -4084,7 +4092,7 @@ namespace AF_Clipper_Dll
                                     }
                                     else
                                     {//la tole nexiste pas encore dans le stock//on log on continue
-                                        Alma_Log.Write_Log(methodename + ":" + line_Dictionnary["_NAME"] + " la chute  " + line_Dictionnary["FILENAME"] + "n existe plus");
+                                        Alma_Log.Write_Log(methodename + ":" + line_Dictionnary["_NAME"] + " la chute  " + line_Dictionnary["FILENAME"] + "n existe plus. Chute d' id_clip: "+ line_Dictionnary["IDCLIP"]);
                                         continue;
                                     }
                                 }
@@ -4156,12 +4164,17 @@ namespace AF_Clipper_Dll
                     //purge//
 
                     if (Clipper_Param.Get_Omission_Mode()) {
+
                             foreach (string idclip in GetOmmittedSheet(sheetId_list_from_txt_file, sheetId_list_from_database))
                             {
                                 IEntity stockommitted = SimplifiedMethods.GetFirtOfList(contextlocal.EntityManager.GetEntityList("_STOCK", "IDCLIP", ConditionOperator.Equal, idclip));
-                                stockommitted.SetFieldValue("_QUANTITY", 0);
-                                stockommitted.Save();
+                                long in_prod_qty = stockommitted.GetFieldValueAsEntity("_SHEET").GetFieldValueAsLong("_IN_PRODUCTION_QUANTITY");
+
+                            if (in_prod_qty == 0) { stockommitted.SetFieldValue("_QUANTITY", 0); stockommitted.Save(); }
+                                
                             }
+                      
+                            
                     }
                     //rendre obsoletre les qtés nulles
 
@@ -4319,6 +4332,7 @@ namespace AF_Clipper_Dll
                                 {
                                     Clipper_Infos current_clipper_nestinfos = new Clipper_Infos();
                                     current_clipper_nestinfos.GetNestInfosBySheet(entity);
+                            
                                     current_clipper_nestinfos.Export_NestInfosToFile(export_gpao_path);
                                     //validation du stock
 
@@ -4332,7 +4346,9 @@ namespace AF_Clipper_Dll
                 }
                 else { MessageBox.Show("Aucune selection n'a été faite dans la liste proposée \r\n veuillez relancer l'opération."); }
             } 
-            catch { }
+            catch (Exception ie) {
+                MessageBox.Show ("Erreur sur la methode " +System.Reflection.MethodBase.GetCurrentMethod().Name  );
+            }
 
 
         }
@@ -4429,7 +4445,7 @@ namespace AF_Clipper_Dll
         }
 
 
-
+        
         /// <summary>
         /// creation auto du fichier texte à  la cloture
         /// </summary>

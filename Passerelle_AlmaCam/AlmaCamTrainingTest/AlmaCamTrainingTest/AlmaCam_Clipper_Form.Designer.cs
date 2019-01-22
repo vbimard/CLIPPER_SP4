@@ -102,7 +102,7 @@
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(212, 47);
             this.button9.TabIndex = 8;
-            this.button9.Text = "Remonté les dossiers Techniques";
+            this.button9.Text = "Remonter les dossiers Techniques";
             this.button9.UseVisualStyleBackColor = false;
             this.button9.UseWaitCursor = true;
             this.button9.Click += new System.EventHandler(this.button9_Click);
@@ -121,7 +121,6 @@
             this.AfterClose.Text = "Retour Placement Clos (DoOnAction_After_Cutting_end)";
             this.AfterClose.UseVisualStyleBackColor = false;
             this.AfterClose.UseWaitCursor = true;
-            this.AfterClose.Visible = false;
             this.AfterClose.Click += new System.EventHandler(this.AfterClose_Click);
             // 
             // menuStrip1

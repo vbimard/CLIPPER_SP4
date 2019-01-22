@@ -385,7 +385,7 @@ namespace AlmaCamTrainingTest
       
             AF_Clipper_Dll.Clipper_DoOnAction_After_Cutting_end doonaction = new Clipper_DoOnAction_After_Cutting_end();
 
-             //string stage = "_CLOSED_NESTING";
+          
             string stage = "_CUT_SHEET";
             //creation du fichier de sortie
             //recupere les path
@@ -399,12 +399,8 @@ namespace AlmaCamTrainingTest
             Entityselector.MultiSelect = true;
 
             if (Entityselector.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-             
-                    doonaction.execute(Entityselector.SelectedEntity);
-                
-
-              
+            {          
+                    doonaction.execute(Entityselector.SelectedEntity);            
             }
             
 
