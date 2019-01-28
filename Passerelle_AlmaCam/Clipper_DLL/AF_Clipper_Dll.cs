@@ -1884,7 +1884,8 @@ namespace AF_Clipper_Dll
                 double thickness = 0;
 
                 nuance = line_dictionnary["_MATERIAL"].ToString().Replace('§', '*');
-                thickness = Convert.ToDouble(line_dictionnary["THICKNESS"]);
+                //thickness = line_dictionnary["THICKNESS"];
+                thickness = AF_ImportTools.SimplifiedMethods.GetDoubleInvariantCulture(line_dictionnary["THICKNESS"].ToString());
                 material_name = AF_ImportTools.Material.getMaterial_Name(contextlocal, nuance, thickness);
 
                 if (material_name == string.Empty)
@@ -1948,18 +1949,12 @@ namespace AF_Clipper_Dll
                 //"SPC*BRUT 1.00" //attention pas de control de l'obsolecence pour le moment
                 if (line_dictionnary.ContainsKey("_MATERIAL") && line_dictionnary.ContainsKey("THICKNESS"))
                 {
-                    material = Material.getMaterial_Entity(contextlocal, line_dictionnary["_MATERIAL"].ToString(), Convert.ToDouble(line_dictionnary["THICKNESS"]));
+                    // material = Material.getMaterial_Entity(contextlocal, line_dictionnary["_MATERIAL"].ToString(), Convert.ToDouble(line_dictionnary["THICKNESS"]));
+                    material = Material.getMaterial_Entity(contextlocal, line_dictionnary["_MATERIAL"].ToString(),  SimplifiedMethods.GetDoubleInvariantCulture(line_dictionnary["THICKNESS"].ToString()));
                 }
                 
                 
-                /*
-                materials = contextlocal.EntityManager.GetEntityList("_MATERIAL", "_NAME", ConditionOperator.Equal, material_name);
-                materials.Fill(false);
-
-                if (materials.Count() > 0 && materials.FirstOrDefault().Status.ToString() == "Normal")
-                { material = materials.FirstOrDefault(); }
-                else { material = null; }
-                */
+               
 
 
                 return material;
@@ -3692,7 +3687,8 @@ namespace AF_Clipper_Dll
                     double thickness = 0;
 
                     nuance = line_dictionnary[currenfieldsname].ToString().Replace('§', '*');
-                    thickness = Convert.ToDouble(line_dictionnary["THICKNESS"]);
+                    //thickness = Convert.ToDouble(line_dictionnary["THICKNESS"]);
+                    thickness = SimplifiedMethods.GetDoubleInvariantCulture(line_dictionnary["THICKNESS"].ToString());
                     material_name = AF_ImportTools.Material.getMaterial_Name(contextlocal, nuance, thickness);
                     if (material_name == string.Empty) {
                         /*on log matiere non existante*/
@@ -3837,7 +3833,8 @@ namespace AF_Clipper_Dll
                 //"SPC*BRUT 1.00" //attention pas de control de l'obsolecence pour le moment
                 if (line_dictionnary.ContainsKey("_MATERIAL") && line_dictionnary.ContainsKey("THICKNESS"))
                 {
-                    material = Material.getMaterial_Entity(contextlocal, line_dictionnary["_MATERIAL"].ToString(), Convert.ToDouble(line_dictionnary["THICKNESS"]));
+                    // material = Material.getMaterial_Entity(contextlocal, line_dictionnary["_MATERIAL"].ToString(), Convert.ToDouble(line_dictionnary["THICKNESS"]));
+                    material = Material.getMaterial_Entity(contextlocal, line_dictionnary["_MATERIAL"].ToString(), SimplifiedMethods.GetDoubleInvariantCulture(line_dictionnary["THICKNESS"].ToString()));
                 }/*
                 materials = contextlocal.EntityManager.GetEntityList("_MATERIAL", "_NAME", ConditionOperator.Equal, material_name);
                 materials.Fill(false);
@@ -4414,8 +4411,9 @@ namespace AF_Clipper_Dll
                     //"SPC*BRUT 1.00" //attention pas de control de l'obsolecence pour le moment
                     if (line_dictionnary.ContainsKey("_MATERIAL") && line_dictionnary.ContainsKey("THICKNESS"))
                     {
-                        material = Material.getMaterial_Entity(contextlocal, line_dictionnary["_MATERIAL"].ToString(), Convert.ToDouble(line_dictionnary["THICKNESS"]));
-                    }
+                    //material = Material.getMaterial_Entity(contextlocal, line_dictionnary["_MATERIAL"].ToString(), Convert.ToDouble(line_dictionnary["THICKNESS"]));
+                    material = Material.getMaterial_Entity(contextlocal, line_dictionnary["_MATERIAL"].ToString(), SimplifiedMethods.GetDoubleInvariantCulture(line_dictionnary["THICKNESS"].ToString()));
+                }
 
 
                     return material;
