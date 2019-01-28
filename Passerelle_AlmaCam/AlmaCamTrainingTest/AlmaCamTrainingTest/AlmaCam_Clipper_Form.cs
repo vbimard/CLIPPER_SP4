@@ -313,27 +313,50 @@ namespace AlmaCamTrainingTest
 
         private void purgerLeStockToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //purge stock
-            IEntityList stocks = _Context.EntityManager.GetEntityList("_STOCK");
-            stocks.Fill(false);
-            DialogResult res = MessageBox.Show("Do you really want to destroy all sheets from the stock?", "Warnig", MessageBoxButtons.OKCancel);
-            if (res == DialogResult.OK)
-            {
-                foreach (IEntity stock in stocks)
+
+            try {
+
+                //purge stock
+                IEntityList stocks = _Context.EntityManager.GetEntityList("_STOCK");
+                stocks.Fill(false);
+                DialogResult res = MessageBox.Show("Do you really want to destroy all sheets from the stock?", "Warnig", MessageBoxButtons.OKCancel);
+                if (res == DialogResult.OK)
                 {
-                    stock.Delete();
+                    foreach (IEntity stock in stocks)
+                    {
+                        if (stock.GetFieldValueAsEntity("_SHEET").GetFieldValueAsLong("_IN_PRODUCTION_QUANTITY")== 0)
+                        {
+                            stock.Delete();
+                        }
+
+
+
+                    }
+                   
+                    //suppression formats
+                    IEntityList formats = _Context.EntityManager.GetEntityList("_SHEET");
+                    formats.Fill(false);
+
+                    foreach (IEntity format in formats)
+                    {
+                        if (format.GetFieldValueAsLong("_IN_PRODUCTION_QUANTITY") == 0)
+                        {
+                            format.Delete();
+                        }
+                       
+                    }
+
                 }
-
-
-                IEntityList formats = _Context.EntityManager.GetEntityList("_SHEET");
-                formats.Fill(false);
-
-                foreach (IEntity format in formats)
-                {
-                    format.Delete();
-                }
-
             }
+
+
+            
+            catch (Exception ie) {
+                MessageBox.Show(ie.Message);
+               
+            }
+           
+
         }
 
         private void stockToolStripMenuItem_Click(object sender, EventArgs e)
@@ -552,26 +575,143 @@ namespace AlmaCamTrainingTest
 
         private void purgerStockToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            IEntityList stocks = _Context.EntityManager.GetEntityList("_STOCK");
-            stocks.Fill(false);
-            DialogResult res = MessageBox.Show("Do you really want to destroy all sheets from the stock?", "Warnig", MessageBoxButtons.OKCancel);
-            if (res == DialogResult.OK)
+
+            try {
+
+
+                IEntityList stocks = _Context.EntityManager.GetEntityList("_STOCK");
+                stocks.Fill(false);
+                DialogResult res = MessageBox.Show("Do you really want to destroy all sheets from the stock?", "Warnig", MessageBoxButtons.OKCancel);
+                if (res == DialogResult.OK)
+                {
+                    foreach (IEntity stock in stocks)
+                    {
+                        stock.Delete();
+                    }
+
+
+                    IEntityList formats = _Context.EntityManager.GetEntityList("_SHEET");
+                    formats.Fill(false);
+
+                    foreach (IEntity format in formats)
+                    {
+                        format.Delete();
+                    }
+
+                }
+
+
+
+            } catch (Exception ie)
             {
-                foreach (IEntity stock in stocks)
-                {
-                    stock.Delete();
-                }
+                MessageBox.Show(ie.Message);
 
-
-                IEntityList formats = _Context.EntityManager.GetEntityList("_SHEET");
-                formats.Fill(false);
-
-                foreach (IEntity format in formats)
-                {
-                    format.Delete();
-                }
 
             }
+
+          
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            //IEntity TO_CUT_nesting;
+
+            AF_Clipper_Dll.Clipper_DoOnAction_AfterSendToWorkshop2019 doonaction = new Clipper_DoOnAction_AfterSendToWorkshop2019();
+            string stage = "_TO_CUT_NESTING";
+
+            //creation du fichier de sortie
+            //recupere les path
+            Clipper_Param.GetlistParam(_Context);
+            IEntitySelector nestingselector = null;
+
+            nestingselector = new EntitySelector();
+
+            //entity type pointe sur la list d'objet du model
+            nestingselector.Init(_Context, _Context.Kernel.GetEntityType(stage));
+            nestingselector.MultiSelect = true;
+
+
+            if (nestingselector.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                foreach (IEntity nesting in nestingselector.SelectedEntity)
+                {
+                    doonaction.execute(nesting);
+
+                }
+            }
+
+
+            // doonaction.execute(_Context, TO_CUT_nesting);
+        }
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+
+            //IEntity TO_CUT_nesting;
+
+            AF_Clipper_Dll.Clipper_DoOnAction_BeforeNestingRestoreEvent doonaction = new Clipper_DoOnAction_BeforeNestingRestoreEvent();
+            string stage = "_TO_CUT_NESTING";
+
+            //creation du fichier de sortie
+            //recupere les path
+            /*
+            Clipper_Param.GetlistParam(_Context);
+            */        
+            IEntitySelector nestingselector = null;
+
+            nestingselector = new EntitySelector();
+
+            //entity type pointe sur la list d'objet du model
+            nestingselector.Init(_Context, _Context.Kernel.GetEntityType(stage));
+            nestingselector.MultiSelect = true;
+
+
+            if (nestingselector.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                foreach (IEntity nesting in nestingselector.SelectedEntity)
+                {
+                    doonaction.execute(nesting);
+
+                }
+            }
+
+
+
+
+
+
+
+        }
+
+        private void button5_Click_1(object sender, EventArgs e)
+        {
+            AF_Clipper_Dll.Clipper_DoOnAction_BeforeNestingRestoreEvent doonaction = new Clipper_DoOnAction_BeforeNestingRestoreEvent();
+            string stage = "_CLOSED_NESTING";
+
+            //creation du fichier de sortie
+            //recupere les path
+            /*
+            Clipper_Param.GetlistParam(_Context);
+            */
+            IEntitySelector nestingselector = null;
+
+            nestingselector = new EntitySelector();
+
+            //entity type pointe sur la list d'objet du model
+            nestingselector.Init(_Context, _Context.Kernel.GetEntityType(stage));
+            nestingselector.MultiSelect = true;
+
+
+            if (nestingselector.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                foreach (IEntity nesting in nestingselector.SelectedEntity)
+                {
+                   StockManager.DeleteAlmaCamStock(nesting);
+
+                }
+            }
+
+
         }
     }
 

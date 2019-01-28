@@ -49,11 +49,14 @@
             this.quitToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.fichierToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.DoOnAction_TO_CUT_NESTING = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.quitToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.InfosLabel = new System.Windows.Forms.Label();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.button2 = new System.Windows.Forms.Button();
+            this.button5 = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -97,7 +100,7 @@
             this.button9.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button9.BackgroundImage")));
             this.button9.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.button9.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.button9.Location = new System.Drawing.Point(8, 78);
+            this.button9.Location = new System.Drawing.Point(8, 72);
             this.button9.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(212, 47);
@@ -113,7 +116,7 @@
             this.AfterClose.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("AfterClose.BackgroundImage")));
             this.AfterClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.AfterClose.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.AfterClose.Location = new System.Drawing.Point(8, 24);
+            this.AfterClose.Location = new System.Drawing.Point(8, 20);
             this.AfterClose.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.AfterClose.Name = "AfterClose";
             this.AfterClose.Size = new System.Drawing.Size(212, 47);
@@ -134,7 +137,7 @@
             this.fichierToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(252, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(478, 24);
             this.menuStrip1.TabIndex = 12;
             this.menuStrip1.Text = "menuStrip1";
             this.menuStrip1.UseWaitCursor = true;
@@ -215,7 +218,8 @@
             // purgerLeStockToolStripMenuItem
             // 
             this.purgerLeStockToolStripMenuItem.Name = "purgerLeStockToolStripMenuItem";
-            this.purgerLeStockToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.purgerLeStockToolStripMenuItem.ShowShortcutKeys = false;
+            this.purgerLeStockToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
             this.purgerLeStockToolStripMenuItem.Text = "Purger le Stock";
             this.purgerLeStockToolStripMenuItem.Click += new System.EventHandler(this.purgerLeStockToolStripMenuItem_Click);
             // 
@@ -247,11 +251,27 @@
             this.groupBox2.Controls.Add(this.button9);
             this.groupBox2.Location = new System.Drawing.Point(9, 181);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(230, 196);
+            this.groupBox2.Size = new System.Drawing.Size(230, 235);
             this.groupBox2.TabIndex = 13;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Export";
             this.groupBox2.UseWaitCursor = true;
+            // 
+            // button1
+            // 
+            this.button1.BackColor = System.Drawing.Color.LimeGreen;
+            this.button1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button1.BackgroundImage")));
+            this.button1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.button1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.button1.Location = new System.Drawing.Point(245, 57);
+            this.button1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(212, 47);
+            this.button1.TabIndex = 13;
+            this.button1.Text = "Retour Placement 2019 (DoOnAction_TO_CUT_NESTING)";
+            this.button1.UseVisualStyleBackColor = false;
+            this.button1.UseWaitCursor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
             // 
             // DoOnAction_TO_CUT_NESTING
             // 
@@ -298,7 +318,7 @@
             this.InfosLabel.BackColor = System.Drawing.Color.Gray;
             this.InfosLabel.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.InfosLabel.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.InfosLabel.Location = new System.Drawing.Point(6, 380);
+            this.InfosLabel.Location = new System.Drawing.Point(6, 419);
             this.InfosLabel.Name = "InfosLabel";
             this.InfosLabel.Size = new System.Drawing.Size(42, 15);
             this.InfosLabel.TabIndex = 15;
@@ -312,6 +332,38 @@
             this.notifyIcon.Visible = true;
             this.notifyIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_MouseDoubleClick);
             // 
+            // button2
+            // 
+            this.button2.BackColor = System.Drawing.Color.LimeGreen;
+            this.button2.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button2.BackgroundImage")));
+            this.button2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.button2.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.button2.Location = new System.Drawing.Point(245, 114);
+            this.button2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(212, 47);
+            this.button2.TabIndex = 16;
+            this.button2.Text = "Suppression stock placement";
+            this.button2.UseVisualStyleBackColor = false;
+            this.button2.UseWaitCursor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click_1);
+            // 
+            // button5
+            // 
+            this.button5.BackColor = System.Drawing.Color.LimeGreen;
+            this.button5.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button5.BackgroundImage")));
+            this.button5.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.button5.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.button5.Location = new System.Drawing.Point(245, 169);
+            this.button5.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(212, 47);
+            this.button5.TabIndex = 17;
+            this.button5.Text = "Suppression stock placement";
+            this.button5.UseVisualStyleBackColor = false;
+            this.button5.UseWaitCursor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click_1);
+            // 
             // AlmaCam_Clipper_Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -320,7 +372,10 @@
             this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.BackgroundImage = global::AlmaCamTrainingTest.Properties.Resources.FONDExport;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.ClientSize = new System.Drawing.Size(252, 435);
+            this.ClientSize = new System.Drawing.Size(478, 476);
+            this.Controls.Add(this.button5);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.InfosLabel);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
@@ -374,6 +429,9 @@
         private System.Windows.Forms.Label InfosLabel;
         private System.Windows.Forms.Button DoOnAction_TO_CUT_NESTING;
         private System.Windows.Forms.NotifyIcon notifyIcon;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button5;
     }
 }
 

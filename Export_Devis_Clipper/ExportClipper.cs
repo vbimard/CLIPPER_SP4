@@ -757,6 +757,7 @@ namespace AF_Export_Devis_Clipper
             string[] data = new string[50];
             data[i++] = "IDDEVIS";
             data[i++] = GetQuoteNumber(quoteEntity); //N° devis
+            /*
             string indice; //max15 char
             indice=EmptyString(quoteEntity.GetFieldValueAsString("_REFERENCE"));
             if (indice.Length > 15)
@@ -765,6 +766,9 @@ namespace AF_Export_Devis_Clipper
             }
 
             data[i++] = indice; //Indice
+            */
+            data[i++] ="1"; //Pour le moment l'indice est forcé a 1 car l'import des devis ne supporte pas le text dans l'interface d'import des devis clip
+
             IField field;
             string internal_comment = ""; //commentaires internes
             string external_comment =""; //commentaires externe
@@ -838,46 +842,7 @@ namespace AF_Export_Devis_Clipper
 
             string internal_comment = string.Empty;
             string external_comment = string.Empty;
-            /*
-            foreach (IEntity partEntity in quote.QuotePartList)
-            {
-                long partQty = 0;
-                partQty = partEntity.GetFieldValueAsLong("_PART_QUANTITY");
-                string internal_comment = string.Empty;
-                string external_comment = string.Empty ;
-
-                if (partQty > 0)
-                {
-                    internal_comment = FormatComment(EmptyString(quoteEntity.GetFieldValueAsString("_COMMENTS")));
-
-                    if (!string.IsNullOrEmpty(internal_comment))
-                    { 
-
-                    long i = 0;
-                    string[] data = new string[50];
-                    string reference = null;
-                    string modele = null;
-                    GetReference(partEntity, "PART", true, out reference, out modele);
-
-
-                 
-                    data[i++] = "OBSDEVIS";
-                    data[i++] = internal_comment; //Observation interne
-                    data[i++] = external_comment; //Observation client
-                    data[i++] = ""; // Conditions de règlement
-                    data[i++] = GetQuoteNumber(quoteEntity);//N° devis
-                    data[i++] = reference;//Code pièce
-                    data[i++] = "";//Ordre d'impression
-                    data[i++] = "";//Cycle de fab
-                    data[i++] = "";//Code activitée de la pièce
-                    data[i++] = "";//Modele de gamme
-
-                    WriteData(data, i, ref file);
-                    }
-
-                }
-            }
-            */
+           
 
             #endregion
 
@@ -1224,7 +1189,6 @@ namespace AF_Export_Devis_Clipper
                     data[i++] = FormatDesignation(""); //Désignation 5
                     data[i++] = FormatDesignation(""); //Désignation 6
                     data[i++] = "NOMEN"; //Centre de frais
-
                     data[i++] = "0"; //Tps Prep
                     data[i++] = "0"; //Tps Unit
                     data[i++] = "0"; //Coût Opération
@@ -1258,7 +1222,7 @@ namespace AF_Export_Devis_Clipper
                 {
                     long i = 0;
                     string[] data = new string[50];
-
+                    
                     i = 0;
                     data = new string[50];
                     //a modifier
@@ -1472,11 +1436,6 @@ namespace AF_Export_Devis_Clipper
                     string partReference = null;
                     string partModele = null;
                     GetReference(partEntity, "PART", false, out partReference, out partModele);
-
-
-
-
-
                     data[i++] = "ENDEVIS";
                     data[i++] = GetQuoteNumber(quoteEntity); //N° devis
                     data[i++] = EmptyString(clientEntity.GetFieldValueAsString("_EXTERNAL_ID")).ToUpper(); //Code client
@@ -1505,7 +1464,7 @@ namespace AF_Export_Devis_Clipper
                     weightEx = weightEx / 1000;
                     data[i++] = weight.ToString("#0.0000", formatProvider); //Indice A
                     data[i++] = weightEx.ToString("#0.0000", formatProvider); //Indice B
-                    data[i++] = "-" + partEntity.Id.ToString(); //Indice C  valeur - si piece quote et + si piece cam
+                    data[i++] = "-" + partEntity.Id.ToString(); //Indice C  valeur - si piece quote et + si piece cam 
                     data[i++] = ""; //Indice D
                     data[i++] = ""; //Indice E
                     data[i++] = ""; //Indice F
@@ -1519,6 +1478,12 @@ namespace AF_Export_Devis_Clipper
                     data[i++] = "0"; //N° identifiant GED 8
                     data[i++] = "0"; //N° identifiant GED 9
                     data[i++] = "0"; //N° identifiant GED 10
+                    //////depuis la V8 ////////
+                    data[i++] = ""; // fichier joint
+                    data[i++] = ""; // date injection
+                    data[i++] = ""; // modele IMPORTANT  si 2 pieces possedent le meme nom - incrementer cette valeur [0-255 //le model est a valider dans obs devis et nomendv
+                    data[i++] = ""; // employer responsable
+                    data[i++] = "-" + partEntity.Id.ToString();  // IDCFAO --> pour correspondance clipper //
 
                     ///
                     /// a supprimer apres 2 mois d'instal/
