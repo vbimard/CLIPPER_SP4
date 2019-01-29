@@ -281,10 +281,11 @@ namespace AlmaCamTrainingTest
         private void button12_Click(object sender, EventArgs e)
         {
             //appel de la lib d'export des besoins ici
+            /*
             using (Clipper_Sheet_Requirement Sheet_requirement = new Clipper_Sheet_Requirement())
             {
                 Sheet_requirement.Export(_Context);//), csvImportPath);
-            }
+            }*/
 
         }
 
@@ -296,10 +297,11 @@ namespace AlmaCamTrainingTest
         private void sheetRequiToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //appel de la lib d'export des besoins ici
+            /*
             using (Clipper_Sheet_Requirement Sheet_requirement = new Clipper_Sheet_Requirement())
             {
                 Sheet_requirement.Export(_Context);//), csvImportPath);
-            }
+            }*/
 
         }
 
