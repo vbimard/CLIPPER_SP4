@@ -4634,12 +4634,12 @@ namespace AF_Clipper_Dll
 
                 Clipper_Nest_Infos clipper_nest_infos = new Clipper_Nest_Infos();
                 clipper_nest_infos.Fill(nesting_to_cut);
-
+             
                 //Nest_Infos current_clipper_nestinfos = new Nest_Infos();
 
                 /*creatin du stock*/
 
-                StockManager.CreateStockFromNestingToCut(nesting_to_cut);
+                //StockManager.CreateStockFromNestingToCut(nesting_to_cut);
 
 
                 /*2018
@@ -4846,8 +4846,7 @@ namespace AF_Clipper_Dll
             base.Export_NestInfosToFile(export_gpao_path);
             /***/
             bool explodMultiplicity = Clipper_Param.Get_Multiplicity_Mode();
-
-            
+     
             //si la fonction est lancer par la méthode planning alors le fichier de sortie aura l'opiton .planning
             //ce pour ne pas polluer les problemes de produciton
             string extension = ".txt"; 
@@ -4860,133 +4859,7 @@ namespace AF_Clipper_Dll
             {///normalement on conidere le premier placement
                 case false:
                     {
-                        //concatenation du placement dans un seul fichier
-                        Nest_Infos_2 currentnestinfos =this.nestinfoslist.FirstOrDefault();
-                        using (StreamWriter export_gpao_file = new StreamWriter(@export_gpao_path + "\\" + currentnestinfos.Tole_Nesting.To_Cut_Sheet_Name + extension))
-                        {
-
-
-                            string Separator = ";";
-                            //recuperaiton des champs specifiques
-                            //string NUMMATLOT = "";
-                            currentnestinfos.Tole_Nesting.Specific_Tole_Fields.Get<string>("NUMMATLOT", out string NUMMATLOT);
-                            if (NUMMATLOT == "Undef")
-                            {
-                                NUMMATLOT = string.Empty;
-                            }
-                            //ecriture des entetes de nesting
-                            string Header_Line = "HEADER" + Separator +
-                            //currentnestinfos.Tole_Nesting.To_Cut_Sheet_Name + Separator +
-                            //ecriture des entetes de nesting
-                            // currentnestinfos.Tole_Nesting.Sheet_Reference + Separator +
-                            currentnestinfos.Tole_Nesting.Stock_Name + Separator +
-                            //longeur
-                            currentnestinfos.Tole_Nesting.Sheet_Length + Separator +
-                            //largeur
-                            currentnestinfos.Tole_Nesting.Sheet_Width + Separator +
-                            //epaisseur
-                            currentnestinfos.Tole_Nesting.Thickness + Separator +
-                            //nuance
-                            currentnestinfos.Tole_Nesting.GradeName + Separator +
-                            //multiplicité
-                            currentnestinfos.Tole_Nesting.Mutliplicity + Separator +
-                             // temps de chargement
-                             String.Format(Clipper_Param.Get_string_format_double(), (currentnestinfos.NestingSheet_loadingTimeInit / 60)) + Separator +
-                            currentnestinfos.Nesting_CentreFrais_Machine + Separator +
-                            "" + Separator + //on ignore le pdf
-                            currentnestinfos.Tole_Nesting.Sheet_EmfFile + Separator +
-                           //numero lot
-                           NUMMATLOT + Separator +
-                           // String.Format(Clipper_Param.get_string_format_double(), (Alma_Time.minutes(this.Sheet_loadingTimeInit + this.Sheet_loadingTimeEnd)));
-                           String.Format(Clipper_Param.Get_string_format_double(), (currentnestinfos.NestingSheet_loadingTimeInit + currentnestinfos.NestingSheet_loadingTimeEnd) / 60) +
-                              "";
-                            export_gpao_file.WriteLine(Header_Line.Replace(",", "."));
-
-
-                            //ecriture des details pieces
-                            //recue
-                            foreach (Nested_PartInfo clipperpart in currentnestinfos.Nested_Part_Infos_List)
-                            {
-                                ///string idlnrout;
-                                clipperpart.Nested_PartInfo_specificFields.Get<string>("IDLNROUT", out string idlnrout);
-                               
-                                clipperpart.Nested_PartInfo_specificFields.Get<string>("IDLNBOM", out string idlnbom);
-                                string CuttingTime = (currentnestinfos.Calculus_Parts_Total_Time == 0) == false ? String.Format(Clipper_Param.Get_string_format_double(), clipperpart.Part_Time * clipperpart.Nested_Quantity / currentnestinfos.Calculus_Parts_Total_Time) : "0";
-
-                                string detail_Line =
-                                "DETAIL" + Separator +
-                                 idlnrout + Separator +
-                                 idlnbom + Separator +
-                                 clipperpart.Nested_Quantity + Separator +
-                                 clipperpart.Height + Separator +
-                                 clipperpart.Width + Separator +
-                                 String.Format(Clipper_Param.Get_string_format_double(), clipperpart.Part_Balanced_Weight * clipperpart.Nested_Quantity / (currentnestinfos.Tole_Nesting.Sheet_Weight * currentnestinfos.Tole_Nesting.Mutliplicity)) + Separator +// * Tole_Nesting.Mutliplicity)) + Separator +
-                                                                                                                                                                                                                                                                  // clipperpart.Width + Separator;//+
-                                                                                                                                                                                                                                                                  //String.Format(Clipper_Param.get_string_format_double(), clipperpart.Part_Balanced_Weight * clipperpart.Nested_Quantity / (currentnestinfos.Tole_Nesting.Sheet_Weight * currentnestinfos.Tole_Nesting.Mutliplicity)) + Separator +
-                                String.Format(Clipper_Param.Get_string_format_double(), clipperpart.Weight * 0.001) + Separator +
-                        ///String.Format(Clipper_Param.get_string_format_double(), clipperpart.Part_Time * clipperpart.Nested_Quantity / currentnestinfos.Calculus_Parts_Total_Time);//current_clipper_nestinfos.Nesting_TotalTime);
-                                String.Format(Clipper_Param.Get_string_format_double(), CuttingTime);
-                                export_gpao_file.WriteLine(detail_Line.Replace(",", "."));
-
-                            }
-
-
-                            //ecriture  des chutes
-                            foreach (Tole currentoffcut in currentnestinfos.Offcut_infos_List)
-                            {
-                                string IsRectagular = (currentoffcut.Sheet_Length == currentoffcut.Sheet_Width) == true ? "1" : "0";
-                                double longueur, largeur;
-                                //si la tole est tournée, on inverse longueur et largeur
-                                longueur = currentoffcut.Sheet_Length;
-                                largeur = currentoffcut.Sheet_Width;
-
-                                if (currentoffcut.Sheet_Is_rotated)
-                                {
-                                    longueur = currentoffcut.Sheet_Width;
-                                    largeur = currentoffcut.Sheet_Length;
-                                }
-
-                                string offcut_Line =
-                            "CHUTE" + Separator +
-
-                            longueur + Separator +
-                            largeur + Separator +
-                            currentoffcut.Mutliplicity + Separator +
-                            //calcul du ratio
-                            String.Format(Clipper_Param.Get_string_format_double(), (currentoffcut.Sheet_Surface / currentnestinfos.Tole_Nesting.Sheet_Total_Surface)) + Separator +
-                             // currentoffcut.rectangular + Separator +
-                             IsRectagular + Separator +
-                            //clipperoffcut.Rectangular = true ? "1" : "0" + Separator +
-                            /*chemin vers dpr  */
-                            //Separator +--> chemin vers dpr (n'a pas d'utilité dans clip)
-                            "" + Separator +
-                            currentoffcut.Sheet_EmfFile + Separator +
-                            String.Format(Clipper_Param.Get_string_format_double(), currentoffcut.Sheet_Weight * 0.001);
-                                export_gpao_file.WriteLine(offcut_Line.Replace(",", "."));
-
-                                //validaton du stock sur les chutes
-                                //ecriture du SHEET_FILENAME
-                                IEntityList Sheets_To_Update;
-                                IEntity Sheet_To_Update;
-                                Sheets_To_Update = currentoffcut.SheetEntity.Context.EntityManager.GetEntityList("_SHEET", "ID", ConditionOperator.Equal, currentoffcut.Sheet_Id);///NestingStockEntity.Id);
-                                Sheets_To_Update.Fill(false);
-                                //construction de la liste des chutes
-                                Sheet_To_Update = SimplifiedMethods.GetFirtOfList(Sheets_To_Update);
-                                Sheet_To_Update.SetFieldValue("FILENAME", currentoffcut.Sheet_EmfFile);
-                                Sheet_To_Update.Save();
-
-
-
-
-                            }
-
-
-
-
-                        }
-
-
-
+                        MessageBox.Show(System.Reflection.MethodBase.GetCurrentMethod().Name + " : Le mode de multiplicité choisi dans les paramètres clipper  n'est pas géré. " );
                         break;
                     }
 
@@ -5110,9 +4983,7 @@ namespace AF_Clipper_Dll
                         Sheet_To_Update.SetFieldValue("FILENAME", currentoffcut.Sheet_EmfFile);
                         Sheet_To_Update.Save();
 
-                      
-
-
+               
                     }
                     
                       
@@ -5433,7 +5304,7 @@ namespace AF_Clipper_Dll
         /// 
 
         //infos spec des toles
-        public override void SetSpecific_Tole_Infos(Tole Tole)
+     public override void SetSpecific_Tole_Infos(Tole Tole)
         {
             base.SetSpecific_Tole_Infos(Tole);
             string numatlot = Tole.StockEntity.GetFieldValueAsString("NUMMATLOT");
@@ -5446,7 +5317,7 @@ namespace AF_Clipper_Dll
         
 
         //inofs specifiques des parts
-        public override void SetSpecific_Part_Infos(List<Nested_PartInfo> Nested_Part_Infos_List)
+     public override void SetSpecific_Part_Infos(List<Nested_PartInfo> Nested_Part_Infos_List)
         {
             base.SetSpecific_Part_Infos(Nested_Part_Infos_List);
 
@@ -5461,9 +5332,7 @@ namespace AF_Clipper_Dll
                     part.Part_IsGpao = false;
                 }
                 
-                //part.Nested_PartInfo_specificFields.Add<string>("IDLNROUT", part.Part_To_Produce_IEntity.GetFieldValueAsString("IDLNROUT"));
-
-                //clipperpart.Nested_PartInfo_specificFields.Get<string>("IDLBOM", out idlnbom);
+             
 
 
             }
@@ -5474,7 +5343,7 @@ namespace AF_Clipper_Dll
         }
 
         //infos specifique des chutes
-        public override void SetSpecific_Offcut_Infos(List<Tole> Offcut_infos_List)
+     public override void SetSpecific_Offcut_Infos(List<Tole> Offcut_infos_List)
         {
             base.SetSpecific_Offcut_Infos(Offcut_infos_List);
 
@@ -5507,11 +5376,8 @@ namespace AF_Clipper_Dll
     /// </summary>
     public class Clipper_Nest_Infos : Nest_Infos
     {
-        //public List<Nest_Infos> nestinfoslist = new List<Nest_Infos>();
-
+        
         //ajout des infos de tole sp&
-        //public List<Clipper_tole> Clipper_Offcut_Infos_List;// = new List<Clipper_tole>();
-        //public List<Clipper_Nested_PartInfo> Clipper_Part_Infos_List; //= new List<Clipper_part>();
         //Booked_Stock_Entity_List
         public override bool Fill(IEntity nesting_to_cut)
         {
@@ -5562,20 +5428,59 @@ namespace AF_Clipper_Dll
               
 
             }
-               
         //creation du distionnaire d'objet
         public override void GetSpecific_Stock_infos(Tole tole)
         {
 
         }
 
-      
-       
+        ///export//
+        ///
+        public override void Export_NestInfosToFile()
+        {
+            // base.Export_NestInfosToFile(export_gpao_file);//
+         
+            /***/
+            bool explodMultiplicity = Clipper_Param.Get_Multiplicity_Mode();
 
-        
+            //si la fonction est lancer par la méthode planning alors le fichier de sortie aura l'opiton .planning
+            //ce pour ne pas polluer les problemes de produciton
+            string extension = ".txt";
 
-      
-}
+            string stringformatdouble = Clipper_Param.Get_string_format_double();
+
+            ///recuperation des placements selectionnés
+            ///
+
+            switch (explodMultiplicity)
+            {///normalement on conidere le premier placement
+                case false:
+                    {
+                        MessageBox.Show(System.Reflection.MethodBase.GetCurrentMethod().Name + " : Le mode de multiplicité choisi dans les paramètres clipper  n'est pas géré. ");
+                        break;
+                    }
+                case true:
+                    {
+
+                        //recuperer les infos des toles
+
+                        //pour chaque toles ecrire le fichier de sortie
+                            //definir le streamwriter
+                        // definir le format du fichier de sortie
+
+
+
+
+                        break;
+                    }
+            }
+
+
+
+
+
+
+    }
 
     
 
