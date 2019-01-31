@@ -715,6 +715,15 @@ namespace AlmaCamTrainingTest
 
 
         }
+
+        private void button6_Click_1(object sender, EventArgs e)
+        {
+            using (Clipper_Stock_2019 Stock = new Clipper_Stock_2019())
+            {
+                //Stock.Import(_Context, csvImportPath, dataModelstring);
+                Stock.Import(_Context);//, csvImportPath);
+            }
+        }
     }
 
 

@@ -62,7 +62,7 @@ namespace AF_Clipper_Dll
         /// Remove-EventLog -Source "MyApp"
         /// </summary>
         /// <returns>true/false</returns>
-        public bool Automatic_Nestings_Close( IContext Contextlocal, string Stage, AF_ImportTools.WindowsLog log)
+        public bool Automatic_Nestings_Close(IContext Contextlocal, string Stage, AF_ImportTools.WindowsLog log)
         {
             string message = ""; //message de suivi pour les log
             try
@@ -227,7 +227,7 @@ namespace AF_Clipper_Dll
             {
                 Alma_Log.Write_Log("Probleme rencontré log de la cloture des placements :\n " + message);
                 Alma_Log.Write_Log("details :\n " + ie.Message);
-            
+
                 return false;
             }
         }
@@ -235,7 +235,7 @@ namespace AF_Clipper_Dll
 
 
 
-        
+
 
 
 
@@ -257,12 +257,15 @@ namespace AF_Clipper_Dll
         public override bool Execute()
         {
 
-            try { execute(Context);
+            try
+            {
+                execute(Context);
 
                 return base.Execute();
             }
 
-            catch(Exception ie) {
+            catch (Exception ie)
+            {
 
                 MessageBox.Show(ie.Message);
                 return base.Execute();
@@ -272,12 +275,12 @@ namespace AF_Clipper_Dll
 
 
 
-            
+
         }
         public bool execute(IContext contextlocal)
         {
 
-        
+
             if (contextlocal != null)
             {
                 AF_Clipper_Dll.Clipper_RemonteeDt Remontee_Dt = new AF_Clipper_Dll.Clipper_RemonteeDt();
@@ -317,12 +320,12 @@ namespace AF_Clipper_Dll
     public class Clipper_Requirement_Processor : CommandProcessor
     {
         public IContext contextlocal = null;
-       
-       
+
+
         //appel de la lib d'export des besoins ici
         public override bool Execute()
         { //initialisation des listes
-        IContext _Context = null;
+            IContext _Context = null;
             //string DbName = Alma_RegitryInfos.GetLastDataBase();
             //IModelsRepository modelsRepository = new ModelsRepository();
             contextlocal = Context; // modelsRepository.GetModelContext(DbName);
@@ -348,36 +351,36 @@ namespace AF_Clipper_Dll
     /// <summary>
     /// les commandes processor designent les boutons d'action integerés dans l'interface almaquote 
     /// </summary>
- 
-/*
-    public class Clipper_From_Workshop_Processor : CommandProcessor
-    {
-        public IContext contextlocal = null;
+
+    /*
+        public class Clipper_From_Workshop_Processor : CommandProcessor
+        {
+            public IContext contextlocal = null;
 
 
-        //appel de la lib d'export des besoins ici
-        public override bool Execute()
-        { //initialisation des listes
+            //appel de la lib d'export des besoins ici
+            public override bool Execute()
+            { //initialisation des listes
 
-           
-            
-            IEntity selectedNesting = Command.WorkOnEntity;
-            
-           
 
-            using (Clipper_DoOnAction_From_WorkShop Return_File = new Clipper_DoOnAction_From_WorkShop())
-            {
 
-                Return_File.Export(Command.Context, selectedNesting);//), csvImportPath);
+                IEntity selectedNesting = Command.WorkOnEntity;
+
+
+
+                using (Clipper_DoOnAction_From_WorkShop Return_File = new Clipper_DoOnAction_From_WorkShop())
+                {
+
+                    Return_File.Export(Command.Context, selectedNesting);//), csvImportPath);
+                }
+
+
+
+
+                return base.Execute();
             }
-
-
-
-
-            return base.Execute();
         }
-    }
-    */
+        */
 
 
 
@@ -392,20 +395,20 @@ namespace AF_Clipper_Dll
         public IContext contextlocal = null;
         public override bool Execute()
         {
-           
+
             ProcessStartInfo start_test = new ProcessStartInfo();
             start_test.Arguments = "";
-          
+
 
             start_test.FileName = @"C:\AlmaCAM\Bin\AF_Clipper.exe";
-      
+
             Process.Start(start_test);
 
             return base.Execute();
         }
     }
 
-    public class ClipperIE_Global :SimpleCommandProcessor
+    public class ClipperIE_Global : SimpleCommandProcessor
     {
         //public IContext contextlocal = null;
         public override bool Execute()
@@ -450,7 +453,7 @@ namespace AF_Clipper_Dll
 
             //import_stock
             //chargement de sparamètres
-          
+
 
             using (Clipper_Stock Stock = new Clipper_Stock())
             {
@@ -462,7 +465,7 @@ namespace AF_Clipper_Dll
             }
 
             ///reajustement des qtés par omission
-            
+
 
             return base.Execute();
         }
@@ -473,15 +476,16 @@ namespace AF_Clipper_Dll
 
 
     #region exit clipper dll
-    public static class ClipperExit {
+    public static class ClipperExit
+    {
 
         public static void Close()
         {
-      
+
             Alma_Log.Final_Open_Log();
             Application.Exit();
 
-        
+
         }
 
 
@@ -527,7 +531,7 @@ namespace AF_Clipper_Dll
                 string parametre_name;
 
                 Parameters_Dictionnary.Clear();
-             
+
 
                 string parametersetkey = "CLIPPER_DLL";
                 parametre_name = "IMPORT_CDA";
@@ -544,7 +548,7 @@ namespace AF_Clipper_Dll
                 //Parameters_Dictionnary.Add(parametre_name, context.ParameterSetManager.GetParameterValue(parametersetkey, "IMPORT_DM").GetValueAsString());
                 Get_string_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "", ref Parameters_Dictionnary);
 
-                parametre_name ="Export_GPAO";
+                parametre_name = "Export_GPAO";
                 Alma_Log.Info("recuperation du parametre " + parametre_name, "GetlistParam");
                 //Parameters_Dictionnary.Add(parametre_name, context.ParameterSetManager.GetParameterValue(parametersetkey, "EXPORT_Rp").GetValueAsString());
                 Get_string_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "EXPORT_Rp", ref Parameters_Dictionnary);
@@ -661,7 +665,7 @@ namespace AF_Clipper_Dll
                 Parameters_Dictionnary.Add(parametre_name, WORKSHOP_OPTION.ToString());
 
                 //verification des path
-                Alma_Log.Info("verification de l'existance des path " , "GetlistParam");
+                Alma_Log.Info("verification de l'existance des path ", "GetlistParam");
                 if (CheckClipperFolderExists() == false) { throw new System.ApplicationException("Certains chemin d'echanges de la Passerelle AlmaCam-clipper ne sont pas accessibles"); };
                 ///string AlmaCAmVersion = Directory.GetCurrentDirectory().ToString() + Parameters_Dictionnary.Values("");///
                 if (CkeckCompatibilityVersion() == false) { throw new System.ApplicationException("Version de la Dll clipper n'est pas validée pour cette version d'AlmaCam"); }
@@ -670,15 +674,16 @@ namespace AF_Clipper_Dll
                 //verification des chemins
                 //tous les nouveaux paramétres doivent etre ajoutés ici pr ordre decroissant d ecreation (le dernier en bas)
                 parametre_name = "EXPLODE_MULTIPLICITY";
-                Get_bool_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "", ref Parameters_Dictionnary,false);
+                Get_bool_Parameter_Dictionary_Value(context, parametersetkey, parametre_name, "", ref Parameters_Dictionnary, false);
 
-               
+
                 return true;
             }
 
-           
 
-            catch (KeyNotFoundException ex) {
+
+            catch (KeyNotFoundException ex)
+            {
                 Alma_Log.Error(ex, "CETTE BASE NE SEMBLE PAS ETRE CONFIGUREE POUR CLIPPER !!! ");
                 Alma_Log.Error(ex, "Veuiller verifier la configuration des paramètres de l'import clipper (nom et id des champs....)");
                 MessageBox.Show(Alma_RegitryInfos.GetLastDataBase() + " :CETTE BASE NE SEMBLE PAS ETRE CONFIGUREE POUR CLIPPER !!! \r\n " +
@@ -687,7 +692,8 @@ namespace AF_Clipper_Dll
                 //ClipperExit.Close();
                 return false;
             }
-            catch (System.ApplicationException exVersion) {
+            catch (System.ApplicationException exVersion)
+            {
                 MessageBox.Show(exVersion.Message);
                 Alma_Log.Error(exVersion, "Version incompatible ou mauvaise configuration de la base almacam");
                 //ClipperExit.Close();
@@ -733,19 +739,20 @@ namespace AF_Clipper_Dll
         /// <returns></returns>
         public static void SetParam<T>(this IDictionary<string, object> dic, string key, T value)
         {
-            try {
+            try
+            {
                 if (Parameters_Dictionnary.ContainsKey(key))
                 {
-                    dic[key]=value;
+                    dic[key] = value;
                 }
-                  
+
 
             }
             catch (Exception ie)
             {
-                MessageBox.Show( ie.Message, "Clipper Param  : SetParam ERROR");
+                MessageBox.Show(ie.Message, "Clipper Param  : SetParam ERROR");
             }
-            
+
         }
         /// <summary>
         /// recuperation des parametres de type string
@@ -756,32 +763,32 @@ namespace AF_Clipper_Dll
         /// <param name="parameterkeyname">nom de la clé almacam stockant le parametre</param>
         /// <param name="parameters_dictionnary">nom du dictionnaire</param>
         /// <returns></returns>
-        public static bool Get_string_Parameter_Dictionary_Value(IContext contextlocal,string parametersetkey,string parameter_name, string parameterkeyname, ref Dictionary<string, object> parameters_dictionnary)
+        public static bool Get_string_Parameter_Dictionary_Value(IContext contextlocal, string parametersetkey, string parameter_name, string parameterkeyname, ref Dictionary<string, object> parameters_dictionnary)
         {
             try
             {
                 bool rst = false;
                 //IParameterValue value;
-                if (  string.IsNullOrEmpty(parameterkeyname)) { parameterkeyname = parameter_name; }
+                if (string.IsNullOrEmpty(parameterkeyname)) { parameterkeyname = parameter_name; }
                 Alma_Log.Info("recuperation du parametre " + parameter_name, "GetlistParam");
-                rst =contextlocal.ParameterSetManager.TryGetParameterValue(parametersetkey, parameterkeyname, out IParameterValue value);
+                rst = contextlocal.ParameterSetManager.TryGetParameterValue(parametersetkey, parameterkeyname, out IParameterValue value);
                 if (rst == false)
                 {
                     rst = false;
                     parameters_dictionnary.Add(parameter_name, "");
                     throw new MissingParameterException(parameter_name);
-                   
+
                 }
                 else
                 {
                     // Parameters_Dictionnary.Add(parametre_name, context.ParameterSetManager.GetParameterValue(parametersetkey, "IMPORT_CDA").GetValueAsString());
                     parameters_dictionnary.Add(parameter_name, value.GetValueAsString());
                 }
- 
+
 
                 return rst;
             }
-            catch(MissingParameterException)
+            catch (MissingParameterException)
             {
 
                 return false;
@@ -810,15 +817,16 @@ namespace AF_Clipper_Dll
             try
             {
                 bool rst = false;
-                
+
                 if (string.IsNullOrEmpty(parameterkeyname)) { parameterkeyname = parameter_name; }
                 Alma_Log.Info("recuperation du parametre " + parameter_name, "GetlistParam");
                 rst = contextlocal.ParameterSetManager.TryGetParameterValue(parametersetkey, parameterkeyname, out IParameterValue value);
                 if (rst == false)
-                {   rst = false;
+                {
+                    rst = false;
                     parameters_dictionnary.Add(parameter_name, defaultvalue);
                     throw new MissingParameterException(parameter_name);
-                   
+
                 }
                 else
                 {
@@ -854,28 +862,29 @@ namespace AF_Clipper_Dll
         {
             //if (Parameters_Dictionnary.ContainsKey(key))
             {
-                try {
+                try
+                {
 
-                   
 
-                        dic.TryGetValue(key, out object obj);
 
-                        return (T)obj;
+                    dic.TryGetValue(key, out object obj);
+
+                    return (T)obj;
 
                 }
-                
+
                 catch (KeyNotFoundException)
                 {
                     return default(T);
 
 
                 }
-                catch (Exception  e)
+                catch (Exception e)
                 {
                     MessageBox.Show(e.Message);
                     return default(T);
                 }
-               
+
             }
             ///else { return default(T); }
         }
@@ -891,16 +900,18 @@ namespace AF_Clipper_Dll
             //GetlistParam(context);//    Alma_Log.Info("verification de la clé " + key, "GetPath");
             try
             {
-               // if (Parameters_Dictionnary.ContainsKey(key))
+                // if (Parameters_Dictionnary.ContainsKey(key))
                 {
                     return Parameters_Dictionnary[key].ToString();
                 }
             }
-             catch (Exception ie) {
+            catch (Exception ie)
+            {
                 Alma_Log.Info("impossible de trouver la clé  " + key, "GetPath");
                 Alma_Log.Info("impossible de trouver la clé  " + ie.Message, "GetPath");
-                return "Undef"; }
-           
+                return "Undef";
+            }
+
 
         }
         /// <summary>
@@ -931,7 +942,7 @@ namespace AF_Clipper_Dll
 
         }
 
-        
+
         public static string GetModelDM()
         {
             string key = "MODEL_DM";
@@ -967,7 +978,7 @@ namespace AF_Clipper_Dll
         /// <returns></returns>
         public static bool Get_Multiplicity_Mode()
         {
-            
+
             string key = "EXPLODE_MULTIPLICITY";
             //GetlistParam(context);//
             if (Parameters_Dictionnary.ContainsKey(key)) { return (bool)Parameters_Dictionnary[key]; } else { return false; }
@@ -1023,7 +1034,8 @@ namespace AF_Clipper_Dll
         /// verification de l'existance des dossiers d'echange
         /// </summary>
         /// <returns>true si tous les dossier existent, false si ils n'existent pas</returns>
-        public static Boolean CheckClipperFolderExists() {
+        public static Boolean CheckClipperFolderExists()
+        {
             try
             {
 
@@ -1035,8 +1047,8 @@ namespace AF_Clipper_Dll
                 Directory.GetDirectories(Path.GetDirectoryName(Clipper_Param.GetPath("Export_GPAO")));
                 Alma_Log.Info("checking EXPORT_DT", "checkClipperFolderExists");
                 Directory.GetDirectories(Path.GetDirectoryName(Clipper_Param.GetPath("EXPORT_DT")));
-                
-              
+
+
                 return true;
             }
             catch (System.IO.IOException ie)   //.DirectoryNotFoundException ie)
@@ -1056,7 +1068,8 @@ namespace AF_Clipper_Dll
         public static Boolean CheckDatabasename(string actualdatabasename)
         {
             try
-            { bool res = true;
+            {
+                bool res = true;
 
                 string lastopenDbname = Alma_RegitryInfos.GetLastDataBase();
                 if (Alma_RegitryInfos.GetLastDataBase().Count() == 0)
@@ -1104,7 +1117,8 @@ namespace AF_Clipper_Dll
         /// retourn la version compatible almacam indiquee dans les ressources almacam
         /// </summary>
         /// <returns></returns>
-        public static string GetAlmaCAMCompatibleVerion() {
+        public static string GetAlmaCAMCompatibleVerion()
+        {
             return Properties.Resources.Almcam_Version.ToString();
 
         }
@@ -1127,11 +1141,14 @@ namespace AF_Clipper_Dll
                 //get version//
                 versionalmacam = FileVersionInfo.GetVersionInfo(almacameditorfullpath).ProductVersion.ToString();
 
-               
-                foreach (string v in almacamCompatibleversion.Split(';')) {
-                    if (versionalmacam.StartsWith(v)) {
+
+                foreach (string v in almacamCompatibleversion.Split(';'))
+                {
+                    if (versionalmacam.StartsWith(v))
+                    {
                         compatible = true;
-                        break; };
+                        break;
+                    };
                 }
 
 
@@ -1247,7 +1264,7 @@ namespace AF_Clipper_Dll
 
             if (contextlocal != null)
             {
-                using (Clipper_OF cahierAffairesansdt= new Clipper_OF())
+                using (Clipper_OF cahierAffairesansdt = new Clipper_OF())
                 {
                     cahierAffairesansdt.Import(contextlocal, csvImportSandDt, dataModelstring, true);//), csvImportPath);
                 }
@@ -1263,7 +1280,7 @@ namespace AF_Clipper_Dll
         {
             //recuperation du context
             //string DbName = Alma_RegitryInfos.GetLastDataBase();
-           // IModelsRepository modelsRepository = new ModelsRepository();
+            // IModelsRepository modelsRepository = new ModelsRepository();
             //contextlocal = modelsRepository.GetModelContext(DbName);
             //contextlocal = Context;
             Clipper_Param.GetlistParam(Context);
@@ -1273,9 +1290,9 @@ namespace AF_Clipper_Dll
             string dataModelstring = Clipper_Param.GetModelCA();
 
 
-           // if (contextlocal != null)
+            // if (contextlocal != null)
             if (Context != null)
-                {
+            {
                 using (Clipper_OF cahierAffaire = new Clipper_OF())
                 {
                     cahierAffaire.Import(Context, csvImportPath, dataModelstring, false);//), csvImportPath);
@@ -1297,275 +1314,281 @@ namespace AF_Clipper_Dll
     /// recupere les of exportes de clipper
     /// </summary>
     public class Clipper_OF : IDisposable, IImport
-{
-    string CsvImportPath = null;
-
-
-    public void Dispose()
     {
-        //Dispose(true);
-        GC.SuppressFinalize(this);
-    }
+        string CsvImportPath = null;
+
+
+        public void Dispose()
+        {
+            //Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
 
 
-    /// <summary>
-    /// creer une nouvelle reference a produire sous reserve de sans_donnees_technique=true et de centre de frais et is non presente
-    /// </summary>
-    /// <param name="contextlocal"></param>
-    /// <param name="line_dictionnary"></param>
-    /// <param name="CentreFrais_Dictionnary">dictionnaire des centres de frais</param>
-    /// <param name="reference_to_produce">retourn de la nouvelle reference a produire si besoin</param>
-    /// <param name="reference">reference a pointer</param>
-    /// <param name="timetag">time tag de l'import : pour groupement </param>
-    /// <param name="sans_donnees_technique">si true alors oon ne creer jamais de reference</param>
-    /// <returns></returns>
-    public bool CreateNewPartToProduce(IContext contextlocal, Dictionary<string, object> line_dictionnary, Dictionary<string, string> CentreFrais_Dictionnary, ref IEntity reference_to_produce, ref IEntity reference, string timetag, bool sans_donnees_technique) {
-        bool result = false;
+        /// <summary>
+        /// creer une nouvelle reference a produire sous reserve de sans_donnees_technique=true et de centre de frais et is non presente
+        /// </summary>
+        /// <param name="contextlocal"></param>
+        /// <param name="line_dictionnary"></param>
+        /// <param name="CentreFrais_Dictionnary">dictionnaire des centres de frais</param>
+        /// <param name="reference_to_produce">retourn de la nouvelle reference a produire si besoin</param>
+        /// <param name="reference">reference a pointer</param>
+        /// <param name="timetag">time tag de l'import : pour groupement </param>
+        /// <param name="sans_donnees_technique">si true alors oon ne creer jamais de reference</param>
+        /// <returns></returns>
+        public bool CreateNewPartToProduce(IContext contextlocal, Dictionary<string, object> line_dictionnary, Dictionary<string, string> CentreFrais_Dictionnary, ref IEntity reference_to_produce, ref IEntity reference, string timetag, bool sans_donnees_technique)
+        {
+            bool result = false;
 
-        try {
-            //la piece ne contient pas de gamme
-            //cas des pieces oranges : Pas de cf, pas de id_piece_cfao, on considere que c'est une piece orange--> on ne creer que la reference. 
-            if (Data_Model.ExistsInDictionnary("CENTREFRAIS", ref line_dictionnary) == false || sans_donnees_technique == true)
+            try
             {
-                return false;
-            }
-            //string referenceName = null;
-            Boolean need_prep = true;
-            //int index_extension = 0;  //> 0 si ;emf;dpr detectée
-            PartInfo machinable_part_infos = null; //infos de machinabe part
-
-            //creation de la nouvelle reference
-            reference_to_produce = contextlocal.EntityManager.CreateEntity("_TO_PRODUCE_REFERENCE");
-            //recuperation et assignaton de la machine si elle existe
-            string machine_name = "";
-            Data_Model.ExistsInDictionnary(line_dictionnary["CENTREFRAIS"].ToString(), ref CentreFrais_Dictionnary);
-            //lecture des part infos (optionnel) car le get reference fait le travail                 
-            machinable_part_infos = new PartInfo();
-            bool fastmode = true;
-            //bool result = false;
-            machinable_part_infos.GetPartinfos(ref contextlocal, reference);
-            //on control que la matiere de la reference correspond -soit bonne sinon on continue a la ligne suivante//
-            if (fastmode)
-            {
-
-                //try { reference_to_produce.SetFieldValue("NEED_PREP", !part_infos.IsPartDefault_Preparation(contextlocal, reference, CentreFrais_Dictionnary[line_Dictionnary["CENTREFRAIS"].ToString()])); }
-                if (Data_Model.ExistsInDictionnary(line_dictionnary["CENTREFRAIS"].ToString(), ref CentreFrais_Dictionnary))
+                //la piece ne contient pas de gamme
+                //cas des pieces oranges : Pas de cf, pas de id_piece_cfao, on considere que c'est une piece orange--> on ne creer que la reference. 
+                if (Data_Model.ExistsInDictionnary("CENTREFRAIS", ref line_dictionnary) == false || sans_donnees_technique == true)
                 {
-                    try { need_prep = need_prep && machinable_part_infos.IsPartDefault_Preparation(reference, CentreFrais_Dictionnary[line_dictionnary["CENTREFRAIS"].ToString()]); }
-                    //reference_to_produce.SetFieldValue("NEED_PREP", !machinable_part_infos.IsPartDefault_Preparation(reference, CentreFrais_Dictionnary[line_Dictionnary["CENTREFRAIS"].ToString()])); }
-                    catch (KeyNotFoundException)
-                    {
-                        Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + "le centre de Frais  ne pointe pas vers une machine connue");
-                        MessageBox.Show(string.Format("le centre de Frais {0} ne pointe pas vers une machine connue", CentreFrais_Dictionnary[line_dictionnary["CENTREFRAIS"].ToString()]));
-                    }
+                    return false;
                 }
+                //string referenceName = null;
+                Boolean need_prep = true;
+                //int index_extension = 0;  //> 0 si ;emf;dpr detectée
+                PartInfo machinable_part_infos = null; //infos de machinabe part
 
-            }
-            else
-            //slowmode
-            //methode par comparaison d'id
-            {
-                if (machine_name != "")
+                //creation de la nouvelle reference
+                reference_to_produce = contextlocal.EntityManager.CreateEntity("_TO_PRODUCE_REFERENCE");
+                //recuperation et assignaton de la machine si elle existe
+                string machine_name = "";
+                Data_Model.ExistsInDictionnary(line_dictionnary["CENTREFRAIS"].ToString(), ref CentreFrais_Dictionnary);
+                //lecture des part infos (optionnel) car le get reference fait le travail                 
+                machinable_part_infos = new PartInfo();
+                bool fastmode = true;
+                //bool result = false;
+                machinable_part_infos.GetPartinfos(ref contextlocal, reference);
+                //on control que la matiere de la reference correspond -soit bonne sinon on continue a la ligne suivante//
+                if (fastmode)
                 {
-                    IEntityList machines = null;
-                    IEntity machine = null;
 
-                    machine = AF_ImportTools.SimplifiedMethods.GetFirtOfList(machines);
-                    string mm = machinable_part_infos.DefaultMachineName;
-                    need_prep = need_prep && true;
+                    //try { reference_to_produce.SetFieldValue("NEED_PREP", !part_infos.IsPartDefault_Preparation(contextlocal, reference, CentreFrais_Dictionnary[line_Dictionnary["CENTREFRAIS"].ToString()])); }
+                    if (Data_Model.ExistsInDictionnary(line_dictionnary["CENTREFRAIS"].ToString(), ref CentreFrais_Dictionnary))
+                    {
+                        try { need_prep = need_prep && machinable_part_infos.IsPartDefault_Preparation(reference, CentreFrais_Dictionnary[line_dictionnary["CENTREFRAIS"].ToString()]); }
+                        //reference_to_produce.SetFieldValue("NEED_PREP", !machinable_part_infos.IsPartDefault_Preparation(reference, CentreFrais_Dictionnary[line_Dictionnary["CENTREFRAIS"].ToString()])); }
+                        catch (KeyNotFoundException)
+                        {
+                            Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + "le centre de Frais  ne pointe pas vers une machine connue");
+                            MessageBox.Show(string.Format("le centre de Frais {0} ne pointe pas vers une machine connue", CentreFrais_Dictionnary[line_dictionnary["CENTREFRAIS"].ToString()]));
+                        }
+                    }
+
                 }
                 else
+                //slowmode
+                //methode par comparaison d'id
                 {
-                    need_prep = need_prep && true;
-
-                }
-
-            }
-
-
-
-
-            //ecriture du time tag
-            reference_to_produce.SetFieldValue("OF_IMPORT_NUMBER", timetag.Replace("_", ""));
-            reference_to_produce.SetFieldValue("_REFERENCE", reference.Id32);
-            reference_to_produce.SetFieldValue("NEED_PREP", need_prep);
-
-
-            Update_Part_Item(contextlocal, ref reference_to_produce, ref CentreFrais_Dictionnary, ref line_dictionnary);
-            Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + "update infos succeed");
-            reference_to_produce.Save();
-            line_dictionnary.Clear();
-
-            return result;
-        }
-        catch { return result; }
-    }
-
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="contextlocal"></param>
-    /// <param name="line_dictionnary"></param>
-    /// <param name="CentreFrais_Dictionnary"></param>
-    /// <param name="reference_to_produce"></param>
-    /// <param name="reference"></param>
-    /// <param name="timetag"></param>
-    /// <returns></returns>
-    public bool CreateNewPartToProduce(IContext contextlocal, Dictionary<string, object> line_dictionnary, Dictionary<string, string> CentreFrais_Dictionnary, ref IEntity reference_to_produce, ref IEntity reference, string timetag)
-    {
-        bool result = false;
-
-        try
-        {
-            //la piece ne contient pas de gamme
-            //cas des pieces oranges : Pas de cf, pas de id_piece_cfao, on considere que c'est une piece orange--> on ne creer que la reference. 
-            if ((Data_Model.ExistsInDictionnary("CENTREFRAIS") == false) && (Data_Model.ExistsInDictionnary("CENTREFRAIS") == false))
-            {
-                return false;
-            }
-            //string referenceName = null;
-            Boolean need_prep = false;
-            //int index_extension = 0;  //> 0 si ;emf;dpr detectée
-            PartInfo machinable_part_infos = null; //infos de machinabe part
-
-            //creation de la nouvelle reference
-            reference_to_produce = contextlocal.EntityManager.CreateEntity("_TO_PRODUCE_REFERENCE");
-            //recuperation et assignaton de la machine si elle existe
-            string machine_name = "";
-            //Data_Model.ExistsInDictionnary(line_dictionnary["CENTREFRAIS"].ToString(), ref CentreFrais_Dictionnary);
-            //lecture des part infos (optionnel) car le get reference fait le travail                 
-            machinable_part_infos = new PartInfo();
-            bool fastmode = true;
-            //bool result = false;
-            machinable_part_infos.GetPartinfos(ref contextlocal, reference);
-                //
-            //on control que la matiere de la reference correspond -soit bonne sinon on continue a la ligne suivante//
-            if (fastmode)
-            {
-
-                //try { reference_to_produce.SetFieldValue("NEED_PREP", !part_infos.IsPartDefault_Preparation(contextlocal, reference, CentreFrais_Dictionnary[line_Dictionnary["CENTREFRAIS"].ToString()])); }
-                if (Data_Model.ExistsInDictionnary(line_dictionnary["CENTREFRAIS"].ToString(), ref CentreFrais_Dictionnary))
-                {
-                    try { need_prep = need_prep && machinable_part_infos.IsPartDefault_Preparation(reference, CentreFrais_Dictionnary[line_dictionnary["CENTREFRAIS"].ToString()]); }
-                    //reference_to_produce.SetFieldValue("NEED_PREP", !machinable_part_infos.IsPartDefault_Preparation(reference, CentreFrais_Dictionnary[line_Dictionnary["CENTREFRAIS"].ToString()])); }
-                    catch (KeyNotFoundException)
+                    if (machine_name != "")
                     {
-                        Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + "le centre de Frais  ne pointe pas vers une machine connue");
-                        MessageBox.Show(string.Format("le centre de Frais {0} ne pointe pas vers une machine connue", CentreFrais_Dictionnary[line_dictionnary["CENTREFRAIS"].ToString()]));
-                    }
-                }
+                        IEntityList machines = null;
+                        IEntity machine = null;
 
-            }
-            else
-            //slowmode
-            //methode par comparaison d'id
-            {
-                if (machine_name != "")
-                {
-                    IEntityList machines = null;
-                    IEntity machine = null;
-
-                    machine = AF_ImportTools.SimplifiedMethods.GetFirtOfList(machines);
-                    string mm = machinable_part_infos.DefaultMachineName;
-                    need_prep = need_prep && true;
-                }
-                else
-                {
-                    need_prep = need_prep && true;
-
-                }
-
-            }
-
-
-
-
-            //ecriture du time tag
-            reference_to_produce.SetFieldValue("OF_IMPORT_NUMBER", timetag.Replace("_", ""));
-            reference_to_produce.SetFieldValue("_REFERENCE", reference.Id32);
-            reference_to_produce.SetFieldValue("NEED_PREP", need_prep);
-
-
-            Update_Part_Item(contextlocal, ref reference_to_produce, ref CentreFrais_Dictionnary, ref line_dictionnary);
-            Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + "update infos succeed");
-            reference_to_produce.Save();
-            line_dictionnary.Clear();
-
-            return result;
-        }
-        catch { return result; }
-    }
-
-
-
-    /// <summary>
-    /// Recupere la liste de toutes les machines sous la forme litterale "nom machine" "centre de frais"
-    /// </summary>
-    /// <param name="contextlocal">context local</param>
-    /// <param name="Clipper_Machine">entité machine clipper</param>
-    /// <param name="Clipper_Centre_Frais">entité centre de frais clipper</param>
-    /// <returns></returns>
-    public Boolean Get_Clipper_Machine(IContext contextlocal, out IEntity Clipper_Machine, out IEntity Clipper_Centre_Frais, out Dictionary<string, string> CentreFrais_Dictionnary) {
-
-
-
-        CentreFrais_Dictionnary = new Dictionary<string, string>();
-        IEntityList machine_liste = null;
-        //recuperation de la machine clipper et initialisation des listes
-        //CentreFrais_Dictionnary = null;
-        Clipper_Machine = null;
-        Clipper_Centre_Frais = null;
-        //CentreFrais_Dictionnary.Clear();
-        //verification que toutes les machineS sont conformes pour une intégration clipper
-        ///remplissage des machines et verification de la presence du centre de frais demandé par clipper
-        machine_liste = contextlocal.EntityManager.GetEntityList("_CUT_MACHINE_TYPE");
-        machine_liste.Fill(false);
-
-
-        foreach (IEntity machine in machine_liste)
-
-        {
-            IEntity cf;
-            cf = machine.GetFieldValueAsEntity("CENTREFRAIS_MACHINE");
-
-            if (!object.Equals(machine.GetFieldValueAsEntity("CENTREFRAIS_MACHINE"), null))
-            {
-                cf = machine.GetFieldValueAsEntity("CENTREFRAIS_MACHINE");
-            } else {
-                cf = null;
-                Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": Missing  cost center on : " + machine.DefaultValue);
-                Alma_Log.Error("centre de frais non defini sur la machine  !!!" + machine.DefaultValue, MethodBase.GetCurrentMethod().Name);
-
-            }
-
-            ///creation du dictionnaire des machines installées   
-            if (cf.DefaultValue != "" && machine.DefaultValue != "" && Clipper_Param.Get_Clipper_Machine_Cf() != null
-                )
-            {
-                if (CentreFrais_Dictionnary.ContainsKey(cf.DefaultValue) == false) { CentreFrais_Dictionnary.Add(cf.DefaultValue, machine.DefaultValue); }
-
-                if (cf.DefaultValue == Clipper_Param.Get_Clipper_Machine_Cf())
-                {
-                    if (Clipper_Param.Get_Clipper_Machine_Cf() != "Undef clipper machine")
-                    {
-                        Clipper_Centre_Frais = cf;
-                        Clipper_Machine = machine;
+                        machine = AF_ImportTools.SimplifiedMethods.GetFirtOfList(machines);
+                        string mm = machinable_part_infos.DefaultMachineName;
+                        need_prep = need_prep && true;
                     }
                     else
                     {
-                        Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": Missing  clipper machine !!! ");
-                        Alma_Log.Error("IL MANQUE LA MACHINE CLIPPER !!!", MethodBase.GetCurrentMethod().Name);
-                        return false;//throw new Exception(machine.DefaultValue + " : Missing  cost center definition"); 
+                        need_prep = need_prep && true;
+
                     }
 
                 }
 
-            }
 
-            else { /*on log on arrete tout */
-            Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": Missing  cost center definition on a machine !!! ");
+
+
+                //ecriture du time tag
+                reference_to_produce.SetFieldValue("OF_IMPORT_NUMBER", timetag.Replace("_", ""));
+                reference_to_produce.SetFieldValue("_REFERENCE", reference.Id32);
+                reference_to_produce.SetFieldValue("NEED_PREP", need_prep);
+
+
+                Update_Part_Item(contextlocal, ref reference_to_produce, ref CentreFrais_Dictionnary, ref line_dictionnary);
+                Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + "update infos succeed");
+                reference_to_produce.Save();
+                line_dictionnary.Clear();
+
+                return result;
+            }
+            catch { return result; }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="contextlocal"></param>
+        /// <param name="line_dictionnary"></param>
+        /// <param name="CentreFrais_Dictionnary"></param>
+        /// <param name="reference_to_produce"></param>
+        /// <param name="reference"></param>
+        /// <param name="timetag"></param>
+        /// <returns></returns>
+        public bool CreateNewPartToProduce(IContext contextlocal, Dictionary<string, object> line_dictionnary, Dictionary<string, string> CentreFrais_Dictionnary, ref IEntity reference_to_produce, ref IEntity reference, string timetag)
+        {
+            bool result = false;
+
+            try
+            {
+                //la piece ne contient pas de gamme
+                //cas des pieces oranges : Pas de cf, pas de id_piece_cfao, on considere que c'est une piece orange--> on ne creer que la reference. 
+                if ((Data_Model.ExistsInDictionnary("CENTREFRAIS") == false) && (Data_Model.ExistsInDictionnary("CENTREFRAIS") == false))
+                {
+                    return false;
+                }
+                //string referenceName = null;
+                Boolean need_prep = false;
+                //int index_extension = 0;  //> 0 si ;emf;dpr detectée
+                PartInfo machinable_part_infos = null; //infos de machinabe part
+
+                //creation de la nouvelle reference
+                reference_to_produce = contextlocal.EntityManager.CreateEntity("_TO_PRODUCE_REFERENCE");
+                //recuperation et assignaton de la machine si elle existe
+                string machine_name = "";
+                //Data_Model.ExistsInDictionnary(line_dictionnary["CENTREFRAIS"].ToString(), ref CentreFrais_Dictionnary);
+                //lecture des part infos (optionnel) car le get reference fait le travail                 
+                machinable_part_infos = new PartInfo();
+                bool fastmode = true;
+                //bool result = false;
+                machinable_part_infos.GetPartinfos(ref contextlocal, reference);
+                //
+                //on control que la matiere de la reference correspond -soit bonne sinon on continue a la ligne suivante//
+                if (fastmode)
+                {
+
+                    //try { reference_to_produce.SetFieldValue("NEED_PREP", !part_infos.IsPartDefault_Preparation(contextlocal, reference, CentreFrais_Dictionnary[line_Dictionnary["CENTREFRAIS"].ToString()])); }
+                    if (Data_Model.ExistsInDictionnary(line_dictionnary["CENTREFRAIS"].ToString(), ref CentreFrais_Dictionnary))
+                    {
+                        try { need_prep = need_prep && machinable_part_infos.IsPartDefault_Preparation(reference, CentreFrais_Dictionnary[line_dictionnary["CENTREFRAIS"].ToString()]); }
+                        //reference_to_produce.SetFieldValue("NEED_PREP", !machinable_part_infos.IsPartDefault_Preparation(reference, CentreFrais_Dictionnary[line_Dictionnary["CENTREFRAIS"].ToString()])); }
+                        catch (KeyNotFoundException)
+                        {
+                            Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + "le centre de Frais  ne pointe pas vers une machine connue");
+                            MessageBox.Show(string.Format("le centre de Frais {0} ne pointe pas vers une machine connue", CentreFrais_Dictionnary[line_dictionnary["CENTREFRAIS"].ToString()]));
+                        }
+                    }
+
+                }
+                else
+                //slowmode
+                //methode par comparaison d'id
+                {
+                    if (machine_name != "")
+                    {
+                        IEntityList machines = null;
+                        IEntity machine = null;
+
+                        machine = AF_ImportTools.SimplifiedMethods.GetFirtOfList(machines);
+                        string mm = machinable_part_infos.DefaultMachineName;
+                        need_prep = need_prep && true;
+                    }
+                    else
+                    {
+                        need_prep = need_prep && true;
+
+                    }
+
+                }
+
+
+
+
+                //ecriture du time tag
+                reference_to_produce.SetFieldValue("OF_IMPORT_NUMBER", timetag.Replace("_", ""));
+                reference_to_produce.SetFieldValue("_REFERENCE", reference.Id32);
+                reference_to_produce.SetFieldValue("NEED_PREP", need_prep);
+
+
+                Update_Part_Item(contextlocal, ref reference_to_produce, ref CentreFrais_Dictionnary, ref line_dictionnary);
+                Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + "update infos succeed");
+                reference_to_produce.Save();
+                line_dictionnary.Clear();
+
+                return result;
+            }
+            catch { return result; }
+        }
+
+
+
+        /// <summary>
+        /// Recupere la liste de toutes les machines sous la forme litterale "nom machine" "centre de frais"
+        /// </summary>
+        /// <param name="contextlocal">context local</param>
+        /// <param name="Clipper_Machine">entité machine clipper</param>
+        /// <param name="Clipper_Centre_Frais">entité centre de frais clipper</param>
+        /// <returns></returns>
+        public Boolean Get_Clipper_Machine(IContext contextlocal, out IEntity Clipper_Machine, out IEntity Clipper_Centre_Frais, out Dictionary<string, string> CentreFrais_Dictionnary)
+        {
+
+
+
+            CentreFrais_Dictionnary = new Dictionary<string, string>();
+            IEntityList machine_liste = null;
+            //recuperation de la machine clipper et initialisation des listes
+            //CentreFrais_Dictionnary = null;
+            Clipper_Machine = null;
+            Clipper_Centre_Frais = null;
+            //CentreFrais_Dictionnary.Clear();
+            //verification que toutes les machineS sont conformes pour une intégration clipper
+            ///remplissage des machines et verification de la presence du centre de frais demandé par clipper
+            machine_liste = contextlocal.EntityManager.GetEntityList("_CUT_MACHINE_TYPE");
+            machine_liste.Fill(false);
+
+
+            foreach (IEntity machine in machine_liste)
+
+            {
+                IEntity cf;
+                cf = machine.GetFieldValueAsEntity("CENTREFRAIS_MACHINE");
+
+                if (!object.Equals(machine.GetFieldValueAsEntity("CENTREFRAIS_MACHINE"), null))
+                {
+                    cf = machine.GetFieldValueAsEntity("CENTREFRAIS_MACHINE");
+                }
+                else
+                {
+                    cf = null;
+                    Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": Missing  cost center on : " + machine.DefaultValue);
+                    Alma_Log.Error("centre de frais non defini sur la machine  !!!" + machine.DefaultValue, MethodBase.GetCurrentMethod().Name);
+
+                }
+
+                ///creation du dictionnaire des machines installées   
+                if (cf.DefaultValue != "" && machine.DefaultValue != "" && Clipper_Param.Get_Clipper_Machine_Cf() != null
+                    )
+                {
+                    if (CentreFrais_Dictionnary.ContainsKey(cf.DefaultValue) == false) { CentreFrais_Dictionnary.Add(cf.DefaultValue, machine.DefaultValue); }
+
+                    if (cf.DefaultValue == Clipper_Param.Get_Clipper_Machine_Cf())
+                    {
+                        if (Clipper_Param.Get_Clipper_Machine_Cf() != "Undef clipper machine")
+                        {
+                            Clipper_Centre_Frais = cf;
+                            Clipper_Machine = machine;
+                        }
+                        else
+                        {
+                            Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": Missing  clipper machine !!! ");
+                            Alma_Log.Error("IL MANQUE LA MACHINE CLIPPER !!!", MethodBase.GetCurrentMethod().Name);
+                            return false;//throw new Exception(machine.DefaultValue + " : Missing  cost center definition"); 
+                        }
+
+                    }
+
+                }
+
+                else
+                { /*on log on arrete tout */
+                    Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": Missing  cost center definition on a machine !!! ");
                     Alma_Log.Error("IL MANQUE LE CENTRE DE FRAIS SUR L UNE DES MACHINES INSTALLEE !!!", MethodBase.GetCurrentMethod().Name);
                     return false;//throw new Exception(machine.DefaultValue + " : Missing  cost center definition"); 
                 }
@@ -1607,9 +1630,10 @@ namespace AF_Clipper_Dll
         /// <param name="line_dictionnary">dictionnaire de ligne</param>
         public IEntity CreateNewReference(IContext contextlocal, Dictionary<string, object> line_dictionnary, ref string NewReferenceName, IEntity clipper_machine, bool Sans_Donnees_Technique)
         {
-            try {
+            try
+            {
 
-                
+
 
                 IEntity newreference = null;
                 IEntity material = null;
@@ -1628,7 +1652,8 @@ namespace AF_Clipper_Dll
                     material = GetMaterialEntity(contextlocal, ref line_dictionnary);
                     //recupe du nom de la geométrie                 
                     //string referenceName = "undef";    just in case mais inutiel
-                    if (NewReferenceName == null) {
+                    if (NewReferenceName == null)
+                    {
 
                         Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": Unfortunate error: NewreferenceName does not existes and new reference has been created !! ");
                         if (Data_Model.ExistsInDictionnary("FILENAME", ref line_dictionnary))
@@ -1663,12 +1688,14 @@ namespace AF_Clipper_Dll
                             string cfbase = cf.GetFieldValueAsString("_CODE").ToUpper();
                             string cffile = "";
                             /*** SI CHAMP VIDE***/
-                            if (line_dictionnary.ContainsKey("CENTREFRAIS") != true) {
+                            if (line_dictionnary.ContainsKey("CENTREFRAIS") != true)
+                            {
                                 //recup de la machine clipper par defaut
                                 machine = clipper_machine;
                             }
                             else
-                            { cffile = line_dictionnary["CENTREFRAIS"].ToString().ToUpper();
+                            {
+                                cffile = line_dictionnary["CENTREFRAIS"].ToString().ToUpper();
                                 if (string.Compare(cfbase, cffile) == 0) { machine = m; break; }
                                 else { machine = clipper_machine; }
                                 /*on log on arrete tout */ //Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": centre de frais inconnu !! "); throw new Exception(machine.DefaultValue + " : Missing  cost center definition");
@@ -1723,7 +1750,7 @@ namespace AF_Clipper_Dll
                         newreference.SetFieldValue("EN_RANG", AF_ImportTools.SimplifiedMethods.ConvertNullStringToEmptystring("EN_RANG", ref line_dictionnary));
                         newreference.SetFieldValue("EN_PERE_PIECE", AF_ImportTools.SimplifiedMethods.ConvertNullStringToEmptystring("EN_PERE_PIECE", ref line_dictionnary));
 
-                     
+
 
 
                     }
@@ -1801,7 +1828,8 @@ namespace AF_Clipper_Dll
                 {
                     result = result & true;
                 }
-                else {
+                else
+                {
                     //MessageBox.Show(currenfieldsname + " : missing ");
                     Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + currenfieldsname + " : missing ");
                     Alma_Log.Write_Log_Important(MethodBase.GetCurrentMethod().Name + ":" + line_dictionnary["_MATERIAL"] + ": champs obligatoire : matiere non detectée sur la ligne a importée, line ignored"); result = result & false;
@@ -1814,21 +1842,26 @@ namespace AF_Clipper_Dll
                 currenfieldsname = "THICKNESS";
                 if (line_dictionnary.ContainsKey(currenfieldsname))
                 { result = result & true; }
-                else {
+                else
+                {
                     Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + currenfieldsname + " : missing ");
                     Alma_Log.Write_Log_Important(MethodBase.GetCurrentMethod().Name + ":" + line_dictionnary["_THICKNESS"] + ": champs obligatoire epaisseur non detectée sur la ligne a importée, line ignored"); result = result & false;
-                    result = result & false; }
+                    result = result & false;
+                }
 
 
                 //L' Affaire existe t elle ?
                 currenfieldsname = "AFFAIRE";
-                if (line_dictionnary.ContainsKey(currenfieldsname)) {
+                if (line_dictionnary.ContainsKey(currenfieldsname))
+                {
                     result = result & true;
                 }
-                else {
+                else
+                {
                     Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + currenfieldsname + " : missing ");
                     Alma_Log.Write_Log_Important(MethodBase.GetCurrentMethod().Name + ":" + line_dictionnary["_NAME"] + ": champs obligatoire Affaire non detectée sur la ligne a importée, line ignored"); result = result & false;
-                    result = result & false; }
+                    result = result & false;
+                }
 
 
                 ///////////////////////////////////////////////////////////////////////////
@@ -1842,20 +1875,25 @@ namespace AF_Clipper_Dll
                         Alma_Log.Write_Log_Important(MethodBase.GetCurrentMethod().Name + ":" + line_dictionnary["_NAME"] + ": champs obligatoire :_QUANTITY non detecté sur la ligne a importée, line ignored"); result = false;
                     }
                 }
-                else {
+                else
+                {
                     Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + currenfieldsname + " : missing ");
-                    result = result & false; }
+                    result = result & false;
+                }
 
                 ///////////////////////////////////////////////////////////////////////////
                 //le nom de la piece à produire doit exister
                 currenfieldsname = "_NAME";
                 if (line_dictionnary.ContainsKey(currenfieldsname) != true)
-                {   Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + currenfieldsname + " : missing ");
+                {
+                    Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + currenfieldsname + " : missing ");
                     Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": champs obligatoire:  pas de nom de reference trouvée"); result = result & false;
                     Alma_Log.Write_Log_Important(MethodBase.GetCurrentMethod().Name + ":" + line_dictionnary["_NAME"] + ": champs obligatoire: pas de non de piece detecté sur la ligne a importée, line ignored"); result = result & false;
                 }
-                else { 
-                    result = result & true; }
+                else
+                {
+                    result = result & true;
+                }
 
                 //////////////////////////////////////////////////////////////////////////
                 //la machine (centre de frais... )
@@ -1866,15 +1904,19 @@ namespace AF_Clipper_Dll
                     Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": pas de centre de frais --> aucune gamme detectées: piece Orange identifiée");
                     Alma_Log.Write_Log_Important(MethodBase.GetCurrentMethod().Name + ":" + line_dictionnary["_NAME"] + ": piece Orange identifiée : centre de frais non detecté sur la ligne a importée"); result = result & true;
                 }
-                else {
+                else
+                {
                     // si la machien envoyée n'existe pas on ne fait rien
-                   
-                    if (Data_Model.ExistsInDictionnary(line_dictionnary[currenfieldsname].ToString(), ref CentreFrais_Dictionnary) == false) {
+
+                    if (Data_Model.ExistsInDictionnary(line_dictionnary[currenfieldsname].ToString(), ref CentreFrais_Dictionnary) == false)
+                    {
                         Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": le centre de frais spécifié n'existe pas --> la ligne sera ignorée");
                         Alma_Log.Write_Log_Important(MethodBase.GetCurrentMethod().Name + ":" + line_dictionnary["_NAME"] + ":le centre de frais spécifié n'existe pas --> centre de frais non detecté sur la ligne à importée, la ligne sera ignorée");
-                        result = result & false; }
+                        result = result & false;
+                    }
 
-                    result = result & true; }
+                    result = result & true;
+                }
 
                 ///////////////////////////////////////////////////////////////////////////
                 //les matieres sont désormais obligatoires
@@ -1891,7 +1933,8 @@ namespace AF_Clipper_Dll
                 if (material_name == string.Empty)
                 { /*on log matiere non existante*/
                     Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": matiere non existante :" + nuance + " ep " + thickness);
-                    result = result & false; }
+                    result = result & false;
+                }
 
                 ///////////////////////////////////////////////////////////////////////////
                 //les matieres sont désormais obligatoires
@@ -1911,7 +1954,7 @@ namespace AF_Clipper_Dll
                 }
                 else { result = result & true; }
 
-                
+
 
 
 
@@ -1922,8 +1965,8 @@ namespace AF_Clipper_Dll
 
             catch (Exception ie)
             {
-                Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": erreur : "+ie.Message);
-               // MessageBox.Show(ie.Message);
+                Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": erreur : " + ie.Message);
+                // MessageBox.Show(ie.Message);
                 return false;
             }
 
@@ -1950,11 +1993,11 @@ namespace AF_Clipper_Dll
                 if (line_dictionnary.ContainsKey("_MATERIAL") && line_dictionnary.ContainsKey("THICKNESS"))
                 {
                     // material = Material.getMaterial_Entity(contextlocal, line_dictionnary["_MATERIAL"].ToString(), Convert.ToDouble(line_dictionnary["THICKNESS"]));
-                    material = Material.getMaterial_Entity(contextlocal, line_dictionnary["_MATERIAL"].ToString(),  SimplifiedMethods.GetDoubleInvariantCulture(line_dictionnary["THICKNESS"].ToString()));
+                    material = Material.getMaterial_Entity(contextlocal, line_dictionnary["_MATERIAL"].ToString(), SimplifiedMethods.GetDoubleInvariantCulture(line_dictionnary["THICKNESS"].ToString()));
                 }
-                
-                
-               
+
+
+
 
 
                 return material;
@@ -2160,9 +2203,10 @@ namespace AF_Clipper_Dll
                                 Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ":" + id_piece_cfao + ": not found :");
                                 result = false;
                             }
-                            
+
                         }
-                        else {
+                        else
+                        {
                             // sinon erreur et on creer une nouvelle piece
                             Alma_Log.Error("Quote Part NON TROUVEE dans les pieces de devis : ref " + id_piece_cfao.ToString(), MethodBase.GetCurrentMethod().Name + "Quotepart non trouvée : import impossible");
                             Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ":" + id_piece_cfao + ": not found :");
@@ -2170,7 +2214,8 @@ namespace AF_Clipper_Dll
                         }
 
                     }
-                    else {
+                    else
+                    {
                         //on recupere directment l'id de reference
                         new_reference_id = id_piece_cfao;
                     }
@@ -2179,7 +2224,7 @@ namespace AF_Clipper_Dll
                     reference_partlist = contextlocal.EntityManager.GetEntityList("_REFERENCE", "ID", ConditionOperator.Equal, new_reference_id);
                     reference_partlist.Fill(false);
                     reference_part = AF_ImportTools.SimplifiedMethods.GetFirtOfList(reference_partlist);
-                    
+
 
 
                     if (reference_part != null)
@@ -2229,7 +2274,7 @@ namespace AF_Clipper_Dll
 
 
         }
-        
+
         /// met a jour les valeurs   dans les pieces a produires almacam
         /// </summary>
         /// <param name="contextlocal">contexte context</param>
@@ -2257,7 +2302,7 @@ namespace AF_Clipper_Dll
                                 //rien pour le moment mais on pourrait verifier si une nouvelle matiere est a declarer ou non
                                 //recherche de l'epaisseur de la chaine 
                                 //on importe jamais une matiere qui n'existe pas
-                                
+
                                 break;
 
                             case "CENTREFRAIS":
@@ -2292,10 +2337,10 @@ namespace AF_Clipper_Dll
                                 {
                                     //premier de la liste ou rien
                                     reference_to_produce.SetFieldValue(field.Key, firmlist.FirstOrDefault().Id);
-                                   /* if (Data_Model.ExistsInDictionnary(firmlist.FirstOrDefault().GetFieldValueAsString("_CODE"), ref CentreFrais_Dictionnary))
-                                    { reference_to_produce.SetFieldValue("_FIRM", CentreFrais_Dictionnary[FIRM.FirstOrDefault().GetFieldValueAsString("_CODE")]); }
-                                    else
-                                    { centre_frais.FirstOrDefault().GetFieldValueAsString("_CODE"); }*/
+                                    /* if (Data_Model.ExistsInDictionnary(firmlist.FirstOrDefault().GetFieldValueAsString("_CODE"), ref CentreFrais_Dictionnary))
+                                     { reference_to_produce.SetFieldValue("_FIRM", CentreFrais_Dictionnary[FIRM.FirstOrDefault().GetFieldValueAsString("_CODE")]); }
+                                     else
+                                     { centre_frais.FirstOrDefault().GetFieldValueAsString("_CODE"); }*/
 
                                 }
 
@@ -2326,15 +2371,16 @@ namespace AF_Clipper_Dll
 
                                 //formatage de La date;
                                 //en cas d'erreur sur les types /// les ecoqty sont toujours en string mais dans certains base  on peut avoir l'erreur
-                                if (reference_to_produce.GetFieldValue("ECOQTY").GetType()==typeof(Int64)) {
-                                    reference_to_produce.SetFieldValue(field.Key, int.Parse (field.Value.ToString()));
+                                if (reference_to_produce.GetFieldValue("ECOQTY").GetType() == typeof(Int64))
+                                {
+                                    reference_to_produce.SetFieldValue(field.Key, int.Parse(field.Value.ToString()));
                                 }
                                 else
                                 {
                                     reference_to_produce.SetFieldValue(field.Key, field.Value);
                                 }
 
-                  
+
 
                                 break;
 
@@ -2360,7 +2406,7 @@ namespace AF_Clipper_Dll
 
 
                 }
-                
+
             }
             catch (Exception ie)
             {
@@ -2404,9 +2450,11 @@ namespace AF_Clipper_Dll
 
 
 
-                if (File.Exists(CsvImportPath) == false) {
+                if (File.Exists(CsvImportPath) == false)
+                {
                     Alma_Log.Error("Fichier Non Trouvé:" + CsvImportPath, MethodBase.GetCurrentMethod().Name);
-                    throw new Exception("csv File Note Found:\r\n" + CsvImportPath); }
+                    throw new Exception("csv File Note Found:\r\n" + CsvImportPath);
+                }
                 //avec ou sans dt
                 if (Sans_Donnees_Technique) { Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": import  sans dt !! " + CsvImportPath); } else { Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": import standard !! " + CsvImportPath); }
 
@@ -2429,7 +2477,7 @@ namespace AF_Clipper_Dll
                     //IEntity Clipper_Machine = null;
                     //IEntity Clipper_Centre_Frais = null;
                     //recuperation de la machine clipper et construction de la liste machine
-                    Get_Clipper_Machine(contextlocal, out IEntity Clipper_Machine , out IEntity Clipper_Centre_Frais , out Dictionary<string, string> CentreFrais_Dictionnary);
+                    Get_Clipper_Machine(contextlocal, out IEntity Clipper_Machine, out IEntity Clipper_Centre_Frais, out Dictionary<string, string> CentreFrais_Dictionnary);
 
                     //verification que toutes les machines sont conformes pour une intégration clipper
 
@@ -2445,7 +2493,8 @@ namespace AF_Clipper_Dll
                         //on ne traite pas les lignes vides
                         ligneNumber++;
                         if ((line.Trim()) == "")
-                        { Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + " : " + ligneNumber + ": empty line detected !! ");
+                        {
+                            Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + " : " + ligneNumber + ": empty line detected !! ");
                             continue;
                         }
 
@@ -2474,13 +2523,15 @@ namespace AF_Clipper_Dll
                         {
                             /*aucune reference n'existe dans cette matiere  alors on  la creer*/
                             /*sauf si NewReferenceName est null */
-                            if (NewReferenceName != null) {
+                            if (NewReferenceName != null)
+                            {
                                 reference = CreateNewReference(contextlocal, line_Dictionnary, ref NewReferenceName, Clipper_Machine, Sans_Donnees_Technique);
                                 Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + " : " + ligneNumber + " no reference found new part creation : success. ");
                                 //on active le need prep
                                 //need_prep = true;
                             }
-                            else {
+                            else
+                            {
 
                                 continue;
                             }
@@ -2503,7 +2554,8 @@ namespace AF_Clipper_Dll
 
 
                         //creation de la nouvelle piece a produire associée
-                        if (Sans_Donnees_Technique == false) {
+                        if (Sans_Donnees_Technique == false)
+                        {
                             CreateNewPartToProduce(contextlocal, line_Dictionnary, CentreFrais_Dictionnary, ref reference_to_produce, ref reference, timetag, Sans_Donnees_Technique);
                         }
                     }
@@ -2580,7 +2632,8 @@ namespace AF_Clipper_Dll
             IEntityList sheets, stocks = null;
 
 
-            try {
+            try
+            {
                 //recherche d'element de stock
                 sheets = contexlocal.EntityManager.GetEntityList("_SHEET", "_MATERIAL", ConditionOperator.Equal, part.GetFieldValueAsEntity("_MATERIAL").Id32);
                 sheets.Fill(false);
@@ -2617,7 +2670,8 @@ namespace AF_Clipper_Dll
                 return result;
             }
 
-            catch {
+            catch
+            {
 
                 Alma_Log.Write_Log(part.GetFieldValueAsString("_NAME") + ": no matierial found " + part.GetFieldValueAsEntity("_MATERIAL").GetFieldValueAsString("NAME"));
                 Alma_Log.Write_Log_Important(part.GetFieldValueAsString("_NAME") + ":" + part.GetFieldValueAsEntity("_MATERIAL").GetFieldValueAsString("NAME") + " Pas de stock pour cette piece");
@@ -2630,7 +2684,8 @@ namespace AF_Clipper_Dll
         /// <param name="contextlocal">icontext context</param>
         /// <param name="referenceToProduce">entité referenceToProduce</param>
         /// <returns></returns>
-        public bool CheckDataIntegrity(IContext contextlocal, IEntity referenceToProduce) {
+        public bool CheckDataIntegrity(IContext contextlocal, IEntity referenceToProduce)
+        {
             return true;
         }
         /// <summary>
@@ -2685,7 +2740,8 @@ namespace AF_Clipper_Dll
 
                 }
 
-                else { /*on log on arrete tout */
+                else
+                { /*on log on arrete tout */
                     Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": Missing  cost center definition on a machine !!! ");
                     Alma_Log.Error("IL MANQUE LE CENTRE DE FRAIS SUR L UNE DES MACHINES INSTALLEE !!!", MethodBase.GetCurrentMethod().Name);
                     return false;//throw new Exception(machine.DefaultValue + " : Missing  cost center definition"); 
@@ -2755,7 +2811,7 @@ namespace AF_Clipper_Dll
 
                             part_infos.GetPartinfos(ref contextlocal, selected_reference);
 
-                        
+
                             //IEntity selected_reference =null;
                             //pour facilite l'ecriture du fichier de sortie on stock toutes les infos dans des listes d'objets
                             List<object> engapi = new List<object>();
@@ -2767,7 +2823,8 @@ namespace AF_Clipper_Dll
 
 
                             //recuperation d'une tole/stock dont la matiere est egale a celle de la  piece
-                            if (GetRadomSheet(contextlocal, to_produce_ref.GetFieldValueAsEntity("_REFERENCE"), out stock, out sheet) != true) {
+                            if (GetRadomSheet(contextlocal, to_produce_ref.GetFieldValueAsEntity("_REFERENCE"), out stock, out sheet) != true)
+                            {
                                 Alma_Log.Write_Log_Important("aucun element de stock n' a ete trouve, seules les informations renseignées ou calculable vont etre renvoyee ");
                             };
 
@@ -2796,17 +2853,21 @@ namespace AF_Clipper_Dll
                             string description = SimplifiedMethods.ConvertNullStringToEmptystring(to_produce_ref.GetFieldValueAsString("_DESCRIPTION"));
                             //string emffile = part_infos.EmfFile;
                             string emffile;
-                            if (to_produce_ref.GetFieldValueAsEntity("_REFERENCE") != null) {
+                            if (to_produce_ref.GetFieldValueAsEntity("_REFERENCE") != null)
+                            {
                                 //emffile = SimplifiedMethods.ConvertNullStringToEmptystring(@to_produce_ref.GetFieldValueAsEntity("_REFERENCE").GetImageFieldValueAsLinkFile("_PREVIEW"));
                                 emffile = SimplifiedMethods.GetPreview(to_produce_ref);
-                            } else { emffile = ""; }
+                            }
+                            else { emffile = ""; }
 
                             string en_rang = SimplifiedMethods.ConvertNullStringToEmptystring(to_produce_ref.GetFieldValueAsString("EN_RANG"));
                             string en_pere_piece = SimplifiedMethods.ConvertNullStringToEmptystring(to_produce_ref.GetFieldValueAsString("EN_PERE_PIECE"));
                             string centrefrais = "";
-                            if (to_produce_ref.GetFieldValueAsEntity("CENTREFRAIS") != null) {
+                            if (to_produce_ref.GetFieldValueAsEntity("CENTREFRAIS") != null)
+                            {
                                 centrefrais = SimplifiedMethods.ConvertNullStringToEmptystring(to_produce_ref.GetFieldValueAsEntity("CENTREFRAIS").GetFieldValueAsString("_CODE"));
-                            } else { centrefrais = ""; }
+                            }
+                            else { centrefrais = ""; }
                             //string centrefrais = SimplifiedMethods.ConvertEmptyStringToNullstring(to_produce_ref.GetFieldValueAsEntity("CENTREFRAIS").ToString());
                             string codematiere = SimplifiedMethods.ConvertNullStringToEmptystring(stock.GetFieldValueAsString("_NAME"));
                             //recuperation des infos de la tole
@@ -2846,7 +2907,7 @@ namespace AF_Clipper_Dll
                             nomenpiece.Add(xdim);
                             nomenpiece.Add(ydim);
 
-               
+
 
                             string myline = "";
                             foreach (object o in engapi)
@@ -2895,7 +2956,7 @@ namespace AF_Clipper_Dll
             //bool export ligne de gamme
             //bool export_ 
             //var answer= MessageBox.Show.   
-          Clipper_Param.GetlistParam(contextlocal);
+            Clipper_Param.GetlistParam(contextlocal);
 
             EngapiOnly = false;
             //recupere les path
@@ -2924,10 +2985,10 @@ namespace AF_Clipper_Dll
             references_sansdt.Fill(false);
             */
 
-           
+
             IEntityList sans_dt_filter = contextlocal.EntityManager.GetEntityList("_MACHINABLE_PART", "_ESTIMATION_IS_VALID", ConditionOperator.Equal, true);
             sans_dt_filter.Fill(false);
-            
+
 
             IDynamicExtendedEntityList machinableparts = contextlocal.EntityManager.GetDynamicExtendedEntityList("_MACHINABLE_PART", sans_dt_filter);
             machinableparts.Fill(false);
@@ -2995,7 +3056,7 @@ namespace AF_Clipper_Dll
                             string matiere = SimplifiedMethods.ConvertNullStringToEmptystring(part_infos.Material);
                             double feed = AF_ImportTools.Machine_Info.GetFeed(contextlocal, part_infos.DefaultMachineEntity, part_infos.MaterialEntity);
 
-                         
+
                             double xdim = part_infos.Width;
                             double ydim = part_infos.Height * 10E-3;
                             double poids = part_infos.Weight;
@@ -3006,11 +3067,11 @@ namespace AF_Clipper_Dll
                             string description = part_infos.Name;// SimplifiedMethods.ConvertNullStringToEmptystring(reference.GetFieldValueAsString("_REFERENCE"));
                             string emffile;
                             /// a revoir avec les grometrie par defaut
-                            emffile = part_infos.EmfFile ;//SimplifiedMethods.GetPreview(reference);
+                            emffile = part_infos.EmfFile;//SimplifiedMethods.GetPreview(reference);
                             string en_rang = ""; // SimplifiedMethods.ConvertNullStringToEmptystring(reference.GetFieldValueAsString("EN_RANG"));
                             string en_pere_piece = ""; // SimplifiedMethods.ConvertNullStringToEmptystring(reference.GetFieldValueAsString("EN_PERE_PIECE"));
                             string idlnbom = "";// SimplifiedMethods.ConvertNullStringToEmptystring(reference.GetFieldValueAsString("IDLNBOM"));
-                           
+
                             string referenceId = reference.Id.ToString(); ;  // reference.Id32.ToString();
                             string centrefrais = "";
                             centrefrais = SimplifiedMethods.ConvertNullStringToEmptystring(reference.GetFieldValueAsEntity("_DEFAULT_CUT_MACHINE_TYPE").GetFieldValueAsEntity("CENTREFRAIS_MACHINE").GetFieldValueAsString("_CODE"));
@@ -3037,7 +3098,7 @@ namespace AF_Clipper_Dll
                             engapi.Add(en_pere_piece);
                             engapi.Add(referenceId);
                             //var answer= MessageBox.Show.   
-                             if (EngapiOnly == false)
+                            if (EngapiOnly == false)
                             {
                                 gapiece.Add("GAPIECE");
                                 gapiece.Add(centrefrais);
@@ -3060,13 +3121,14 @@ namespace AF_Clipper_Dll
                             nomenpiece.Add(xdim);
                             nomenpiece.Add(ydim);
 
-                       
+
 
                             string myline = "";
                             var last_o = engapi.LastOrDefault();
                             separator = ";";
                             foreach (object o in engapi)
-                            { if (o.Equals(last_o))
+                            {
+                                if (o.Equals(last_o))
                                 { separator = ""; }
                                 myline += o.ToString() + separator;
                             }
@@ -3075,7 +3137,8 @@ namespace AF_Clipper_Dll
 
                             //ecriture de gapiece uniquement si retour possible
                             //actuellement si la gamme existe clipper rajoute une nouvelle gamme
-                            if (EngapiOnly == false) {
+                            if (EngapiOnly == false)
+                            {
                                 myline = "";
                                 last_o = gapiece.LastOrDefault();
                                 separator = ";";
@@ -3125,11 +3188,11 @@ namespace AF_Clipper_Dll
         /// <param name="EngapiOnly">si false alors, la ligne de gamme n'est pas exportée</param>
         public void Export_Part_To_Produce_To_File(IContext contextlocal, bool EngapiOnly)
         {
-           
+
             Clipper_Param.GetlistParam(contextlocal);
-        
+
             ///    EngapiOnly = true;
-           
+
 
 
             //recupere les path
@@ -3160,8 +3223,8 @@ namespace AF_Clipper_Dll
             Part_To_Produce_sansdt.Fill(false);
 
 
-                            select_reference_list.Init(contextlocal, Part_To_Produce_sansdt);
-                            select_reference_list.MultiSelect = true;
+            select_reference_list.Init(contextlocal, Part_To_Produce_sansdt);
+            select_reference_list.MultiSelect = true;
 
 
 
@@ -3180,29 +3243,30 @@ namespace AF_Clipper_Dll
                         IEntity stock = null;
                         IEntity sheet = null;
                         //IEntity current_machine = null;
-                        IEntity reference=null;
+                        IEntity reference = null;
                         //IEntity to_produce_ref = null;
                         IMachineManager machinemanager = new MachineManager();
 
                         if (part_To_Produce.GetFieldValueAsEntity("CENTREFRAIS") == null)
-                        { string msg = "CE PROGRAMME VA ETRE ARRETTE : \r\n Vous devez definir un centre de frais pour l'affaire "+ part_To_Produce.GetFieldValueAsString("AFFAIRE") ;
-                            MessageBox.Show(msg,"Export Dossier technique", MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                        {
+                            string msg = "CE PROGRAMME VA ETRE ARRETTE : \r\n Vous devez definir un centre de frais pour l'affaire " + part_To_Produce.GetFieldValueAsString("AFFAIRE");
+                            MessageBox.Show(msg, "Export Dossier technique", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             Environment.Exit(0);
                         }
 
                         //reference non vide et integrité
-                            if (part_To_Produce != null && CheckDataIntegrity(contextlocal, part_To_Produce) == true)
+                        if (part_To_Produce != null && CheckDataIntegrity(contextlocal, part_To_Produce) == true)
                         {
                             //recupoeration de la piece 2d correspondante
                             reference = part_To_Produce.GetFieldValueAsEntity("_REFERENCE");
                             //creation d'un part info
                             AF_ImportTools.PartInfo part_infos = new PartInfo();
                             //GetPartinfos(ref IContext contextlocal, IEntity Part, IEntity Centrefrais)
-                           // part_infos.GetPartinfos(ref contextlocal, reference);
-                           //a uniformiser
+                            // part_infos.GetPartinfos(ref contextlocal, reference);
+                            //a uniformiser
 
 
-                            part_infos.GetPartinfos(ref contextlocal, reference,part_To_Produce.GetFieldValueAsEntity("CENTREFRAIS"));
+                            part_infos.GetPartinfos(ref contextlocal, reference, part_To_Produce.GetFieldValueAsEntity("CENTREFRAIS"));
 
 
                             //pour facilite l'ecriture du fichier de sortie on stock toutes les infos dans des listes d'objets
@@ -3279,15 +3343,15 @@ namespace AF_Clipper_Dll
                             engapi.Add(en_rang);
                             engapi.Add(en_pere_piece);
                             engapi.Add(referenceId);
-                         
-                            
-                                gapiece.Add("GAPIECE");
-                                gapiece.Add(centrefrais);
-                                //pour le moment ces valeurs sont nulles
-                                gapiece.Add(string.Format("{0:0.10000}", parttime));
-                                gapiece.Add("");
-                                ///
-                            
+
+
+                            gapiece.Add("GAPIECE");
+                            gapiece.Add(centrefrais);
+                            //pour le moment ces valeurs sont nulles
+                            gapiece.Add(string.Format("{0:0.10000}", parttime));
+                            gapiece.Add("");
+                            ///
+
                             nomenpiece.Add("NOMENPIECE");
                             nomenpiece.Add(codematiere);
                             nomenpiece.Add(xDim_Tole);
@@ -3384,17 +3448,17 @@ namespace AF_Clipper_Dll
 
 
             //declaratin des listes pour post traitement
-          
+
             using (Clipper_Stock Stock = new Clipper_Stock())
-            {   
-               
+            {
+
                 //Stock.Import(Context);//), csvImportPath);
                 Stock.Import(Context);//), csvImportPath);
 
-                
+
             }
 
-           // MessageBox.Show(" Import terminé");
+            // MessageBox.Show(" Import terminé");
 
             return base.Execute();
         }
@@ -3406,7 +3470,7 @@ namespace AF_Clipper_Dll
     public class Clipper_Stock : IDisposable
     {
 
-       
+
         //string CsvImportPath = null;
         //string error_on_field; //pour l aide mais dico a surchager
         //IMPORT_DM
@@ -3519,17 +3583,17 @@ namespace AF_Clipper_Dll
                             case "NUMMATLOT":
                                 //on recuepere  le numero de matiere lotie 
                                 //on le copie dans le numero de coulées
-                                
+
 
                                 stock.SetFieldValue(field.Key, field.Value);
-                                stock.SetFieldValue("_HEAT_NUMBER",field.Value );
+                                stock.SetFieldValue("_HEAT_NUMBER", field.Value);
 
 
 
 
                                 break;
 
-                            
+
                             case "_QUANTITY":
                                 //on recuepere  les quantités de la chute courante de la chute
                                 //on verifie si les il y a des quantité en prod
@@ -3549,15 +3613,15 @@ namespace AF_Clipper_Dll
                                 
                                 */
 
-                                
 
-                                   long clipperQty = 0;
-                                   long Qty = 0;
-                                   Qty = CaclulateSheetQuantity(Convert.ToInt64(field.Value), stock);
-                                   stock.SetFieldValue(field.Key, Qty);
-                                    //cas baroux ou le client n'utilise pas les numéro de lot
-                                    //permet de debloquer les clotures.
-                                    stock.SetFieldValue("_USED_QUANTITY", 0);
+
+                                long clipperQty = 0;
+                                long Qty = 0;
+                                Qty = CaclulateSheetQuantity(Convert.ToInt64(field.Value), stock);
+                                stock.SetFieldValue(field.Key, Qty);
+                                //cas baroux ou le client n'utilise pas les numéro de lot
+                                //permet de debloquer les clotures.
+                                stock.SetFieldValue("_USED_QUANTITY", 0);
 
                                 break;
 
@@ -3599,7 +3663,8 @@ namespace AF_Clipper_Dll
                 sheet.Save();
                 stock.Save();
             }
-            catch (Exception ie) {
+            catch (Exception ie)
+            {
                 MessageBox.Show(ie.Message);
             }
         }
@@ -3613,7 +3678,7 @@ namespace AF_Clipper_Dll
         /// </summary>
         /// <param name="line_dictionnary">rec</param>
         /// <returns>false ou tuue si integre</returns>
-        public long CaclulateSheetQuantity( long clipperqty, IEntity StockEntity)
+        public long CaclulateSheetQuantity(long clipperqty, IEntity StockEntity)
         {
             long initial = 0;
             long booked = 0;
@@ -3627,8 +3692,8 @@ namespace AF_Clipper_Dll
                 long finalqty = 0;
                 format_In_Production = StockEntity.GetFieldValueAsEntity("_SHEET").GetFieldValueAsLong("_IN_PRODUCTION_QUANTITY");
                 initial = StockEntity.GetFieldValueAsLong("_QUANTITY");
-                booked =  StockEntity.GetFieldValueAsLong("_BOOKED_QUANTITY");
-                used =    StockEntity.GetFieldValueAsLong("_USED_QUANTITY");
+                booked = StockEntity.GetFieldValueAsLong("_BOOKED_QUANTITY");
+                used = StockEntity.GetFieldValueAsLong("_USED_QUANTITY");
 
                 Alma_Log.Write_Log("qté initiale=" + initial + "qté reservé=" + booked + " qté utilidee=" + used + "qté initiale" + "qté en prod" + format_In_Production);
 
@@ -3646,19 +3711,21 @@ namespace AF_Clipper_Dll
 
                 Alma_Log.Write_Log("qté calculée=" + finalqty);
                 return finalqty;
-            
+
 
             }
             //
-            catch (Exception ie) {
+            catch (Exception ie)
+            {
 
-                Alma_Log.Write_Log("Erreur sur le calcul des quatité msg : "+ ie.Message );
+                Alma_Log.Write_Log("Erreur sur le calcul des quatité msg : " + ie.Message);
 
-                return 0; }
+                return 0;
+            }
             //
         }
-        
-        
+
+
         /// <summary>
         /// verification des données du fichier texte
         /// </summary>
@@ -3677,7 +3744,8 @@ namespace AF_Clipper_Dll
                 string currenfieldsname;
 
                 currenfieldsname = "_MATERIAL";
-                if (line_dictionnary.ContainsKey(currenfieldsname)) {
+                if (line_dictionnary.ContainsKey(currenfieldsname))
+                {
 
                     ///////////////////////////////////////////////////////////////////////////
                     //les matiere
@@ -3690,7 +3758,8 @@ namespace AF_Clipper_Dll
                     //thickness = Convert.ToDouble(line_dictionnary["THICKNESS"]);
                     thickness = SimplifiedMethods.GetDoubleInvariantCulture(line_dictionnary["THICKNESS"].ToString());
                     material_name = AF_ImportTools.Material.getMaterial_Name(contextlocal, nuance, thickness);
-                    if (material_name == string.Empty) {
+                    if (material_name == string.Empty)
+                    {
                         /*on log matiere non existante*/
                         Alma_Log.Error(nuance + " " + thickness + ":" + line_dictionnary["_NAME"] + "mm matiere non existante --> line ignored", MethodBase.GetCurrentMethod().Name);
                         Alma_Log.Write_Log_Important(nuance + " " + thickness + ":" + line_dictionnary["_NAME"] + "mm matiere non existante, line ignored"); result = false;
@@ -3716,7 +3785,8 @@ namespace AF_Clipper_Dll
                 currenfieldsname = "_QUANTITY";
                 if (line_dictionnary.ContainsKey(currenfieldsname))
                 {
-                    if ((int)line_dictionnary[currenfieldsname] < 0) {
+                    if ((int)line_dictionnary[currenfieldsname] < 0)
+                    {
                         Alma_Log.Error(line_dictionnary["_NAME"] + ":_QUANTITY non detecté sur la ligne a importée, line ignored", MethodBase.GetCurrentMethod().Name);
                         Alma_Log.Write_Log_Important(MethodBase.GetCurrentMethod().Name + ":" + line_dictionnary["_NAME"] + ":_QUANTITY non detecté sur la ligne a importée, line ignored"); result = false;
                     }
@@ -3727,7 +3797,8 @@ namespace AF_Clipper_Dll
                 currenfieldsname = "_WIDTH";
                 if (line_dictionnary.ContainsKey(currenfieldsname))
                 {
-                    if ((double)line_dictionnary[currenfieldsname] <= 0) {
+                    if ((double)line_dictionnary[currenfieldsname] <= 0)
+                    {
                         Alma_Log.Error(line_dictionnary["_NAME"] + ": NULL _WIDTH , line ignored", MethodBase.GetCurrentMethod().Name);
                         Alma_Log.Write_Log_Important(MethodBase.GetCurrentMethod().Name + ":" + line_dictionnary["_NAME"] + ": NULL _WIDTH , line ignored"); result = false;
                     }
@@ -3735,10 +3806,11 @@ namespace AF_Clipper_Dll
                 else { result = false; }
                 ///////////////////////////////////////////////////////////////////////////
                 //les quantités negatives sont interdites
-                currenfieldsname="_LENGTH";
+                currenfieldsname = "_LENGTH";
                 if (line_dictionnary.ContainsKey(currenfieldsname))
                 {
-                    if ((double)line_dictionnary[currenfieldsname] <= 0) {
+                    if ((double)line_dictionnary[currenfieldsname] <= 0)
+                    {
                         Alma_Log.Error(line_dictionnary["_NAME"] + ": NULL _LENGTH , line ignored", MethodBase.GetCurrentMethod().Name);
                         Alma_Log.Write_Log_Important(MethodBase.GetCurrentMethod().Name + ":" + line_dictionnary["_NAME"] + ": NULL _LENGTH , line ignored"); result = false;
                     }
@@ -3750,7 +3822,8 @@ namespace AF_Clipper_Dll
                 currenfieldsname = "THICKNESS";
                 if (line_dictionnary.ContainsKey(currenfieldsname))
                 {
-                    if ((double)line_dictionnary[currenfieldsname] <= 0) {
+                    if ((double)line_dictionnary[currenfieldsname] <= 0)
+                    {
 
                         Alma_Log.Error(line_dictionnary["_NAME"] + ": NULL THICKNESS, line ignored", MethodBase.GetCurrentMethod().Name);
                         Alma_Log.Write_Log_Important(MethodBase.GetCurrentMethod().Name + ":" + line_dictionnary["_NAME"] + ": NULL OR NEGATIVE THICKNESS this ligne , line ignored"); result = false;
@@ -3781,9 +3854,11 @@ namespace AF_Clipper_Dll
         /// <param name="line_dictionnary">dictionnary <string,object> line_dictionnary</param>
         /// <returns></returns>
         public IEntity GetMaterialEntity(IContext contextlocal, string material_name, ref Dictionary<string, object> line_dictionnary)
-        { IEntity material = null;
+        {
+            IEntity material = null;
 
-            try {
+            try
+            {
 
                 IEntityList materials = null;
 
@@ -3861,22 +3936,22 @@ namespace AF_Clipper_Dll
         /// <param name="pathToFile">path to dispomat.csv file</param>
         /// <param name="DataModelString"></param>
         //public void Import(IContext contextlocal, string pathToFile, string DataModelString)
-       
+
         public void Import(IContext contextlocal)//, string pathToFile)
         {   ///definiton des path
-           
+
 
             //recuperation des path
             //CsvImportPath = pathToFile;
             string methodename = MethodBase.GetCurrentMethod().Name;
-           
+
             try
-            {  
+            {
                 //ouverture du fichier csv lancement du curseur
                 //Set cursor as hourglass
                 Cursor.Current = Cursors.WaitCursor;
                 //declaration du dictionnaire d'id clip contenu dans le fichier pour le mode ommission
-                List<string> sheetId_list_from_txt_file= new List<string>();
+                List<string> sheetId_list_from_txt_file = new List<string>();
                 List<string> sheetId_list_from_database = new List<string>();
                 //on demarre
                 ///definiton des path
@@ -3935,7 +4010,7 @@ namespace AF_Clipper_Dll
                             Alma_Log.Write_Log_Important(methodename + ": empty line detected  :  " + ligneNumber);
                             continue;
                         }
-                        
+
                         line_Dictionnary = Data_Model.ReadCsvLine_With_Dictionnary(line);
                         Alma_Log.Write_Log(methodename + ": line " + ligneNumber + ":line_dictionnary success !!    ");
                         //on verifie les données d'entrées (matiere existe, longeur largeur !=0, quantité decimales)
@@ -3968,9 +4043,9 @@ namespace AF_Clipper_Dll
                         Alma_Log.Write_Log(methodename + ": material success !!    ");
 
                         //implementation de la liste sheetId_list_from_txt_file pour l'ommission
-                     
+
                         //if(Clipper_Param.Get_Omission_Mode()) { 
-                            sheetId_list_from_txt_file.Add(line_Dictionnary["IDCLIP"].ToString());
+                        sheetId_list_from_txt_file.Add(line_Dictionnary["IDCLIP"].ToString());
                         //}
                         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                         ///tole existante--> on ne fait que de la mise à jour
@@ -3979,7 +4054,9 @@ namespace AF_Clipper_Dll
                         stocks = contextlocal.EntityManager.GetEntityList("_STOCK", "IDCLIP", ConditionOperator.Equal, line_Dictionnary["IDCLIP"]);
                         stocks.Fill(false);
                         if (stocks.Count > 0)
-                        { if (stocks.FirstOrDefault().Status.ToString() == "Normal") {
+                        {
+                            if (stocks.FirstOrDefault().Status.ToString() == "Normal")
+                            {
                                 //cas du doublon
                                 if (stocks.Count > 1)
                                 {
@@ -3990,7 +4067,7 @@ namespace AF_Clipper_Dll
                                 }
                                 else
                                 {
-                                   
+
                                     //on met a jour et continue
                                     stock = stocks.FirstOrDefault();
                                     sheet_to_update = stock.GetFieldValueAsEntity("_SHEET");
@@ -4017,7 +4094,8 @@ namespace AF_Clipper_Dll
 
                             if (sheets_to_update.Count > 0)
                             {
-                                if (sheets_to_update.FirstOrDefault().Status.ToString() == "Normal") {
+                                if (sheets_to_update.FirstOrDefault().Status.ToString() == "Normal")
+                                {
                                     //la reference existe on capture la premiere 
                                     sheet_to_update = sheets_to_update.FirstOrDefault();
                                     CurrentSheetId = sheet_to_update.Id32;
@@ -4070,7 +4148,8 @@ namespace AF_Clipper_Dll
                             if (sheets_to_update.Count == 1)
                             {
                                 Alma_Log.Write_Log(methodename + " sheet trouvée ");
-                                if (sheets_to_update.FirstOrDefault().Status.ToString() == "Normal") {
+                                if (sheets_to_update.FirstOrDefault().Status.ToString() == "Normal")
+                                {
                                     //*//
                                     //le sheet existe on capture la premiere 
                                     sheet_to_update = sheets_to_update.FirstOrDefault();/**/
@@ -4079,7 +4158,8 @@ namespace AF_Clipper_Dll
                                     stocks = contextlocal.EntityManager.GetEntityList("_STOCK", "_SHEET", ConditionOperator.Equal, CurrentSheetId);
                                     stocks.Fill(false);
                                     Alma_Log.Write_Log(methodename + " requete du  sheet associé au stock " + CurrentSheetId.ToString());
-                                    if (stocks.Count > 0) {
+                                    if (stocks.Count > 0)
+                                    {
                                         if (sheets_to_update.FirstOrDefault().Status.ToString() == "Normal")
                                         {
                                             stock = stocks.FirstOrDefault();
@@ -4089,7 +4169,7 @@ namespace AF_Clipper_Dll
                                     }
                                     else
                                     {//la tole nexiste pas encore dans le stock//on log on continue
-                                        Alma_Log.Write_Log(methodename + ":" + line_Dictionnary["_NAME"] + " la chute  " + line_Dictionnary["FILENAME"] + "n existe plus. Chute d' id_clip: "+ line_Dictionnary["IDCLIP"]);
+                                        Alma_Log.Write_Log(methodename + ":" + line_Dictionnary["_NAME"] + " la chute  " + line_Dictionnary["FILENAME"] + "n existe plus. Chute d' id_clip: " + line_Dictionnary["IDCLIP"]);
                                         continue;
                                     }
                                 }
@@ -4141,7 +4221,7 @@ namespace AF_Clipper_Dll
                     }
                 }
                 //reception des toles qte no null dans almacam et quantité non utilisées
-                IEntityList stockslist = contextlocal.EntityManager.GetEntityList("_STOCK", LogicOperator.And, "IDCLIP", ConditionOperator.NotEqual,string.Empty, "_QUANTITY", ConditionOperator.Greater, 0);//.GetEntityList("_STOCK", "_QUANTITY", ConditionOperator.Greater, 0);
+                IEntityList stockslist = contextlocal.EntityManager.GetEntityList("_STOCK", LogicOperator.And, "IDCLIP", ConditionOperator.NotEqual, string.Empty, "_QUANTITY", ConditionOperator.Greater, 0);//.GetEntityList("_STOCK", "_QUANTITY", ConditionOperator.Greater, 0);
                 //IEntityList stockslist = contextlocal.EntityManager.GetEntityList("_STOCK",  "IDCLIP", ConditionOperator.NotEqual, string.Empty);//.GetEntityList("_STOCK", "_QUANTITY", ConditionOperator.Greater, 0);
                 stockslist.Fill(false);
 
@@ -4160,18 +4240,19 @@ namespace AF_Clipper_Dll
 
                     //purge//
 
-                    if (Clipper_Param.Get_Omission_Mode()) {
+                    if (Clipper_Param.Get_Omission_Mode())
+                    {
 
-                            foreach (string idclip in GetOmmittedSheet(sheetId_list_from_txt_file, sheetId_list_from_database))
-                            {
-                                IEntity stockommitted = SimplifiedMethods.GetFirtOfList(contextlocal.EntityManager.GetEntityList("_STOCK", "IDCLIP", ConditionOperator.Equal, idclip));
-                                long in_prod_qty = stockommitted.GetFieldValueAsEntity("_SHEET").GetFieldValueAsLong("_IN_PRODUCTION_QUANTITY");
+                        foreach (string idclip in GetOmmittedSheet(sheetId_list_from_txt_file, sheetId_list_from_database))
+                        {
+                            IEntity stockommitted = SimplifiedMethods.GetFirtOfList(contextlocal.EntityManager.GetEntityList("_STOCK", "IDCLIP", ConditionOperator.Equal, idclip));
+                            long in_prod_qty = stockommitted.GetFieldValueAsEntity("_SHEET").GetFieldValueAsLong("_IN_PRODUCTION_QUANTITY");
 
                             if (in_prod_qty == 0) { stockommitted.SetFieldValue("_QUANTITY", 0); stockommitted.Save(); }
-                                
-                            }
-                      
-                            
+
+                        }
+
+
                     }
                     //rendre obsoletre les qtés nulles
 
@@ -4201,26 +4282,26 @@ namespace AF_Clipper_Dll
         /// <param name="ToleImportDM">liste des toles venant du fichier impor dm </param>
         /// <param name="ToleImportAlmaDaraBase">liste des toles venant de la base clipper</param>
         /// <returns></returns>
-         public List<string> GetOmmittedSheet(List<string> ToleImportDM, List<string> ToleImportAlmaDaraBase)
+        public List<string> GetOmmittedSheet(List<string> ToleImportDM, List<string> ToleImportAlmaDaraBase)
         {
             try
             {
-                        List<string> getOmmittedSheet= new List<string>();                        
-                        getOmmittedSheet = ToleImportAlmaDaraBase.Except(ToleImportDM).ToList();
+                List<string> getOmmittedSheet = new List<string>();
+                getOmmittedSheet = ToleImportAlmaDaraBase.Except(ToleImportDM).ToList();
                 //a voir les condition qui peuvent faire qu il  ait moins de toles dans cam que dans clip
-                        //getOmmittedSheet = ToleImportDM.Except(ToleImportAlmaDaraBase).ToList();
-                        return getOmmittedSheet;
+                //getOmmittedSheet = ToleImportDM.Except(ToleImportAlmaDaraBase).ToList();
+                return getOmmittedSheet;
 
 
             }
-            catch(Exception ie)
+            catch (Exception ie)
             {
                 Alma_Log.Write_Log(ie.Message);
                 return null;
             }
-                    
 
-          
+
+
 
 
 
@@ -4229,10 +4310,11 @@ namespace AF_Clipper_Dll
         /// cette methode rends le stock null obsolette afin de liberer les filtres sur le stock
         /// </summary>
         /// <param name="contextlocal"></param>
-         public void SetNullQtyToObsolet(Context contextlocal)
+        public void SetNullQtyToObsolet(Context contextlocal)
         {
             string methodename = MethodBase.GetCurrentMethod().Name;
-            try {
+            try
+            {
                 IEntityList stockslist = contextlocal.EntityManager.GetEntityList("_STOCK", LogicOperator.And, "IDCLIP", ConditionOperator.NotEqual, string.Empty, "_QUANTITY", ConditionOperator.Equal, 0);//.GetEntityList("_STOCK", "_QUANTITY", ConditionOperator.Greater, 0);
 
 
@@ -4242,195 +4324,360 @@ namespace AF_Clipper_Dll
 
     }
 
+    public class ImportParam
+    {
+        public IContext Context;
+        public bool HasError = false;
+        public string ErrorMessage = "";
+    }
 
     public class Clipper_Stock_2019 : IDisposable
     {
-            //disposable
-            public void Dispose()
+        //disposable
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+        }
+
+
+        /// <summary>
+        /// verification des données du fichier texte
+        /// </summary>
+        /// <param name="line_dictionnary">dictionnaire de ligne interprété par le datamodel</param>
+        /// <returns>false ou true si integre</returns>
+
+        public Boolean CheckDataIntegerity(IContext contextlocal, Dictionary<string, object> line_dictionnary)
+        {
+            try
             {
-                GC.SuppressFinalize(this);
+                bool rst = true;
+                return rst;
+
+            }
+            catch (Exception ie)
+            {
+                MessageBox.Show(ie.Message);
+                return false;
+            }
+        }
+        /// <summary>
+        /// lancement de la progress barre
+        /// </summary>
+        /// <param name="context"></param>
+        /// 
+        public void Import(IContext contextlocal)
+        {
+            try {
+
+                Clipper_Param.GetlistParam(contextlocal);
+                ImportParam param = new ImportParam();
+                param.Context = contextlocal;
+               
+
+                ProgressWorker<ImportParam> pw = new ProgressWorker<ImportParam>(param, ImportExecute);
+                if (param.HasError)
+                {
+                    MessageBox.Show(param.ErrorMessage);
+                }
+                else
+                {
+                    //ImportExecute(param, null);
+                }
+
+
+
+            }
+            catch (Exception ie)
+            {
+                System.Windows.Forms.MessageBox.Show(System.Reflection.MethodBase.GetCurrentMethod().Name + " : " + ie.Message);
+                
             }
 
-
-            /// <summary>
-            /// verification des données du fichier texte
-            /// </summary>
-            /// <param name="line_dictionnary">dictionnaire de ligne interprété par le datamodel</param>
-            /// <returns>false ou true si integre</returns>
-
-            public Boolean CheckDataIntegerity(IContext contextlocal, Dictionary<string, object> line_dictionnary)
-            {
-                try
-                {
-                    bool rst = true;
-                    return rst;
-
-                }
-                catch (Exception ie)
-                {
-                    MessageBox.Show(ie.Message);
-                    return false;
-                }
-            }
-            /// <summary>
-            /// main methode for importing sheet
-            /// </summary>
-            /// <param name="context"></param>
-            /// 
-            public void Import(IContext context)
-            {
-                try {
-
-                       
-
-
-                }
-                catch (Exception ie)
-                {
-                    MessageBox.Show(ie.Message);
-                    
-                }
+            finally
+            { }
 
         }
-            /// <summary>
-            /// retourne la liste des chute ommise dans le fichier en comparant les toles de qté >0
-            /// avec les toles envoyées par clipper
-            /// si clipper n'envoie pas le ficher la liste de ces toles sera mise a 0
-            /// </summary>
-            /// <param name="ToleImportDM">liste des toles venant du fichier impor dm </param>
-            /// <param name="ToleImportAlmaDaraBase">liste des toles venant de la base clipper</param>
-            /// <returns></returns>
-            public List<string> GetOmmittedSheet(List<string> ToleImportDM, List<string> ToleImportAlmaDaraBase)
+        /// <summary>
+        /// main import methode
+        /// </summary>
+        /// <param name="param">parametre</param>
+        /// <param name="pwMessage">message </param>
+        public void ImportExecute(ImportParam param, ProgressWorkerMessage pwMessage)
+        {
+
+            IContext contextlocal = param.Context;
+            Clipper_Param.GetlistParam(contextlocal);
+
+            if (pwMessage != null) pwMessage.Message = string.Format("Reading " + Clipper_Param.GetModelDM());
+
+            //creation du timetag d'import//
+            string methodename = MethodBase.GetCurrentMethod().Name;
+            string timetag = string.Format("{0:d_M_yyyy_HH_mm_ss}", DateTime.Now);
+                //creation du log
+                bool testlog = Alma_Log.Create_Log(Clipper_Param.GetVerbose_Log());
+                long ligneNumber = 0;
+                Alma_Log.Write_Log(methodename+" time tag:  " + timetag);
+                string CsvImportPath = Clipper_Param.GetPath("IMPORT_DM");
+                Alma_Log.Write_Log("[Import du stock ]:" + CsvImportPath);
+                string DataModelString = Clipper_Param.GetModelDM();
+                Alma_Log.Write_Log("lecture du DataModel du stock:Success !!!");
+                Alma_Log.Write_Log_Important(" DataModel du stock valide.");
+            // fin entete //
+            //declaration du dictionnaire d'id clip contenu dans le fichier pour le mode ommission
+            List<string> sheetId_list_from_txt_file = new List<string>();
+            List<string> sheetId_list_from_database = new List<string>();
+
+            using (StreamReader csvfile = new StreamReader(CsvImportPath, Encoding.Default, true))
             {
-                try
+
+                //construction du dictionnaire de champs
+                Dictionary<string, object> line_Dictionnary = new Dictionary<string, object>();
+                Data_Model.setFieldDictionnary(DataModelString);
+                Alma_Log.Write_Log(methodename + ": DataModel String success !!   ");
+                //lecture à la ligne
+                string line;
+                //on import pas les quantitée nulles
+                //while (((line = csvfile.ReadLine()) != null))
+                //{
+                while (csvfile.EndOfStream == false)
                 {
-                    List<string> getOmmittedSheet = new List<string>();
-                    getOmmittedSheet = ToleImportAlmaDaraBase.Except(ToleImportDM).ToList();
-                    //a voir les condition qui peuvent faire qu il  ait moins de toles dans cam que dans clip
-                    //getOmmittedSheet = ToleImportDM.Except(ToleImportAlmaDaraBase).ToList();
-                    return getOmmittedSheet;
+                    line = csvfile.ReadLine();
+                        //type tole chute ou nouvelle tole
+                     TypeTole type_tole;
+                    //declaration des entités
+                    //stock lists
+                    //IEntity stock = null;
+                    IEntity sheet_to_update = null;
+                    IEntity material = null;
+                    //pour detection de nouveau format
+                    //id courante du  format
+                    Int32 CurrentSheetId = -1;
+                    Int32 CurrentStockId = -1;
+                    /////////////////////////////////////////////////////////////////
+                    //integrite des données
+                    //lignes vides on passe
+                    //pour debuggage
+                    ligneNumber++;
+                    Alma_Log.Write_Log(methodename + ": reading line " + ligneNumber);
+                    if (line.Trim() == "")
+                    {
+                        Alma_Log.Write_Log_Important(methodename + ": empty line detected  :  " + ligneNumber);
+                        continue;
+                    }
+
+                    ///recuperation des données
+                    line_Dictionnary = Data_Model.ReadCsvLine_With_Dictionnary(line);
+                    Alma_Log.Write_Log(methodename + ": line " + ligneNumber + ":line_dictionnary success !!    ");
+                    //on verifie les données d'entrées (matiere existe, longeur largeur !=0, quantité decimales)
+                    if (CheckDataIntegerity(contextlocal, line_Dictionnary) == false)
+                    {
+                        
+                        Alma_Log.Write_Log_Important(methodename + ":-----> line " + ligneNumber + ":" + line_Dictionnary["_NAME"] + ":integrity tests fails, line ignored");
+                        continue;
+                    }
+
+
+                    //constrution du nom par defaut du sheet (format)
+                    string sheet_to_update_reference = string.Format("{0}*{1}*{2}*{3}",
+                    line_Dictionnary["_MATERIAL"].ToString().Replace('§', '*'),
+                    line_Dictionnary["_LENGTH"].ToString(),
+                    line_Dictionnary["_WIDTH"].ToString(),
+                    line_Dictionnary["THICKNESS"].ToString());
+                    ///1 pour tole neuve 2 pour chute selon la chaine filename : par defaut null
+                    // type --> chute si emf present
+                    type_tole = TypeTole.Tole;
+                    if (line_Dictionnary.ContainsKey("FILENAME")) { type_tole = TypeTole.Chute; }
+                    //recuperation des infos de matiere
+
+                    string nuance_name = null;
+                    nuance_name = line_Dictionnary["_MATERIAL"].ToString().Replace('§', '*');
+                    string material_name = string.Format("{0} {1:0.00} mm", nuance_name, line_Dictionnary["THICKNESS"]);
+                    //normaleement il n'ya pas besoin de condition car l'integrite et deja verifier dans checkdataintegrity
+                     material = GetMaterialEntity(contextlocal, ref line_Dictionnary);
+                    Alma_Log.Write_Log(methodename + ": material success !!    ");
+
+                    //implementation de la liste sheetId_list_from_txt_file pour l'ommission
+                    sheetId_list_from_txt_file.Add(line_Dictionnary["IDCLIP"].ToString());
+                    ////ATTENTION CHRGEMENT DU STOCK COMPLET //// A OPTIMISER PLUS TARD
+                    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    ///tole existante--> on ne fait que de la mise à jour
+                    //on travail au maximum sur le stock
+                    //l'existants --> l'id clip est unique, il permet donc de retrouver les elements de stock a mettre à jour
+                    IEntityList stocks;
+                    stocks = contextlocal.EntityManager.GetEntityList("_STOCK");
+                    stocks.Fill(false);
+                    IEntity stock;
+
+
+
+                    IEnumerable<IEntity> stockentityList = stocks.Where(s => s.GetFieldValueAsString("IDCLIP") == line_Dictionnary["IDCLIP"].ToString());
+                    if (stockentityList.Count()!=0) {
+                        //recuperation du stock
+                        stock = stockentityList.FirstOrDefault();
+                        //ici on travail les modifs.
+
+
+                        //
+                        stockentityList = null;
+                    }
+
+
+
+
 
 
                 }
-                catch (Exception ie)
-                {
-                    Alma_Log.Write_Log(ie.Message);
-                    return null;
+
+
+
+
                 }
+
+
+        }
+
+
+
+
+        /// <summary>
+        /// retourne la liste des chute ommise dans le fichier en comparant les toles de qté >0
+        /// avec les toles envoyées par clipper
+        /// si clipper n'envoie pas le ficher la liste de ces toles sera mise a 0
+        /// </summary>
+        /// <param name="ToleImportDM">liste des toles venant du fichier impor dm </param>
+        /// <param name="ToleImportAlmaDaraBase">liste des toles venant de la base clipper</param>
+        /// <returns></returns>
+        public List<string> GetOmmittedSheet(List<string> ToleImportDM, List<string> ToleImportAlmaDaraBase)
+        {
+            try
+            {
+                List<string> getOmmittedSheet = new List<string>();
+                getOmmittedSheet = ToleImportAlmaDaraBase.Except(ToleImportDM).ToList();
+                //a voir les condition qui peuvent faire qu il  ait moins de toles dans cam que dans clip
+                //getOmmittedSheet = ToleImportDM.Except(ToleImportAlmaDaraBase).ToList();
+                return getOmmittedSheet;
+
 
             }
-
-
-            /// <summary>
-            /// calcul les quantité de tole
-            /// </summary>
-            /// <param name="clipperqty">qtés envoyées par clipper</param>
-            /// <param name="StockEntity">qtés envoyées </param>
-            /// <returns></returns>
-            public long CaclulateSheetQuantity(long clipperqty, IEntity StockEntity)
+            catch (Exception ie)
             {
-                long initial = 0;
-                long booked = 0;
-                long used = 0;
-                long format_In_Production = 0;
-
-
-                //
-                try
-                {
-                    long finalqty = 0;
-                    format_In_Production = StockEntity.GetFieldValueAsEntity("_SHEET").GetFieldValueAsLong("_IN_PRODUCTION_QUANTITY");
-                    initial = StockEntity.GetFieldValueAsLong("_QUANTITY");
-                    booked = StockEntity.GetFieldValueAsLong("_BOOKED_QUANTITY");
-                    used = StockEntity.GetFieldValueAsLong("_USED_QUANTITY");
-
-                    Alma_Log.Write_Log("qté initiale=" + initial + "qté reservé=" + booked + " qté utilidee=" + used + "qté initiale" + "qté en prod" + format_In_Production);
-
-                    //if (clipperqty - (initial - booked + used) <= 0)
-                    if (clipperqty - format_In_Production < 0)
-                    {   ////
-                        Alma_Log.Write_Log("qté calculée negative ou nulle : pas de modification du stock ");
-                        finalqty = initial;
-
-                    }
-                    else
-                    {
-                        finalqty = clipperqty;
-                    }
-
-                    Alma_Log.Write_Log("qté calculée=" + finalqty);
-                    return finalqty;
-
-
-                }
-                //
-                catch (Exception ie)
-                {
-
-                    Alma_Log.Write_Log("Erreur sur le calcul des quatité msg : " + ie.Message);
-
-                    return 0;
-                }
-                //
+                Alma_Log.Write_Log(ie.Message);
+                return null;
             }
 
+        }
 
-            /// <summary>
-            /// cette methode rends le stock null obsolette afin de liberer les filtres sur le stock
-            /// </summary>
-            /// <param name="contextlocal"></param>
-            public void SetNullQtyToObsolet(Context contextlocal)
+
+        /// <summary>
+        /// calcul les quantité de tole
+        /// </summary>
+        /// <param name="clipperqty">qtés envoyées par clipper</param>
+        /// <param name="StockEntity">qtés envoyées </param>
+        /// <returns></returns>
+        public long CaclulateSheetQuantity(long clipperqty, IEntity StockEntity)
+        {
+            long initial = 0;
+            long booked = 0;
+            long used = 0;
+            long format_In_Production = 0;
+
+
+            //
+            try
+            {
+                long finalqty = 0;
+                format_In_Production = StockEntity.GetFieldValueAsEntity("_SHEET").GetFieldValueAsLong("_IN_PRODUCTION_QUANTITY");
+                initial = StockEntity.GetFieldValueAsLong("_QUANTITY");
+                booked = StockEntity.GetFieldValueAsLong("_BOOKED_QUANTITY");
+                used = StockEntity.GetFieldValueAsLong("_USED_QUANTITY");
+
+                Alma_Log.Write_Log("qté initiale=" + initial + "qté reservé=" + booked + " qté utilidee=" + used + "qté initiale" + "qté en prod" + format_In_Production);
+
+                //if (clipperqty - (initial - booked + used) <= 0)
+                if (clipperqty - format_In_Production < 0)
+                {   ////
+                    Alma_Log.Write_Log("qté calculée negative ou nulle : pas de modification du stock ");
+                    finalqty = initial;
+
+                }
+                else
                 {
-                    string methodename = MethodBase.GetCurrentMethod().Name;
-                    try
-                    {
-                        IEntityList stockslist = contextlocal.EntityManager.GetEntityList("_STOCK", LogicOperator.And, "IDCLIP", ConditionOperator.NotEqual, string.Empty, "_QUANTITY", ConditionOperator.Equal, 0);//.GetEntityList("_STOCK", "_QUANTITY", ConditionOperator.Greater, 0);
-
-
-                    }
-                    catch (Exception ie) { System.Windows.Forms.MessageBox.Show(ie.Message, "erreur " + methodename); }
+                    finalqty = clipperqty;
                 }
 
+                Alma_Log.Write_Log("qté calculée=" + finalqty);
+                return finalqty;
 
-            /// <summary>
-            /// renvoie l'entite matiere a partir du nom string 
-            /// </summary>
-            /// <param name="contextlocal">ientity context</param>
-            /// <param name="line_dictionnary">dictionnary <string,object> line_dictionnary</param>
-            /// <returns>entity de type matiere</returns>
-            public IEntity GetMaterialEntity(IContext contextlocal, ref Dictionary<string, object> line_dictionnary)
+
+            }
+            //
+            catch (Exception ie)
             {
-                IEntity material = null;
 
-                try
+                Alma_Log.Write_Log("Erreur sur le calcul des quatité msg : " + ie.Message);
+
+                return 0;
+            }
+            //
+        }
+
+
+        /// <summary>
+        /// cette methode rends le stock null obsolette afin de liberer les filtres sur le stock
+        /// </summary>
+        /// <param name="contextlocal"></param>
+        public void SetNullQtyToObsolet(Context contextlocal)
+        {
+            string methodename = MethodBase.GetCurrentMethod().Name;
+            try
+            {
+                IEntityList stockslist = contextlocal.EntityManager.GetEntityList("_STOCK", LogicOperator.And, "IDCLIP", ConditionOperator.NotEqual, string.Empty, "_QUANTITY", ConditionOperator.Equal, 0);//.GetEntityList("_STOCK", "_QUANTITY", ConditionOperator.Greater, 0);
+
+
+            }
+            catch (Exception ie) { System.Windows.Forms.MessageBox.Show(ie.Message, "erreur " + methodename); }
+        }
+
+
+        /// <summary>
+        /// renvoie l'entite matiere a partir du nom string 
+        /// </summary>
+        /// <param name="contextlocal">ientity context</param>
+        /// <param name="line_dictionnary">dictionnary <string,object> line_dictionnary</param>
+        /// <returns>entity de type matiere</returns>
+        public IEntity GetMaterialEntity(IContext contextlocal, ref Dictionary<string, object> line_dictionnary)
+        {
+            IEntity material = null;
+
+            try
+            {
+
+                //IEntityList materials = null;
+
+                //verification simple par nom nuance*etat epaisseur en rgardnat une structure comme ceci
+                //"SPC*BRUT 1.00" //attention pas de control de l'obsolecence pour le moment
+                if (line_dictionnary.ContainsKey("_MATERIAL") && line_dictionnary.ContainsKey("THICKNESS"))
                 {
-
-                    //IEntityList materials = null;
-
-                    //verification simple par nom nuance*etat epaisseur en rgardnat une structure comme ceci
-                    //"SPC*BRUT 1.00" //attention pas de control de l'obsolecence pour le moment
-                    if (line_dictionnary.ContainsKey("_MATERIAL") && line_dictionnary.ContainsKey("THICKNESS"))
-                    {
                     //material = Material.getMaterial_Entity(contextlocal, line_dictionnary["_MATERIAL"].ToString(), Convert.ToDouble(line_dictionnary["THICKNESS"]));
                     material = Material.getMaterial_Entity(contextlocal, line_dictionnary["_MATERIAL"].ToString(), SimplifiedMethods.GetDoubleInvariantCulture(line_dictionnary["THICKNESS"].ToString()));
                 }
 
 
-                    return material;
-                }
-                catch (Exception ie)
-                {
-                    Alma_Log.Write_Log_Important(MethodBase.GetCurrentMethod().Name + ": Lecture impossible de la matiere :" + ie.Message);
-              
-                    return material;
-                }
-
+                return material;
             }
+            catch (Exception ie)
+            {
+                Alma_Log.Write_Log_Important(MethodBase.GetCurrentMethod().Name + ": Lecture impossible de la matiere :" + ie.Message);
+
+                return material;
+            }
+
+        }
 
     }
 
 
- #endregion
+    #endregion
 
 
     //do on action
@@ -4457,7 +4704,7 @@ namespace AF_Clipper_Dll
     {
         //Clipper_DoOnAction_After_Cutting_end
         public override void OnAfterEndCuttingEvent(IContext context, AfterEndCuttingArgs args)
-        {  
+        {
             {
                 //this.execute(contextlocal, args.NestingEntity);
                 Execute(args.ToCutSheetEntity);
@@ -4494,46 +4741,48 @@ namespace AF_Clipper_Dll
         /// <param name="SelectedEntities"> IEntitySelector Entityselector </param>
         /// 
         public void execute(IEnumerable<IEntity> SelectedEntities)
+        {
+
+            try
             {
 
-            try {  
-                    
-                    if (SelectedEntities.Count() > 0)
+                if (SelectedEntities.Count() > 0)
+                {
+                    string stage = SelectedEntities.First().EntityType.Key;
+                    //creation du fichier de sortie
+                    Clipper_Param.GetlistParam(SelectedEntities.First().Context);
+                    foreach (IEntity entity in SelectedEntities)
                     {
-                        string stage = SelectedEntities.First().EntityType.Key;
-                            //creation du fichier de sortie
-                        Clipper_Param.GetlistParam(SelectedEntities.First().Context);
-                            foreach (IEntity entity in SelectedEntities)
-                            {
-                                string export_gpao_path = Clipper_Param.GetPath("Export_GPAO");
+                        string export_gpao_path = Clipper_Param.GetPath("Export_GPAO");
 
-                                //using (Clipper_Infos current_clipper_nestinfos = new Clipper_Infos())
-                                {
-                                    Clipper_Infos current_clipper_nestinfos = new Clipper_Infos();
-                                    current_clipper_nestinfos.GetNestInfosBySheet(entity);
-                                    current_clipper_nestinfos.Export_NestInfosToFile(export_gpao_path);
-                                    //validation du stock
+                        //using (Clipper_Infos current_clipper_nestinfos = new Clipper_Infos())
+                        {
+                            Clipper_Infos current_clipper_nestinfos = new Clipper_Infos();
+                            current_clipper_nestinfos.GetNestInfosBySheet(entity);
+                            current_clipper_nestinfos.Export_NestInfosToFile(export_gpao_path);
+                            //validation du stock
 
-                                    //
-                                    current_clipper_nestinfos = null;
-                                }
+                            //
+                            current_clipper_nestinfos = null;
+                        }
 
 
-                            }
+                    }
 
                 }
                 else { MessageBox.Show("Aucune selection n'a été faite dans la liste proposée \r\n veuillez relancer l'opération."); }
-            } 
-            catch (Exception ie) {
-                MessageBox.Show ("Erreur sur la methode " +System.Reflection.MethodBase.GetCurrentMethod().Name  );
+            }
+            catch (Exception ie)
+            {
+                MessageBox.Show("Erreur sur la methode " + System.Reflection.MethodBase.GetCurrentMethod().Name);
             }
 
 
         }
 
-           
 
-        }
+
+    }
 
 
     ////
@@ -4550,14 +4799,16 @@ namespace AF_Clipper_Dll
         //la multiselection n'est pas controlée
         public override void OnAfterSendToWorkshopEvent(IContext contextlocal, AfterSendToWorkshopArgs args)
         {
-            try {
+            try
+            {
 
                 //this.execute(contextlocal, args.NestingEntity);
                 execute(args.NestingEntity);
             }
 
 
-            catch (Exception ie ){
+            catch (Exception ie)
+            {
                 MessageBoxEx.ShowError(ie.Message);
             }
         }
@@ -4574,7 +4825,7 @@ namespace AF_Clipper_Dll
             Clipper_Param.GetlistParam(entity.Context);
             string export_gpao_path = Clipper_Param.GetPath("Export_GPAO");
 
-          
+
             {
                 Clipper_Infos current_clipper_nestinfos = new Clipper_Infos();
                 //current_clipper_nestinfos.GetNestInfosBySheet(entity);
@@ -4583,7 +4834,7 @@ namespace AF_Clipper_Dll
                 current_clipper_nestinfos.Export_NestInfosToFile(export_gpao_path);
                 //validation du stock
 
-                
+
                 current_clipper_nestinfos = null;
             }
 
@@ -4634,7 +4885,7 @@ namespace AF_Clipper_Dll
 
                 Clipper_Nest_Infos clipper_nest_infos = new Clipper_Nest_Infos();
                 clipper_nest_infos.Fill(nesting_to_cut);
-             
+                clipper_nest_infos.Export_NestInfosToFile(export_gpao_path);
                 //Nest_Infos current_clipper_nestinfos = new Nest_Infos();
 
                 /*creatin du stock*/
@@ -4682,7 +4933,7 @@ namespace AF_Clipper_Dll
 
             catch (Exception ie)
             {
-                MessageBoxEx.ShowError( System.Reflection.MethodBase.GetCurrentMethod().Name +" : " +    ie.Message);
+                MessageBoxEx.ShowError(System.Reflection.MethodBase.GetCurrentMethod().Name + " : " + ie.Message);
             }
 
 
@@ -4711,7 +4962,7 @@ namespace AF_Clipper_Dll
                 StockManager.DeleteNestingAssociatedStock(entity);
 
 
-                
+
             }
 
 
@@ -4748,7 +4999,7 @@ namespace AF_Clipper_Dll
         }
 
 
-        
+
         /// <summary>
         /// creation auto du fichier texte à  la cloture
         /// </summary>
@@ -4778,11 +5029,11 @@ namespace AF_Clipper_Dll
 
 
 
-        
+
 
 
     }
-    
+
 
 
 
@@ -4846,12 +5097,12 @@ namespace AF_Clipper_Dll
             base.Export_NestInfosToFile(export_gpao_path);
             /***/
             bool explodMultiplicity = Clipper_Param.Get_Multiplicity_Mode();
-     
+
             //si la fonction est lancer par la méthode planning alors le fichier de sortie aura l'opiton .planning
             //ce pour ne pas polluer les problemes de produciton
-            string extension = ".txt"; 
-           
-            string stringformatdouble= Clipper_Param.Get_string_format_double();
+            string extension = ".txt";
+
+            string stringformatdouble = Clipper_Param.Get_string_format_double();
 
             ///recuperation des placements selectionnés
             ///
@@ -4859,7 +5110,7 @@ namespace AF_Clipper_Dll
             {///normalement on conidere le premier placement
                 case false:
                     {
-                        MessageBox.Show(System.Reflection.MethodBase.GetCurrentMethod().Name + " : Le mode de multiplicité choisi dans les paramètres clipper  n'est pas géré. " );
+                        MessageBox.Show(System.Reflection.MethodBase.GetCurrentMethod().Name + " : Le mode de multiplicité choisi dans les paramètres clipper  n'est pas géré. ");
                         break;
                     }
 
@@ -4867,7 +5118,7 @@ namespace AF_Clipper_Dll
                     {
                         foreach (Nest_Infos_2 currentnestinfos in this.nestinfoslist)
                         {
-                        ///explosion placement
+                            ///explosion placement
                             using (StreamWriter export_gpao_file = new StreamWriter(@export_gpao_path + "\\" + currentnestinfos.Tole_Nesting.To_Cut_Sheet_Name + extension))
                             {
 
@@ -4876,8 +5127,9 @@ namespace AF_Clipper_Dll
                                 //recuperaiton des champs specifiques
                                 //string NUMMATLOT="";
                                 currentnestinfos.Tole_Nesting.Specific_Tole_Fields.Get<string>("NUMMATLOT", out string NUMMATLOT);
-                                if(NUMMATLOT == "Undef"){ 
-                                NUMMATLOT = string.Empty;
+                                if (NUMMATLOT == "Undef")
+                                {
+                                    NUMMATLOT = string.Empty;
                                 }
                                 //ecriture des entetes de nesting
                                 string Header_Line = "HEADER" + Separator +
@@ -4895,101 +5147,102 @@ namespace AF_Clipper_Dll
                                 currentnestinfos.Tole_Nesting.GradeName + Separator +
                                 //multiplicité
                                 //currentnestinfos.Tole_Nesting.Mutliplicity + Separator +
-                                "1" + Separator+
+                                "1" + Separator +
                                  // temps de chargement
-                                 String.Format(Clipper_Param.Get_string_format_double(), (currentnestinfos.NestingSheet_loadingTimeInit/60))+ Separator +
+                                 String.Format(Clipper_Param.Get_string_format_double(), (currentnestinfos.NestingSheet_loadingTimeInit / 60)) + Separator +
                                 currentnestinfos.Nesting_CentreFrais_Machine + Separator +
                                 "" + Separator + //on ignore le pdf
                                 currentnestinfos.Tole_Nesting.Sheet_EmfFile + Separator +
                                //numero lot
                                NUMMATLOT + Separator +
                                     // String.Format(Clipper_Param.get_string_format_double(), (Alma_Time.minutes(this.Sheet_loadingTimeInit + this.Sheet_loadingTimeEnd)));
-                                //(currentnestinfos.NestingSheet_loadingTimeInit + currentnestinfos.NestingSheet_loadingTimeEnd) / 60+
+                                    //(currentnestinfos.NestingSheet_loadingTimeInit + currentnestinfos.NestingSheet_loadingTimeEnd) / 60+
                                     String.Format(Clipper_Param.Get_string_format_double(), (currentnestinfos.NestingSheet_loadingTimeInit + currentnestinfos.NestingSheet_loadingTimeEnd) / 60) +
 
                                   "";
-                               export_gpao_file.WriteLine(Header_Line.Replace(",", "."));
-                            
+                                export_gpao_file.WriteLine(Header_Line.Replace(",", "."));
 
-                    //ecriture des details pieces
-                    //recue
-                    foreach (Nested_PartInfo clipperpart in currentnestinfos.Nested_Part_Infos_List)
-                    {
-                        //string idlnrout; 
-                        clipperpart.Nested_PartInfo_specificFields.Get<string>("IDLNROUT", out string idlnrout);
-                        //string idlnbom;
-                        clipperpart.Nested_PartInfo_specificFields.Get<string>("IDLNBOM", out string idlnbom);
-                        string CuttingTime = (currentnestinfos.Calculus_Parts_Total_Time==0) == false? String.Format(Clipper_Param.Get_string_format_double(), clipperpart.Part_Time * clipperpart.Nested_Quantity / currentnestinfos.Calculus_Parts_Total_Time) : "0";
 
-                        string detail_Line =
-                        "DETAIL" + Separator +
-                         idlnrout + Separator +
-                         idlnbom + Separator +
-                         clipperpart.Nested_Quantity + Separator +
-                         clipperpart.Height + Separator +
-                         clipperpart.Width + Separator +
-                         String.Format(Clipper_Param.Get_string_format_double(), clipperpart.Part_Balanced_Weight * clipperpart.Nested_Quantity / (currentnestinfos.Tole_Nesting.Sheet_Weight * currentnestinfos.Tole_Nesting.Mutliplicity)) + Separator +// * Tole_Nesting.Mutliplicity)) + Separator +
-                        // clipperpart.Width + Separator;//+
-                        //String.Format(Clipper_Param.get_string_format_double(), clipperpart.Part_Balanced_Weight * clipperpart.Nested_Quantity / (currentnestinfos.Tole_Nesting.Sheet_Weight * currentnestinfos.Tole_Nesting.Mutliplicity)) + Separator +
-                        String.Format(Clipper_Param.Get_string_format_double(), clipperpart.Weight * 0.001) + Separator +
-                        ///String.Format(Clipper_Param.get_string_format_double(), clipperpart.Part_Time * clipperpart.Nested_Quantity / currentnestinfos.Calculus_Parts_Total_Time);//current_clipper_nestinfos.Nesting_TotalTime);
-                        //CuttingTime;
-                        String.Format(Clipper_Param.Get_string_format_double(), CuttingTime);
+                                //ecriture des details pieces
+                                //recue
+                                foreach (Nested_PartInfo clipperpart in currentnestinfos.Nested_Part_Infos_List)
+                                {
+                                    //string idlnrout; 
+                                    clipperpart.Nested_PartInfo_specificFields.Get<string>("IDLNROUT", out string idlnrout);
+                                    //string idlnbom;
+                                    clipperpart.Nested_PartInfo_specificFields.Get<string>("IDLNBOM", out string idlnbom);
+                                    string CuttingTime = (currentnestinfos.Calculus_Parts_Total_Time == 0) == false ? String.Format(Clipper_Param.Get_string_format_double(), clipperpart.Part_Time * clipperpart.Nested_Quantity / currentnestinfos.Calculus_Parts_Total_Time) : "0";
+
+                                    string detail_Line =
+                                    "DETAIL" + Separator +
+                                     idlnrout + Separator +
+                                     idlnbom + Separator +
+                                     clipperpart.Nested_Quantity + Separator +
+                                     clipperpart.Height + Separator +
+                                     clipperpart.Width + Separator +
+                                     String.Format(Clipper_Param.Get_string_format_double(), clipperpart.Part_Balanced_Weight * clipperpart.Nested_Quantity / (currentnestinfos.Tole_Nesting.Sheet_Weight * currentnestinfos.Tole_Nesting.Mutliplicity)) + Separator +// * Tole_Nesting.Mutliplicity)) + Separator +
+                                                                                                                                                                                                                                                                      // clipperpart.Width + Separator;//+
+                                                                                                                                                                                                                                                                      //String.Format(Clipper_Param.get_string_format_double(), clipperpart.Part_Balanced_Weight * clipperpart.Nested_Quantity / (currentnestinfos.Tole_Nesting.Sheet_Weight * currentnestinfos.Tole_Nesting.Mutliplicity)) + Separator +
+                                    String.Format(Clipper_Param.Get_string_format_double(), clipperpart.Weight * 0.001) + Separator +
+                                    ///String.Format(Clipper_Param.get_string_format_double(), clipperpart.Part_Time * clipperpart.Nested_Quantity / currentnestinfos.Calculus_Parts_Total_Time);//current_clipper_nestinfos.Nesting_TotalTime);
+                                    //CuttingTime;
+                                    String.Format(Clipper_Param.Get_string_format_double(), CuttingTime);
                                     export_gpao_file.WriteLine(detail_Line.Replace(",", "."));
 
-                    }
+                                }
 
 
-                    //ecriture  des chutes
-                    foreach (Tole currentoffcut in currentnestinfos.Offcut_infos_List)
-                    {
-                        string IsRectagular = (currentoffcut.Sheet_Length == currentoffcut.Sheet_Width) == true ? "1" : "0";
-                        double longueur, largeur;
-                        //si la tole est tournée, on inverse longueur et largeur
-                        longueur = currentoffcut.Sheet_Length;
-                        largeur = currentoffcut.Sheet_Width;
+                                //ecriture  des chutes
+                                foreach (Tole currentoffcut in currentnestinfos.Offcut_infos_List)
+                                {
+                                    string IsRectagular = (currentoffcut.Sheet_Length == currentoffcut.Sheet_Width) == true ? "1" : "0";
+                                    double longueur, largeur;
+                                    //si la tole est tournée, on inverse longueur et largeur
+                                    longueur = currentoffcut.Sheet_Length;
+                                    largeur = currentoffcut.Sheet_Width;
 
-                        if (currentoffcut.Sheet_Is_rotated) {
-                            longueur = currentoffcut.Sheet_Width;
-                            largeur = currentoffcut.Sheet_Length;
-                        }
+                                    if (currentoffcut.Sheet_Is_rotated)
+                                    {
+                                        longueur = currentoffcut.Sheet_Width;
+                                        largeur = currentoffcut.Sheet_Length;
+                                    }
 
-                            string offcut_Line =
-                        "CHUTE" + Separator +
+                                    string offcut_Line =
+                                "CHUTE" + Separator +
 
-                        longueur + Separator +
-                        largeur + Separator +
-                        currentoffcut.Mutliplicity + Separator +
-                        //calcul du ratio
-                        String.Format(Clipper_Param.Get_string_format_double(), (currentoffcut.Sheet_Surface / currentnestinfos.Tole_Nesting.Sheet_Total_Surface)) + Separator +
-                         // currentoffcut.rectangular + Separator +
-                         IsRectagular + Separator +
-                        //clipperoffcut.Rectangular = true ? "1" : "0" + Separator +
-                        /*chemin vers dpr  */
-                        //Separator +--> chemin vers dpr (n'a pas d'utilité dans clip)
-                        "" + Separator +
-                        currentoffcut.Sheet_EmfFile + Separator +
-                        String.Format(Clipper_Param.Get_string_format_double(), currentoffcut.Sheet_Weight * 0.001);
-                        export_gpao_file.WriteLine(offcut_Line.Replace(",", "."));
+                                longueur + Separator +
+                                largeur + Separator +
+                                currentoffcut.Mutliplicity + Separator +
+                                //calcul du ratio
+                                String.Format(Clipper_Param.Get_string_format_double(), (currentoffcut.Sheet_Surface / currentnestinfos.Tole_Nesting.Sheet_Total_Surface)) + Separator +
+                                 // currentoffcut.rectangular + Separator +
+                                 IsRectagular + Separator +
+                                //clipperoffcut.Rectangular = true ? "1" : "0" + Separator +
+                                /*chemin vers dpr  */
+                                //Separator +--> chemin vers dpr (n'a pas d'utilité dans clip)
+                                "" + Separator +
+                                currentoffcut.Sheet_EmfFile + Separator +
+                                String.Format(Clipper_Param.Get_string_format_double(), currentoffcut.Sheet_Weight * 0.001);
+                                    export_gpao_file.WriteLine(offcut_Line.Replace(",", "."));
 
-                        //validaton du stock sur les chutes
-                        //ecriture du SHEET_FILENAME
-                        IEntityList Sheets_To_Update;
-                        IEntity Sheet_To_Update;
-                        Sheets_To_Update = currentoffcut.SheetEntity.Context.EntityManager.GetEntityList("_SHEET", "ID", ConditionOperator.Equal, currentoffcut.Sheet_Id);///NestingStockEntity.Id);
-                        Sheets_To_Update.Fill(false);
-                        //construction de la liste des chutes
-                        Sheet_To_Update = SimplifiedMethods.GetFirtOfList(Sheets_To_Update);
-                        Sheet_To_Update.SetFieldValue("FILENAME", currentoffcut.Sheet_EmfFile);
-                        Sheet_To_Update.Save();
-
-               
-                    }
-                    
-                      
+                                    //validaton du stock sur les chutes
+                                    //ecriture du SHEET_FILENAME
+                                    IEntityList Sheets_To_Update;
+                                    IEntity Sheet_To_Update;
+                                    Sheets_To_Update = currentoffcut.SheetEntity.Context.EntityManager.GetEntityList("_SHEET", "ID", ConditionOperator.Equal, currentoffcut.Sheet_Id);///NestingStockEntity.Id);
+                                    Sheets_To_Update.Fill(false);
+                                    //construction de la liste des chutes
+                                    Sheet_To_Update = SimplifiedMethods.GetFirtOfList(Sheets_To_Update);
+                                    Sheet_To_Update.SetFieldValue("FILENAME", currentoffcut.Sheet_EmfFile);
+                                    Sheet_To_Update.Save();
 
 
-                }
+                                }
+
+
+
+
+                            }
                         }
                         break;
                     }
@@ -4997,7 +5250,7 @@ namespace AF_Clipper_Dll
 
 
             }
-           
+
 
 
         }
@@ -5296,7 +5549,7 @@ namespace AF_Clipper_Dll
 
         #endregion
 
-     
+
         /// <summary>
         /// inforlmation specifique a recuperer
         /// </summary>
@@ -5304,7 +5557,7 @@ namespace AF_Clipper_Dll
         /// 
 
         //infos spec des toles
-     public override void SetSpecific_Tole_Infos(Tole Tole)
+        public override void SetSpecific_Tole_Infos(Tole Tole)
         {
             base.SetSpecific_Tole_Infos(Tole);
             string numatlot = Tole.StockEntity.GetFieldValueAsString("NUMMATLOT");
@@ -5312,27 +5565,28 @@ namespace AF_Clipper_Dll
 
             Tole.Specific_Tole_Fields.Add<string>("NUMMATLOT", Tole.StockEntity.GetFieldValueAsString("NUMMATLOT"));
             Tole.Specific_Tole_Fields.Add<string>("NUMLOT", Tole.StockEntity.GetFieldValueAsString("NUMLOT"));
-            
+
         }
-        
+
 
         //inofs specifiques des parts
-     public override void SetSpecific_Part_Infos(List<Nested_PartInfo> Nested_Part_Infos_List)
+        public override void SetSpecific_Part_Infos(List<Nested_PartInfo> Nested_Part_Infos_List)
         {
             base.SetSpecific_Part_Infos(Nested_Part_Infos_List);
 
-            foreach(Nested_PartInfo part in Nested_Part_Infos_List)
+            foreach (Nested_PartInfo part in Nested_Part_Infos_List)
             {
                 part.Nested_PartInfo_specificFields.Add<string>("AFFAIRE", part.Part_To_Produce_IEntity.GetFieldValueAsString("AFFAIRE"));
                 part.Nested_PartInfo_specificFields.Add<string>("FAMILY", part.Part_To_Produce_IEntity.GetFieldValueAsString("FAMILY"));
                 part.Nested_PartInfo_specificFields.Add<string>("IDLNROUT", part.Part_To_Produce_IEntity.GetFieldValueAsString("IDLNROUT"));
                 part.Nested_PartInfo_specificFields.Add<string>("IDLNBOM", part.Part_To_Produce_IEntity.GetFieldValueAsString("IDLNBOM"));
                 //on recherche les pieces fantomes
-                if (part.Part_To_Produce_IEntity.GetFieldValueAsString("IDLNROUT") == string.Empty) {
+                if (part.Part_To_Produce_IEntity.GetFieldValueAsString("IDLNROUT") == string.Empty)
+                {
                     part.Part_IsGpao = false;
                 }
-                
-             
+
+
 
 
             }
@@ -5343,20 +5597,21 @@ namespace AF_Clipper_Dll
         }
 
         //infos specifique des chutes
-     public override void SetSpecific_Offcut_Infos(List<Tole> Offcut_infos_List)
+        public override void SetSpecific_Offcut_Infos(List<Tole> Offcut_infos_List)
         {
             base.SetSpecific_Offcut_Infos(Offcut_infos_List);
 
 
             foreach (Tole offcut in Offcut_infos_List)
             {
-                if (offcut.no_Stock==false) { 
-                offcut.Specific_Tole_Fields.Add<string>("NUMLOT", offcut.StockEntity.GetFieldValueAsString("NUMLOT"));
-                offcut.Specific_Tole_Fields.Add<string>("NUMMATLOT", offcut.StockEntity.GetFieldValueAsString("NUMMATLOT"));
+                if (offcut.no_Stock == false)
+                {
+                    offcut.Specific_Tole_Fields.Add<string>("NUMLOT", offcut.StockEntity.GetFieldValueAsString("NUMLOT"));
+                    offcut.Specific_Tole_Fields.Add<string>("NUMMATLOT", offcut.StockEntity.GetFieldValueAsString("NUMMATLOT"));
                 }
                 else
                 {  ///chmaps vide pour les valuers non existantes
-                    offcut.Specific_Tole_Fields.Add<string>("NUMLOT","");
+                    offcut.Specific_Tole_Fields.Add<string>("NUMLOT", "");
                     offcut.Specific_Tole_Fields.Add<string>("NUMMATLOT", "");
 
 
@@ -5376,17 +5631,238 @@ namespace AF_Clipper_Dll
     /// </summary>
     public class Clipper_Nest_Infos : Nest_Infos
     {
-        
+
         //ajout des infos de tole sp&
         //Booked_Stock_Entity_List
-        public override bool Fill(IEntity nesting_to_cut)
+
+
+        //creation du distionnaire d'objet
+        public override void Set_Stock_Specific_Fields(Tole tole)
         {
-           
+            string numatlot = tole.StockEntity.GetFieldValueAsString("NUMMATLOT");
+            string numlot = tole.StockEntity.GetFieldValueAsString("NUMLOT");
+
+            tole.Specific_Fields.Add<string>("NUMMATLOT", tole.StockEntity.GetFieldValueAsString("NUMMATLOT"));
+            tole.Specific_Fields.Add<string>("NUMLOT", tole.StockEntity.GetFieldValueAsString("NUMLOT"));
+        }
+        public override void Set_Nested_Part_Specific_Fields(Nested_PartInfo part)
+        {
+
+            
+
+            part.Specific_Fields.Add<string>("AFFAIRE", part.Part_To_Produce_IEntity.GetFieldValueAsString("AFFAIRE"));
+            part.Specific_Fields.Add<string>("FAMILY", part.Part_To_Produce_IEntity.GetFieldValueAsString("FAMILY"));
+            part.Specific_Fields.Add<string>("IDLNROUT", part.Part_To_Produce_IEntity.GetFieldValueAsString("IDLNROUT"));
+            part.Specific_Fields.Add<string>("IDLNBOM", part.Part_To_Produce_IEntity.GetFieldValueAsString("IDLNBOM"));
+            //on recherche les pieces fantomes
+            if (part.Part_To_Produce_IEntity.GetFieldValueAsString("IDLNROUT") == string.Empty)
+            {
+                part.Part_IsGpao = false;
+            }
+
+
+
+        }
+      
+
+        ///export//
+        ///
+        public override void Export_NestInfosToFile(string OutputDirectory)
+        {
+            // base.Export_NestInfosToFile(export_gpao_file);//
+
+            /***/
+            bool explodMultiplicity = Clipper_Param.Get_Multiplicity_Mode();
+
+            //si la fonction est lancer par la méthode planning alors le fichier de sortie aura l'opiton .planning
+            //ce pour ne pas polluer les problemes de produciton
+            string extension = ".txt";
+            string format = Clipper_Param.Get_string_format_double();
+            string stringformatdouble = Clipper_Param.Get_string_format_double();
+
+            ///recuperation des placements selectionnés
+            ///
+
+            switch (explodMultiplicity)
+            {///normalement on conidere le premier placement
+                case false:
+                    {
+                        MessageBox.Show(System.Reflection.MethodBase.GetCurrentMethod().Name + " Veuillez revoir les paramètres de Clipper Configuration : /r/n Le mode de multiplicité choisi dans les paramètres clipper  n'est pas géré. ");
+                        break;
+                    }
+                case true:
+                    {
+
+                        //recuperer les infos des toles
+                        foreach (Tole tole in Nesting_List_Nest_Infos_Tole_Nesting_Infos)
+                        {
+                            //on verifie les données du nestinfos
+                            if (CheckNestingInfos() == true)
+                            {
+                                //definir le fichier de sortie
+                                using (StreamWriter outputFile = new StreamWriter(Path.Combine(OutputDirectory, tole.To_Cut_Sheet_Name + extension)))
+                                {
+                                    string Separator = ";";
+                                    string[] HEADER = new string[50];
+                                    string[] PART = new string[50];
+                                    string[] OFFCUT = new string[50];
+                                    List<string> DETAIL = new List<string>();
+                                    List<string> CHUTE = new List<string>();
+
+
+                                    // ecriture du fichier de sortie//
+                                    // HEADER //
+                                    //ecriture des entetes de nesting
+
+                                    int iheader = 0;
+                                    string headerline;
+
+                                    HEADER[iheader++] = "HEADER";
+                                    HEADER[iheader++] = SimplifiedMethods.EmptyString(tole.Stock_Name);
+                                    HEADER[iheader++] = SimplifiedMethods.NumberToString(tole.Sheet_Length,format);
+                                    HEADER[iheader++] = SimplifiedMethods.NumberToString(tole.Sheet_Width, format);
+                                    HEADER[iheader++] = SimplifiedMethods.NumberToString(tole.Thickness, format);
+                                    HEADER[iheader++] = SimplifiedMethods.EmptyString(tole.GradeName);
+                                    HEADER[iheader++] = String.Format(format, (Nesting_Sheet_loadingTimeInit / 60));
+                                    HEADER[iheader++] = SimplifiedMethods.EmptyString(Nesting_CentreFrais_Machine);
+                                    HEADER[iheader++] = SimplifiedMethods.EmptyString(Nesting_Emf_File);//emf
+                                    tole.Specific_Fields.Get<string>("NUMMATLOT", out string NUMMATLOT);
+                                    HEADER[iheader++] = SimplifiedMethods.EmptyString(NUMMATLOT);
+                                    HEADER[iheader++] = SimplifiedMethods.NumberToString((Nesting_Sheet_loadingTimeEnd / 60), format);
+
+                                    headerline = SimplifiedMethods.WriteTableToLine(HEADER, iheader, Separator);
+                                    // PART //
+
+                                    foreach ( Nested_PartInfo  part in tole.List_Nested_Part_Infos)
+                                    {
+                                        int ipart = 0;
+                                        string partline = "";
+                                        PART[ipart++] = "DETAIL";
+                                        part.Specific_Fields.Get<string>("IDLNROUT", out string idlnrout);
+                                        part.Specific_Fields.Get<string>("IDLNBOM", out string idlnbom); 
+                                        PART[ipart++] = SimplifiedMethods.EmptyString(idlnrout);
+                                        PART[ipart++] = SimplifiedMethods.EmptyString(idlnbom);
+                                        PART[ipart++] = SimplifiedMethods.NumberToString(part.Nested_Quantity, format);
+                                        PART[ipart++] = SimplifiedMethods.NumberToString(part.Height, format);
+                                        PART[ipart++] = SimplifiedMethods.NumberToString(part.Width, format);
+
+                                        double partweightcoef = part.Part_Balanced_Weight* part.Nested_Quantity / (tole.Sheet_Weight );
+
+                                        PART[ipart++] = SimplifiedMethods.NumberToString(partweightcoef, format);
+                                        PART[ipart++] = SimplifiedMethods.NumberToString(part.Weight*0.001, format);
+                                        PART[ipart++] = SimplifiedMethods.NumberToString(part.Part_Time,format);
+
+
+                                        partline = SimplifiedMethods.WriteTableToLine(PART, ipart, Separator);
+                                        DETAIL.Add(partline);
+
+
+                                    }
+
+
+                                    // OFFCUT //
+
+                                    foreach (Tole offcut in tole.List_Offcut_Infos)
+                                    {
+                                        int ioffcut = 0;
+                                        string offcutline = "";
+                                        double longueur = offcut.Sheet_Length;
+                                        double largeur = offcut.Sheet_Width;
+
+                                        string IsRectagular = (longueur == largeur) == true ? "1" : "0";
+
+                                        if (offcut.Sheet_Is_rotated)
+                                        {
+                                            longueur = offcut.Sheet_Width;
+                                            largeur = offcut.Sheet_Length;
+                                        }
+
+                                        
+
+
+                                        OFFCUT[ioffcut++] = "CHUTE";
+                                        OFFCUT[ioffcut++] = SimplifiedMethods.NumberToString(longueur, format);
+                                        OFFCUT[ioffcut++] = SimplifiedMethods.NumberToString(largeur, format);
+                                        OFFCUT[ioffcut++] = SimplifiedMethods.NumberToString(offcut.Mutliplicity, format);
+                                        OFFCUT[ioffcut++] = SimplifiedMethods.NumberToString((offcut.Sheet_Surface / Nesting_Surface), format);
+                                        OFFCUT[ioffcut++] = IsRectagular;
+                                        OFFCUT[ioffcut++] = "";
+                                        OFFCUT[ioffcut++] = offcut.Sheet_EmfFile;
+
+                                        offcutline = SimplifiedMethods.WriteTableToLine(OFFCUT, ioffcut, Separator);
+                                        CHUTE.Add(offcutline);
+
+
+
+                                      
+
+
+
+
+
+                                    }
+
+
+                                    ///ecriture
+
+                                    ///ecriture du fichier
+                                    //header
+                                    outputFile.WriteLine(headerline);
+                                    //part
+
+                                    foreach (string p in DETAIL)
+                                    {
+                                        outputFile.WriteLine(p);
+
+                                    }
+                                    //offcut
+                                    foreach (string c in CHUTE)
+                                    {
+                                        outputFile.WriteLine(c);
+                                    }
+
+
+
+
+
+
+                                }
+                            }
+
+
+
+
+
+
+
+
+
+
+                        }
+
+
+
+
+
+                        break;
+                    }
+            }
+
+
+
+
+
+
+        }
+        /// <summary>
+        /// boucle de verification des données de sorties
+        /// </summary>
+        /// <returns></returns>
+        public override bool CheckNestingInfos()
+        {
             try
             {
-                //option 
-                WorkShopOptionType WORKSHOP_OPTION = ActcutModelOptions.GetWorkShopOption(nesting_to_cut.Context);
-                GetNestInfosFromToCutSheet(nesting_to_cut);
+
 
                 return true;
 
@@ -5402,107 +5878,27 @@ namespace AF_Clipper_Dll
 
         }
 
-        //creation du distionnaire d'objet
-        public override void Set_Stock_CustomInfos(Tole tole)
-        {
-            string numatlot = tole.StockEntity.GetFieldValueAsString("NUMMATLOT");
-            string numlot = tole.StockEntity.GetFieldValueAsString("NUMLOT");
-
-            tole.Specific_Tole_Fields.Add<string>("NUMMATLOT", tole.StockEntity.GetFieldValueAsString("NUMMATLOT"));
-            tole.Specific_Tole_Fields.Add<string>("NUMLOT", tole.StockEntity.GetFieldValueAsString("NUMLOT"));
-        }
-        public override void Set_Nested_Part_CustomInfos(Nested_PartInfo part) {
-
-            
-                part.Nested_PartInfo_specificFields.Add<string>("AFFAIRE", part.Part_To_Produce_IEntity.GetFieldValueAsString("AFFAIRE"));
-                part.Nested_PartInfo_specificFields.Add<string>("FAMILY", part.Part_To_Produce_IEntity.GetFieldValueAsString("FAMILY"));
-                part.Nested_PartInfo_specificFields.Add<string>("IDLNROUT", part.Part_To_Produce_IEntity.GetFieldValueAsString("IDLNROUT"));
-                part.Nested_PartInfo_specificFields.Add<string>("IDLNBOM", part.Part_To_Produce_IEntity.GetFieldValueAsString("IDLNBOM"));
-                //on recherche les pieces fantomes
-                if (part.Part_To_Produce_IEntity.GetFieldValueAsString("IDLNROUT") == string.Empty)
-                {
-                    part.Part_IsGpao = false;
-                }
-
-
-              
-
-            }
-        //creation du distionnaire d'objet
-        public override void GetSpecific_Stock_infos(Tole tole)
-        {
-
-        }
-
-        ///export//
-        ///
-        public override void Export_NestInfosToFile()
-        {
-            // base.Export_NestInfosToFile(export_gpao_file);//
-         
-            /***/
-            bool explodMultiplicity = Clipper_Param.Get_Multiplicity_Mode();
-
-            //si la fonction est lancer par la méthode planning alors le fichier de sortie aura l'opiton .planning
-            //ce pour ne pas polluer les problemes de produciton
-            string extension = ".txt";
-
-            string stringformatdouble = Clipper_Param.Get_string_format_double();
-
-            ///recuperation des placements selectionnés
-            ///
-
-            switch (explodMultiplicity)
-            {///normalement on conidere le premier placement
-                case false:
-                    {
-                        MessageBox.Show(System.Reflection.MethodBase.GetCurrentMethod().Name + " : Le mode de multiplicité choisi dans les paramètres clipper  n'est pas géré. ");
-                        break;
-                    }
-                case true:
-                    {
-
-                        //recuperer les infos des toles
-
-                        //pour chaque toles ecrire le fichier de sortie
-                            //definir le streamwriter
-                        // definir le format du fichier de sortie
-
-
-
-
-                        break;
-                    }
-            }
-
-
-
-
-
-
     }
 
-    
-
-}
-
-#region exception
-public class MissingParameterException : Exception
-{
-
-    public MissingParameterException(string parametername) 
+    #region exception
+    public class MissingParameterException : Exception
     {
-        if (AF_Clipper_Dll.Clipper_Param.GetVerbose_Log()==true) { 
 
-            MessageBox.Show("Il manque le parametres" + parametername +" dans la base almacam");
-            Alma_Log.Write_Log_Important("Il manque le parametres " + parametername + " dans la base almacam");
+        public MissingParameterException(string parametername)
+        {
+            if (AF_Clipper_Dll.Clipper_Param.GetVerbose_Log() == true)
+            {
+
+                MessageBox.Show("Il manque le parametres" + parametername + " dans la base almacam");
+                Alma_Log.Write_Log_Important("Il manque le parametres " + parametername + " dans la base almacam");
+            }
+            Alma_Log.Write_Log("Il manque le parametres " + parametername + " dans la base almacam.");
+
         }
-        Alma_Log.Write_Log("Il manque le parametres " + parametername + " dans la base almacam.");
+
+
 
     }
-
-   
-
 }
 
 
