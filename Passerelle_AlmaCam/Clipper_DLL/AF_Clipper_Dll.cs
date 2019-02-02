@@ -4374,7 +4374,7 @@ namespace AF_Clipper_Dll
                 param.Context = contextlocal;
                
 
-                ProgressWorker<ImportParam> pw = new ProgressWorker<ImportParam>(param, ImportExecute);
+                ProgressWorker<ImportParam> pw = new ProgressWorker<ImportParam>(param, ImportStockExecute);
                 if (param.HasError)
                 {
                     MessageBox.Show(param.ErrorMessage);
@@ -4402,160 +4402,441 @@ namespace AF_Clipper_Dll
         /// </summary>
         /// <param name="param">parametre</param>
         /// <param name="pwMessage">message </param>
-        public void ImportExecute(ImportParam param, ProgressWorkerMessage pwMessage)
+        public void ImportStockExecute(ImportParam param, ProgressWorkerMessage pwMessage)
         {
+            try
+            {
+                IContext contextlocal = param.Context;
+                Clipper_Param.GetlistParam(contextlocal);
 
-            IContext contextlocal = param.Context;
-            Clipper_Param.GetlistParam(contextlocal);
+                if (pwMessage != null) pwMessage.Message = string.Format("Reading " + Clipper_Param.GetModelDM());
 
-            if (pwMessage != null) pwMessage.Message = string.Format("Reading " + Clipper_Param.GetModelDM());
-
-            //creation du timetag d'import//
-            string methodename = MethodBase.GetCurrentMethod().Name;
-            string timetag = string.Format("{0:d_M_yyyy_HH_mm_ss}", DateTime.Now);
+                //creation du timetag d'import//
+                string methodename = MethodBase.GetCurrentMethod().Name;
+                string timetag = string.Format("{0:d_M_yyyy_HH_mm_ss}", DateTime.Now);
                 //creation du log
                 bool testlog = Alma_Log.Create_Log(Clipper_Param.GetVerbose_Log());
                 long ligneNumber = 0;
-                Alma_Log.Write_Log(methodename+" time tag:  " + timetag);
+                Alma_Log.Write_Log(methodename + " time tag:  " + timetag);
                 string CsvImportPath = Clipper_Param.GetPath("IMPORT_DM");
                 Alma_Log.Write_Log("[Import du stock ]:" + CsvImportPath);
                 string DataModelString = Clipper_Param.GetModelDM();
                 Alma_Log.Write_Log("lecture du DataModel du stock:Success !!!");
                 Alma_Log.Write_Log_Important(" DataModel du stock valide.");
-            // fin entete //
-            //declaration du dictionnaire d'id clip contenu dans le fichier pour le mode ommission
-            List<string> sheetId_list_from_txt_file = new List<string>();
-            List<string> sheetId_list_from_database = new List<string>();
-
-            using (StreamReader csvfile = new StreamReader(CsvImportPath, Encoding.Default, true))
-            {
+                // fin entete //
+                //declaration du dictionnaire d'id clip contenu dans le fichier pour le mode ommission
+                List<string> sheetId_list_from_txt_file = new List<string>();
+                List<string> sheetId_list_from_database = new List<string>();
+                ////chargement du datamodel
 
                 //construction du dictionnaire de champs
                 Dictionary<string, object> line_Dictionnary = new Dictionary<string, object>();
                 Data_Model.setFieldDictionnary(DataModelString);
                 Alma_Log.Write_Log(methodename + ": DataModel String success !!   ");
-                //lecture à la ligne
-                string line;
-                //on import pas les quantitée nulles
-                //while (((line = csvfile.ReadLine()) != null))
-                //{
-                while (csvfile.EndOfStream == false)
+
+
+
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                ///chargement du stock avec idclip en memoire pour mise a jour - statuer les toles ommises - mettre un nouveau champs //
+                //
+                //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                ///risque pour la memoire // chargement des tole non ommises //
+                ///notification
+                IEntityList stocks;
+             
+                using (StreamReader csvfile = new StreamReader(CsvImportPath, Encoding.Default, true))
                 {
-                    line = csvfile.ReadLine();
-                        //type tole chute ou nouvelle tole
-                     TypeTole type_tole;
-                    //declaration des entités
-                    //stock lists
-                    //IEntity stock = null;
-                    IEntity sheet_to_update = null;
-                    IEntity material = null;
-                    //pour detection de nouveau format
-                    //id courante du  format
-                    Int32 CurrentSheetId = -1;
-                    Int32 CurrentStockId = -1;
-                    /////////////////////////////////////////////////////////////////
-                    //integrite des données
-                    //lignes vides on passe
-                    //pour debuggage
-                    ligneNumber++;
-                    Alma_Log.Write_Log(methodename + ": reading line " + ligneNumber);
-                    if (line.Trim() == "")
-                    {
-                        Alma_Log.Write_Log_Important(methodename + ": empty line detected  :  " + ligneNumber);
-                        continue;
-                    }
-
-                    ///recuperation des données
-                    line_Dictionnary = Data_Model.ReadCsvLine_With_Dictionnary(line);
-                    Alma_Log.Write_Log(methodename + ": line " + ligneNumber + ":line_dictionnary success !!    ");
-                    //on verifie les données d'entrées (matiere existe, longeur largeur !=0, quantité decimales)
-                    if (CheckDataIntegerity(contextlocal, line_Dictionnary) == false)
-                    {
-                        
-                        Alma_Log.Write_Log_Important(methodename + ":-----> line " + ligneNumber + ":" + line_Dictionnary["_NAME"] + ":integrity tests fails, line ignored");
-                        continue;
-                    }
-
-
-                    //constrution du nom par defaut du sheet (format)
-                    string sheet_to_update_reference = string.Format("{0}*{1}*{2}*{3}",
-                    line_Dictionnary["_MATERIAL"].ToString().Replace('§', '*'),
-                    line_Dictionnary["_LENGTH"].ToString(),
-                    line_Dictionnary["_WIDTH"].ToString(),
-                    line_Dictionnary["THICKNESS"].ToString());
-                    ///1 pour tole neuve 2 pour chute selon la chaine filename : par defaut null
-                    // type --> chute si emf present
-                    type_tole = TypeTole.Tole;
-                    if (line_Dictionnary.ContainsKey("FILENAME")) { type_tole = TypeTole.Chute; }
-                    //recuperation des infos de matiere
-
-                    string nuance_name = null;
-                    nuance_name = line_Dictionnary["_MATERIAL"].ToString().Replace('§', '*');
-                    string material_name = string.Format("{0} {1:0.00} mm", nuance_name, line_Dictionnary["THICKNESS"]);
-                    //normaleement il n'ya pas besoin de condition car l'integrite et deja verifier dans checkdataintegrity
-                     material = GetMaterialEntity(contextlocal, ref line_Dictionnary);
-                    Alma_Log.Write_Log(methodename + ": material success !!    ");
-
-                    //implementation de la liste sheetId_list_from_txt_file pour l'ommission
-                    sheetId_list_from_txt_file.Add(line_Dictionnary["IDCLIP"].ToString());
-                    ////ATTENTION CHRGEMENT DU STOCK COMPLET //// A OPTIMISER PLUS TARD
-                    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    ///tole existante--> on ne fait que de la mise à jour
-                    //on travail au maximum sur le stock
-                    //l'existants --> l'id clip est unique, il permet donc de retrouver les elements de stock a mettre à jour
-                    IEntityList stocks;
-                    stocks = contextlocal.EntityManager.GetEntityList("_STOCK");
-                    stocks.Fill(false);
                     IEntity stock;
+                    ///////////////////// etude du stock en cours //
+                    /// on travaille sur les donnees possedant ds idclip
+                    ///
+                    SimplifiedMethods.NotifyMessage(methodename, "Mise à jour du stock existant en cours...");
+                    stocks = contextlocal.EntityManager.GetEntityList("_STOCK", LogicOperator.And, "IDCLIP", ConditionOperator.NotEqual, string.Empty, "IS_OMMITTED", ConditionOperator.Equal, false);
+                    stocks.Fill(false);
+
+                    //on en profite pour remplir la liste des toles non ommises du stock
+                    ///sheetId_list_from_database
+                    ///
+                     Alma_Log.Write_Log_Important(methodename + ": construction de la liste des toles non ommises ");
+
+                        IEnumerator<IEntity> en = stocks.GetEnumerator();
+                        while (en.MoveNext())
+                        {
+                            sheetId_list_from_database.Add(en.Current.GetFieldValueAsString("IDCLIP"));
+                        }
+                        en = null;
+
+                    //on en profite pour remplir la liste des toles neuves
+                    //declaratin de la liste des toles neuves
+                    List<string> Liste_new_Tole = new List<string>();
+                   
+                    ///
+                    Alma_Log.Write_Log_Important(methodename + ": traitement du stock existant (possedant des idclip) ");
+                    //premiere lecture du fichier de stock clipper 
+                    var line = csvfile.ReadLine();
+                    while (!csvfile.EndOfStream)
+                    {
+                        //check de la ligne si elle est vie
+                        if (string.IsNullOrEmpty(line.Trim()))
+                        {
+                            Alma_Log.Write_Log_Important(methodename + ": empty line detected  :  " + ligneNumber);
+                            continue;
+                        }
+
+                        //interpretation de la ligne dans le dictionnaire de ligne
+                        line_Dictionnary = Data_Model.ReadCsvLine_With_Dictionnary(line);
+                        Alma_Log.Write_Log(methodename + ": line " + ligneNumber + ":line_dictionnary success !!    ");
+                        //construction de la liste des toles envoyées par clipper
+                        sheetId_list_from_txt_file.Add(line_Dictionnary["IDCLIP"].ToString());
+                        ///
+                        IEnumerable<IEntity> stockentityList = stocks.Where(s => s.GetFieldValueAsString("IDCLIP") == line_Dictionnary["IDCLIP"].ToString());
+                        if (stockentityList.Count() != 0)
+                        {
+                            //recuperation du stock
+                            stock = stockentityList.FirstOrDefault();
+                            //ici on travail les modifs.
+
+                            //check de l'integrite des données
+                            //on verifie les données d'entrées (matiere existe, longeur largeur !=0, quantité decimales)
+                            if (CheckDataIntegerity(contextlocal, line_Dictionnary) == false)
+                            {
+                                Alma_Log.Write_Log_Important(methodename + ":-----> line " + ligneNumber + ":" + line_Dictionnary["_NAME"] + ":integrity tests fails, line ignored");
+                                continue;
+                            }
+                            ///mise a jours
+                            else { Update_Stock_Item(stock, line_Dictionnary); }
+
+
+                            //
+                            stock = null;
+                        }
+                         ///traitement des toles nueuves elles seront ajoutées a la fin pour 
+                         ///ne pas refaire de requetes ni meme ajouter des données a la liste des toles
+                        //construction de liste des toles neuves
+                        //si les tole ne sont pas dans le stock et que le filename est null alors ce sont des toles neuves
+                        else if(stockentityList.Count()==0 || stockentityList ==null)
+                            {
+                            if (line_Dictionnary["FILNAME"].ToString().Trim()==string.Empty && line_Dictionnary["IDCLIP"].ToString().Trim() !=string.Empty)
+                                 { Liste_new_Tole.Add(line_Dictionnary["IDCLIP"].ToString());  }                                
+                            }
+                     
+
+
+                        line = csvfile.ReadLine();
+                    }
+                    //stocks = null;
+                    line = null;
+
+                    //declaration du dictionnaire d'id clip contenu dans le fichier pour le mode ommission
+                    //List<string> sheetId_list_from_txt_file = new List<string>();
+                    //List<string> sheetId_list_from_database = new List<string>();
+                    /// par difference on obtient la liste des ommissions
+                    /// 
+                    /// 
+                    SimplifiedMethods.NotifyMessage(methodename, "Traitements des ommissions...");
+                    List<string> liste_tole_a_ommetre = GetOmmittedSheet(sheetId_list_from_txt_file, sheetId_list_from_database);
+
+                    //stocks = contextlocal.EntityManager.GetEntityList("_STOCK", LogicOperator.And, "FILENAME", ConditionOperator.NotEqual, string.Empty,"IS_OMMITTED",ConditionOperator.Equal,false);
+                    Alma_Log.Write_Log_Important(methodename + ": traitement du stock existant (possedant des idclip) ");
+                    //premiere lecture du fichier de stock clipper 
+                    line = csvfile.ReadLine();
+
+                    foreach (string idclip in liste_tole_a_ommetre)
+                    {
+
+                        IEnumerable<IEntity> stockentityList = stocks.Where(e => { return e.GetFieldValueAsString("IDCLIP").Trim() == idclip; });
+                        if (stockentityList.Count() != 0)
+                        {
+                            //recuperation du stock
+                            stock = stockentityList.FirstOrDefault();
+                            //ici on travail les modifs.
+                            stock.SetFieldValue("IS_OMMITED", true);
+                            stock.SetFieldValue("_QUANTITY", 0);
+                            stock.SetFieldValue("_USED_QUANTITY", 0);
+                            stock.Save();
+                            stock = null;
+                        }
+                    }
+
+                   
+                    
+
+                    //stocks = contextlocal.EntityManager.GetEntityList("_STOCK", LogicOperator.And, "FILENAME", ConditionOperator.NotEqual, string.Empty,"IS_OMMITTED",ConditionOperator.Equal,false);
+                    stocks = contextlocal.EntityManager.GetEntityList("_STOCK", LogicOperator.And, "FILENAME", ConditionOperator.NotEqual, string.Empty, "IDCLIP", ConditionOperator.NotEqual, string.Empty, "IS_OMMITTED", ConditionOperator.Equal, false);
+                    stocks.Fill(false);
+                    Alma_Log.Write_Log_Important(methodename + ": traitement des nouvelles chutes ");
+                    line = csvfile.ReadLine();
+                    while (!csvfile.EndOfStream)
+                    {
+                        //check de la ligne si elle est vie
+                        if (string.IsNullOrEmpty(line.Trim()))
+                        {
+                            Alma_Log.Write_Log_Important(methodename + ": empty line detected  :  " + ligneNumber);
+                            continue;
+                        }
+
+                        //interpretation de la ligne dans le dictionnaire de ligne
+                        line_Dictionnary = Data_Model.ReadCsvLine_With_Dictionnary(line);
+                        Alma_Log.Write_Log(methodename + ": line " + ligneNumber + ":line_dictionnary success !!    ");
+
+                        IEnumerable<IEntity> stockentityList = stocks.Where(s => s.GetFieldValueAsString("FILNAME").Trim() == line_Dictionnary["FILNAME"].ToString().Trim());
+                        if (stockentityList.Count() != 0)
+                        {
+                            //recuperation du stock
+                            stock = stockentityList.FirstOrDefault();
+                            //ici on travail les modifs.
+
+                            //check de l'integrite des données
+                            //on verifie les données d'entrées (matiere existe, longeur largeur !=0, quantité decimales)
+                            if (CheckDataIntegerity(contextlocal, line_Dictionnary) == false)
+                            {
+                                Alma_Log.Write_Log_Important(methodename + ":-----> line " + ligneNumber + ":" + line_Dictionnary["_NAME"] + ":integrity tests fails, line ignored");
+                                continue;
+                            }
+                            else { Update_Stock_Item(stock, line_Dictionnary); }
+
+
+                            //
+                            stock = null;
+
+
+                        }
+
+                        //chargement du fichier//
+
+                        //chargement du stock //
 
 
 
-                    IEnumerable<IEntity> stockentityList = stocks.Where(s => s.GetFieldValueAsString("IDCLIP") == line_Dictionnary["IDCLIP"].ToString());
-                    if (stockentityList.Count()!=0) {
-                        //recuperation du stock
-                        stock = stockentityList.FirstOrDefault();
-                        //ici on travail les modifs.
 
 
-                        //
-                        stockentityList = null;
+
                     }
 
 
 
 
+                    ///////////////////// etude du stock en cours //
+                    /// on travaille sur les donnees possedant des bitmap dans le filename
+                    /// autrement dit les chutes almacam
+                    /// liste des nouvelles toles
+                    SimplifiedMethods.NotifyMessage(methodename, "Creation des nouvelles toles");
+                    Alma_Log.Write_Log_Important(methodename + ": traitement des nouvelles toles ");
+                    if (Liste_new_Tole.Count > 0)
+                    {
+                        foreach (string idclip in Liste_new_Tole)
+                        {
+                            //creation des nouvelles toles
 
 
+                        }
+                    }
+                   
                 }
+            }
 
 
 
 
-                }
+            catch (Exception ie)
+            {
+                System.Windows.Forms.MessageBox.Show(System.Reflection.MethodBase.GetCurrentMethod().Name + " : " + ie.Message);
+
+            }
+
+            finally
+            {
 
 
+            }
         }
 
 
+
+
+
+        /// <summary>
+        /// met a jour les valeurs stock et sheet  dans le stock almacam
+        /// attention on ne met à jour que les chute tole qui n'ont pas de qtés reservées 
+        /// </summary>
+        /// <param name="contextlocal">contexte context</param>
+        /// <param name="sheet">ientity sheet  </param>
+        /// <param name="stock">inentity stock</param>
+        /// <param name="line_dictionnary">dictionnary linedisctionary</param>
+        /// <param name="type_tole">type tole  ou chute</param>
+        public void Update_Stock_Item(IEntity stock,  Dictionary<string, object> line_dictionnary)
+        {
+            try
+            {
+                IContext contextlocal = stock.Context;
+                foreach (var field in line_dictionnary)
+                {
+
+                    //on verifie que le champs existe bien avant de l'ecrire
+                    if (contextlocal.Kernel.GetEntityType("_STOCK").FieldList.ContainsKey(field.Key))
+                    {
+
+                        //traitement specifique
+
+                        switch (field.Key)
+                        {
+                          
+
+                            case "_WIDTH":
+                                //données de sheet pas de stock
+                                break;
+                            case "_LENGTH":                               
+                                break;                            
+                            case "_MATERIAL":
+                                break;
+                            case "NUMMATLOT":
+                          
+                                stock.SetFieldValue(field.Key, field.Value);
+                                stock.SetFieldValue("_HEAT_NUMBER", field.Value);
+
+                                break;
+
+
+                            case "_QUANTITY":
+
+                                long clipperQty = 0;
+                                long Qty = 0;
+                                Qty = CaclulateSheetQuantity(Convert.ToInt64(field.Value), stock);
+                                stock.SetFieldValue(field.Key, Qty);
+                                //cas baroux ou le client n'utilise pas les numéro de lot
+                                //permet de debloquer les clotures.
+                                stock.SetFieldValue("_USED_QUANTITY", 0);
+
+                                break;
+
+                          
+                            default:
+
+
+                                stock.SetFieldValue(field.Key, field.Value);
+
+
+                                break;
+                        }
+                    }
+                }
+
+
+                //on sauvegarde
+
+                //sheet.Save();
+                stock.Save();
+            }
+            catch (Exception ie)
+            {
+                MessageBox.Show(ie.Message);
+            }
+        }
+
+        /// <summary>
+        /// met a jour les valeurs stock et sheet  dans le stock almacam
+        /// attention on ne met à jour que les chute tole qui n'ont pas de qtés reservées 
+        /// </summary>
+        /// <param name="contextlocal">contexte context</param>
+        /// <param name="sheet">ientity sheet  </param>
+        /// <param name="stock">inentity stock</param>
+        /// <param name="line_dictionnary">dictionnary linedisctionary</param>
+        /// <param name="type_tole">type tole  ou chute</param>
+        public void Create_Stock_Item(IContext contextlocal, Dictionary<string, object> line_Dictionnary)
+        {
+            string methodename = System.Reflection.MethodBase.GetCurrentMethod().Name ;
+
+            try
+            {
+                //construction de la liste des sheet
+                IEntityList sheets_list = contextlocal.EntityManager.GetEntityList("_SHEET");
+                sheets_list.Fill(false);
+                //construction de la reference clip
+                       string sheet_to_update_reference = string.Format("{0}*{1}*{2}*{3}",
+                       //line_Dictionnary["_MATERIAL"].ToString(),
+                       line_Dictionnary["_MATERIAL"].ToString().Replace('§', '*'),
+                       line_Dictionnary["_LENGTH"].ToString(),
+                       line_Dictionnary["_WIDTH"].ToString(),
+                       line_Dictionnary["THICKNESS"].ToString());
+
+                        string nuance_name = null;
+                        IEntity material ;
+                        nuance_name = line_Dictionnary["_MATERIAL"].ToString().Replace('§', '*');
+                        string material_name = string.Format("{0} {1:0.00} mm", nuance_name, line_Dictionnary["THICKNESS"]);
+                        //normaleement il n'ya pas besoin de condition car l'integrite et deja verifier dans checkdataintegrity
+                        //material = GetMaterialEntity(contextlocal, material_name, ref line_Dictionnary);
+                        material = GetMaterialEntity(contextlocal, line_Dictionnary);
+                        Alma_Log.Write_Log(methodename + ": material success !!    ");
+                //recherche de format ayant la  meme reference
+                IEnumerable<IEntity> sheet_to_update = sheets_list.Where(e => { return e.GetFieldValueAsString("IDCLIP").Trim() == idclip; });
+
+                if (sheet_to_update.Count() != 0)
+                //ajout de stock dans le sheet trouvé
+                {
+
+                }
+                //nouveau sheet
+                else {
+
+
+                }
+
+
+                }
+            catch (Exception ie)
+            {
+                MessageBox.Show(ie.Message);
+            }
+        }
+
+        /// <summary>
+        /// retourne la liste des chute ommise dans le fichier en comparant les toles de qté >0
+        /// avec les toles envoyées par clipper
+        /// si clipper n'envoie pas le ficher la liste de ces toles sera mise a 0
+        /// sheetId_list_from_txt_file, sheetId_list_from_database
+        /// </summary>
+        /// <param name="sheetId_list_from_txt_file,">liste des toles venant du fichier impor dm </param>
+        /// <param name="sheetId_list_from_database">liste des toles venant de la base clipper</param>
+        /// <returns></returns>
+        public List<string> GetOmmittedSheet(List<string> sheetId_list_from_txt_file, List<string> sheetId_list_from_database)
+        {
+            try
+            {
+                List<string> getOmmittedSheet = new List<string>();
+                getOmmittedSheet = sheetId_list_from_database.Except(sheetId_list_from_txt_file).ToList();
+                //a voir les condition qui peuvent faire qu il  ait moins de toles dans cam que dans clip
+                //getOmmittedSheet = ToleImportDM.Except(ToleImportAlmaDaraBase).ToList();
+                return getOmmittedSheet;
+
+
+            }
+            catch (Exception ie)
+            {
+                Alma_Log.Write_Log(ie.Message);
+                return null;
+            }
+
+        }
 
 
         /// <summary>
         /// retourne la liste des chute ommise dans le fichier en comparant les toles de qté >0
         /// avec les toles envoyées par clipper
         /// si clipper n'envoie pas le ficher la liste de ces toles sera mise a 0
+        /// sheetId_list_from_txt_file, sheetId_list_from_database
         /// </summary>
-        /// <param name="ToleImportDM">liste des toles venant du fichier impor dm </param>
-        /// <param name="ToleImportAlmaDaraBase">liste des toles venant de la base clipper</param>
+        /// <param name="sheetId_list_from_txt_file,">liste des toles venant du fichier impor dm </param>
+        /// <param name="sheetId_list_from_database">liste des toles venant de la base clipper</param>
         /// <returns></returns>
-        public List<string> GetOmmittedSheet(List<string> ToleImportDM, List<string> ToleImportAlmaDaraBase)
+        public List<string> GetNewStock(List<string> sheetId_list_from_txt_file, List<string> sheetId_list_from_database)
         {
             try
             {
-                List<string> getOmmittedSheet = new List<string>();
-                getOmmittedSheet = ToleImportAlmaDaraBase.Except(ToleImportDM).ToList();
+                List<string> getnewstock = new List<string>();
+                getnewstock = sheetId_list_from_txt_file.Except(sheetId_list_from_database).ToList();
                 //a voir les condition qui peuvent faire qu il  ait moins de toles dans cam que dans clip
                 //getOmmittedSheet = ToleImportDM.Except(ToleImportAlmaDaraBase).ToList();
-                return getOmmittedSheet;
+                return getnewstock;
 
 
             }
@@ -4645,7 +4926,7 @@ namespace AF_Clipper_Dll
         /// <param name="contextlocal">ientity context</param>
         /// <param name="line_dictionnary">dictionnary <string,object> line_dictionnary</param>
         /// <returns>entity de type matiere</returns>
-        public IEntity GetMaterialEntity(IContext contextlocal, ref Dictionary<string, object> line_dictionnary)
+        public IEntity GetMaterialEntity(IContext contextlocal,  Dictionary<string, object> line_dictionnary)
         {
             IEntity material = null;
 
