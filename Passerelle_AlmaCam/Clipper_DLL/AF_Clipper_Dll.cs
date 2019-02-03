@@ -395,12 +395,10 @@ namespace AF_Clipper_Dll
         public IContext contextlocal = null;
         public override bool Execute()
         {
+            string Arguments = "";
+            string FileName = @"C:\AlmaCAM\Bin\AF_Clipper.exe";
+            var start_test = new ProcessStartInfo(FileName,Arguments);
 
-            ProcessStartInfo start_test = new ProcessStartInfo();
-            start_test.Arguments = "";
-
-
-            start_test.FileName = @"C:\AlmaCAM\Bin\AF_Clipper.exe";
 
             Process.Start(start_test);
 
@@ -413,12 +411,10 @@ namespace AF_Clipper_Dll
         //public IContext contextlocal = null;
         public override bool Execute()
         {
-
-            ProcessStartInfo start_test = new ProcessStartInfo();
-            start_test.Arguments = "";
-
-
-            start_test.FileName = @"C:\AlmaCAM\Bin\AF_Clipper.exe";
+            string Arguments = "";
+            string FileName = @"C:\AlmaCAM\Bin\AF_Clipper.exe";
+            var start_test = new ProcessStartInfo(FileName, Arguments);
+           
 
             Process.Start(start_test);
 
@@ -4370,7 +4366,7 @@ namespace AF_Clipper_Dll
             try {
 
                 Clipper_Param.GetlistParam(contextlocal);
-                ImportParam param = new ImportParam();
+                var param = new ImportParam();
                 param.Context = contextlocal;
                 ImportStockExecute(param, null);
                 /*
@@ -4557,16 +4553,24 @@ namespace AF_Clipper_Dll
                     new_full_sheet_stock_condition_type = contextlocal.Kernel.ConditionTypeManager.CreateCompositeConditionType(
                         LogicOperator.And,
                         IDCLIP_NOT_EMPTY,
-                        AF_IS_OMMITED_FALSE,
-                        AF_STOCK_CFAO_FALSE,
-                        FILENAME_EMPTY
+                        AF_IS_OMMITED_FALSE                        
                         );
 
                     IQuery QUERY_NEW_FULL_SHEET_STOCK = contextlocal.QueryManager.CreateQuery("_STOCK", new_full_sheet_stock_condition_type);
 
-
                     //full_UnOmitted_stock
-
+                    /// recuperation de tout le stock
+                    /// full_sheet_stocks = contextlocal.EntityManager.GetEntityList("_STOCK", LogicOperator.And, "AF_IS_OMMITED", ConditionOperator.Equal, false, "AF_STOCK_CFAO", ConditionOperator.Equal, false, "FILENAME", ConditionOperator.Equal, string.Empty);
+                    //contextlocal.EntityManager.GetEntityList("_STOCK", LogicOperator.And, "AF_IS_OMMITED", ConditionOperator.Equal, false, "AF_STOCK_CFAO", ConditionOperator.Equal, false, "FILENAME", ConditionOperator.Equal, string.Empty);
+                    IConditionType new_full_stock_condition_type = null;
+                    new_full_stock_condition_type = contextlocal.Kernel.ConditionTypeManager.CreateCompositeConditionType(
+                        LogicOperator.And,
+                        IDCLIP_NOT_EMPTY,
+                        AF_IS_OMMITED_FALSE,
+                        AF_STOCK_CFAO_FALSE,
+                        FILENAME_EMPTY
+                        );
+                    IQuery QUERY_NEW_FULL_STOCK = contextlocal.QueryManager.CreateQuery("_STOCK", new_full_stock_condition_type);
 
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     ///////////////////// STOCK IDENTIFIE //
@@ -4574,7 +4578,7 @@ namespace AF_Clipper_Dll
                     /// on travail sur les stock identifié
                     etape++;
                     string etapemessage = etape.ToString() + " \\ " + totaletapes.ToString();
-                    SimplifiedMethods.NotifyMessage(methodename, etapemessage + " Mise à jour du stock existant en cours...");
+                    SimplifiedMethods.NotifyMessage(methodename, etapemessage + "Mise à jour du stock existant...");
                     /// on liste les toles cfao dont le champs idclip est non et qui ne sont pas omises
                     IExtendedEntityList stocks_indentifie_en_cours =null;
                     stocks_indentifie_en_cours = contextlocal.EntityManager.GetExtendedEntityList(QUERY_STOCK_IDENTIFIE);
@@ -4662,7 +4666,7 @@ namespace AF_Clipper_Dll
                     /// autrement dit du stock n ayant pas d'id clip mais un bitmap + stockcfao=true
                     etape++;
                     etapemessage = etape.ToString() + " \\ " + totaletapes.ToString();
-                    SimplifiedMethods.NotifyMessage(methodename, etapemessage + " Mise à jour des données des nouvelles chutes cfao en cours...");
+                    SimplifiedMethods.NotifyMessage(methodename, etapemessage + "Mise à jour des nouvelles chutes...");
                     /// on liste les toles cfao (crees par la passerelle) dont le champs idclip est vide le filname et non vide et non omises
                    
                     IExtendedEntityList chutes_cfao_non_identifiees_en_cours = null;
@@ -4736,7 +4740,7 @@ namespace AF_Clipper_Dll
                     Liste_new_Tole = GetNewStock(sheetId_list_from_txt_file, sheetId_list_from_database);
                 
                     etape++;
-                    etapemessage = etape.ToString() + " \\ " + totaletapes.ToString();
+                    SimplifiedMethods.NotifyMessage(methodename, etapemessage + "Ajout des nouvelles Toles pleines...");
                     SimplifiedMethods.NotifyMessage(methodename, "Creation des nouvelles toles");
                     Alma_Log.Write_Log_Important(methodename + ": traitement des nouvelles toles ");
 
@@ -4783,19 +4787,25 @@ namespace AF_Clipper_Dll
                     /// on traite les id non envoyé par clip et on mets leurs qté à 
                     etape++;
                     etapemessage = etape.ToString() + " \\ " + totaletapes.ToString();
-                    SimplifiedMethods.NotifyMessage(methodename, "traitement des omissions");
+                    SimplifiedMethods.NotifyMessage(methodename, "Traitement des omissions...");
 
                     //List<string> sheetId_list_from_txt_file = new List<string>();
                     ///declaration de  la liste des toles almacam
                     //List<string> sheetId_list_from_database = new List<string>();
                     //calcul des omissions
 
-                    IEntityList full_UnOmitted_stocks;
-                    full_UnOmitted_stocks = contextlocal.EntityManager.GetEntityList("_STOCK", LogicOperator.And, "AF_IS_OMMITED", ConditionOperator.Equal, false, "AF_STOCK_CFAO", ConditionOperator.Equal, false, "FILENAME", ConditionOperator.Equal, string.Empty);
-                    full_UnOmitted_stocks.Fill(false);
+                    
+
+                    IExtendedEntityList new_full_UnOmitted_stocks = null;
+                    new_full_UnOmitted_stocks = contextlocal.EntityManager.GetExtendedEntityList(QUERY_NEW_FULL_STOCK);
+                    new_full_UnOmitted_stocks.Fill(false);
+
+                    /*full_UnOmitted_stocks = contextlocal.EntityManager.GetEntityList("_STOCK", LogicOperator.And, "AF_IS_OMMITED", ConditionOperator.Equal, false, "AF_STOCK_CFAO", ConditionOperator.Equal, false, "FILENAME", ConditionOperator.Equal, string.Empty);
+                    full_UnOmitted_stocks.Fill(false);*/
+
 
                     Alma_Log.Write_Log_Important(methodename + ": traitement des toles pleines ");
-                    Alma_Log.Write_Log_Important(methodename + ": found " + full_sheet_stocks.Count().ToString());
+                    Alma_Log.Write_Log_Important(methodename + ": found " + new_full_UnOmitted_stocks.Count().ToString());
 
                     List<string> liste_tole_a_omettre = GetOmmittedSheet(sheetId_list_from_txt_file, sheetId_list_from_database);
 
@@ -4804,13 +4814,13 @@ namespace AF_Clipper_Dll
                         foreach (string idclip in Liste_new_Tole)
                         {
 
-                            IEnumerable<IEntity> stockentityList = full_UnOmitted_stocks.Where(e => { return e.GetFieldValueAsString("IDCLIP").Trim() == idclip; });
+                            IEnumerable<IExtendedEntity> stockentityList = new_full_UnOmitted_stocks.Where(e => { return e.GetFieldValue("IDCLIP").ToString().Trim() == idclip.Trim(); });
                             if (stockentityList.Count() != 0)
                             {
                                 Alma_Log.Write_Log_Important(methodename + ": found " + idclip);
 
                                 //recuperation du stock
-                                stock = stockentityList.FirstOrDefault();
+                                stock = (IEntity)stockentityList.FirstOrDefault();
                                 //mise a jour des omission
                                 SetOmitted(stock);
                                 Alma_Log.Write_Log_Important(methodename + ": omission set " + idclip);
