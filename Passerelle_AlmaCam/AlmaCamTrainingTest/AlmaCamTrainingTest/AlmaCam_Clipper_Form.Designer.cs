@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AlmaCam_Clipper_Form));
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
@@ -54,10 +53,10 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.quitToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.InfosLabel = new System.Windows.Forms.Label();
-            this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.button2 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
+            this.button7 = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -326,13 +325,6 @@
             this.InfosLabel.Text = "Infos";
             this.InfosLabel.UseWaitCursor = true;
             // 
-            // notifyIcon
-            // 
-            this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
-            this.notifyIcon.Text = "AlmaCam-Clipper";
-            this.notifyIcon.Visible = true;
-            this.notifyIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_MouseDoubleClick);
-            // 
             // button2
             // 
             this.button2.BackColor = System.Drawing.Color.LimeGreen;
@@ -381,6 +373,22 @@
             this.button6.UseWaitCursor = true;
             this.button6.Click += new System.EventHandler(this.button6_Click_1);
             // 
+            // button7
+            // 
+            this.button7.BackColor = System.Drawing.Color.LimeGreen;
+            this.button7.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button7.BackgroundImage")));
+            this.button7.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.button7.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.button7.Location = new System.Drawing.Point(245, 279);
+            this.button7.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(212, 47);
+            this.button7.TabIndex = 19;
+            this.button7.Text = "Action de Cloture";
+            this.button7.UseVisualStyleBackColor = false;
+            this.button7.UseWaitCursor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click_1);
+            // 
             // AlmaCam_Clipper_Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -390,6 +398,7 @@
             this.BackgroundImage = global::AlmaCamTrainingTest.Properties.Resources.FONDExport;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.ClientSize = new System.Drawing.Size(478, 476);
+            this.Controls.Add(this.button7);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button2);
@@ -446,11 +455,11 @@
         private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem2;
         private System.Windows.Forms.Label InfosLabel;
         private System.Windows.Forms.Button DoOnAction_TO_CUT_NESTING;
-        private System.Windows.Forms.NotifyIcon notifyIcon;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.Button button7;
     }
 }
 

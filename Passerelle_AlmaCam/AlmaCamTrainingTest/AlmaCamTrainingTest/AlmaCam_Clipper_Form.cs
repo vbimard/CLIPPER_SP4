@@ -72,9 +72,7 @@ namespace AlmaCamTrainingTest
 
         private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            Show();
-            this.WindowState = FormWindowState.Normal;
-            notifyIcon.Visible = false;
+           
         }
 
         /// <summary>
@@ -725,6 +723,26 @@ namespace AlmaCamTrainingTest
                 //Stock.Import(_Context, csvImportPath, dataModelstring);
                 Stock.Import(_Context);//, csvImportPath);
             }
+        }
+
+        private void button7_Click_1(object sender, EventArgs e)
+        {
+            ///mise a jour des champs nnon existant
+            //creation du model repository
+            IModelsRepository modelsRepository = new ModelsRepository();
+            IContext myContext = modelsRepository.GetModelContext(DbName);  //nom de la base;
+            //set value 
+            IEntityList stocks = myContext.EntityManager.GetEntityList("_STOCK", "AF_IS_OMMITED", ConditionOperator.IsNull,true);
+            stocks.Fill(false);
+
+            foreach (IEntity stock in stocks)
+            {
+                stock.SetFieldValue("AF_IS_OMMITED", false);
+                stock.Save();
+            }
+
+
+
         }
     }
 
