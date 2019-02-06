@@ -753,36 +753,38 @@ namespace AF_Export_Devis_Clipper
 
             file = file + "du devis " + GetQuoteNumber(quoteEntity) + Environment.NewLine;
 
+
+            string internal_comment = ""; //commentaires internes
+            string external_comment = ""; //commentaires externe
+            //commentaires
+            external_comment = "";  //
+            internal_comment = FormatComment(EmptyString(quoteEntity.GetFieldValueAsString("_COMMENTS"))); //commentaires internes des devis
+           ///commande                                                                                                ///commande interne
+            string ordernumber;                                                                                              ///
+            IField field;
+            if (quoteEntity.EntityType.TryGetField("_CLIENT_ORDER_NUMBER", out field))
+                ordernumber = EmptyString(quoteEntity.GetFieldValueAsString("_CLIENT_ORDER_NUMBER")).ToUpper(); //Repère commercial interne
+            else
+                ordernumber = ""; //Repère commercial interne
+
+            ///commande                                                                                                ///commande interne
+            string cocli="";                                                                                              ///
+            if (clientEntity.GetFieldValueAsString("_REFERENCE")!=string.Empty)
+            { cocli = clientEntity.GetFieldValueAsString("_REFERENCE").ToUpper(); }
+            else if(clientEntity.GetFieldValueAsString("_EXTERNAL_ID")!=string.Empty)
+            { EmptyString(clientEntity.GetFieldValueAsString("_EXTERNAL_ID")).ToUpper(); }
+           
+                
+
+
             long i = 0;
             string[] data = new string[50];
             data[i++] = "IDDEVIS";
             data[i++] = GetQuoteNumber(quoteEntity); //N° devis
-            /*
-            string indice; //max15 char
-            indice=EmptyString(quoteEntity.GetFieldValueAsString("_REFERENCE"));
-            if (indice.Length > 15)
-            {
-                indice = indice.Substring(0, 15);
-            }
-
-            data[i++] = indice; //Indice
-            */
             data[i++] ="1"; //Pour le moment l'indice est forcé a 1 car l'import des devis ne supporte pas le text dans l'interface d'import des devis clip
-
-            IField field;
-            string internal_comment = ""; //commentaires internes
-            string external_comment =""; //commentaires externe
-
-            if (quoteEntity.EntityType.TryGetField("_CLIENT_ORDER_NUMBER", out field))
-                data[i++] = EmptyString(quoteEntity.GetFieldValueAsString("_CLIENT_ORDER_NUMBER")).ToUpper(); //Repère commercial interne
-            else
-            //commentaires
-            external_comment = "";  //
-            internal_comment = FormatComment(EmptyString(quoteEntity.GetFieldValueAsString("_COMMENTS"))); //commentaires internes des devis
-
-            data[i++] = ""; //Repère commercial interne
-            data[i++] = EmptyString(clientEntity.GetFieldValueAsString("_EXTERNAL_ID")).ToUpper(); //Code client
-            data[i++] = EmptyString(clientEntity.GetFieldValueAsString("_NAME")); //Nom client
+            data[i++] = ordernumber; 
+            data[i++] = cocli; ///code client
+            data[i++] = EmptyString(clientEntity.GetFieldValueAsString("_NAME")); // nom client
             data[i++] = EmptyString(quoteEntity.GetFieldValueAsString("_DELIVERY_ADDRESS")); //Ligne adresse 1
             data[i++] = EmptyString(quoteEntity.GetFieldValueAsString("_DELIVERY_ADDRESS2")); //Ligne adresse 2
             data[i++] = ""; //Ligne adresse 3
