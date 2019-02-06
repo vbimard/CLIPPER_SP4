@@ -47,16 +47,18 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quitToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.fichierToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.clipper8ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importStockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.relanceClotureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.relanceClotureToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.DoOnAction_TO_CUT_NESTING = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.quitToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.InfosLabel = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
-            this.button7 = new System.Windows.Forms.Button();
+            this.suppressionStockClotureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -134,7 +136,8 @@
             this.exportToolStripMenuItem,
             this.stockToolStripMenuItem1,
             this.fileToolStripMenuItem,
-            this.fichierToolStripMenuItem});
+            this.fichierToolStripMenuItem,
+            this.clipper8ToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(478, 24);
@@ -243,6 +246,38 @@
             this.fichierToolStripMenuItem.Name = "fichierToolStripMenuItem";
             this.fichierToolStripMenuItem.Size = new System.Drawing.Size(12, 20);
             // 
+            // clipper8ToolStripMenuItem
+            // 
+            this.clipper8ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.importStockToolStripMenuItem,
+            this.relanceClotureToolStripMenuItem,
+            this.relanceClotureToolStripMenuItem1});
+            this.clipper8ToolStripMenuItem.Name = "clipper8ToolStripMenuItem";
+            this.clipper8ToolStripMenuItem.Size = new System.Drawing.Size(66, 20);
+            this.clipper8ToolStripMenuItem.Text = "Clipper 8";
+            // 
+            // importStockToolStripMenuItem
+            // 
+            this.importStockToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.suppressionStockClotureToolStripMenuItem});
+            this.importStockToolStripMenuItem.Name = "importStockToolStripMenuItem";
+            this.importStockToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.importStockToolStripMenuItem.Text = "Import Stock";
+            this.importStockToolStripMenuItem.Click += new System.EventHandler(this.importStockToolStripMenuItem_Click);
+            // 
+            // relanceClotureToolStripMenuItem
+            // 
+            this.relanceClotureToolStripMenuItem.Name = "relanceClotureToolStripMenuItem";
+            this.relanceClotureToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.relanceClotureToolStripMenuItem.Text = "Relance Envoie_Coupe";
+            this.relanceClotureToolStripMenuItem.Click += new System.EventHandler(this.relanceClotureToolStripMenuItem_Click);
+            // 
+            // relanceClotureToolStripMenuItem1
+            // 
+            this.relanceClotureToolStripMenuItem1.Name = "relanceClotureToolStripMenuItem1";
+            this.relanceClotureToolStripMenuItem1.Size = new System.Drawing.Size(193, 22);
+            this.relanceClotureToolStripMenuItem1.Text = "Relance Cloture";
+            // 
             // groupBox2
             // 
             this.groupBox2.BackColor = System.Drawing.Color.Transparent;
@@ -272,22 +307,6 @@
             this.DoOnAction_TO_CUT_NESTING.UseVisualStyleBackColor = false;
             this.DoOnAction_TO_CUT_NESTING.UseWaitCursor = true;
             this.DoOnAction_TO_CUT_NESTING.Click += new System.EventHandler(this.AfterSendToWorkshop_Click);
-            // 
-            // button1
-            // 
-            this.button1.BackColor = System.Drawing.Color.LimeGreen;
-            this.button1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button1.BackgroundImage")));
-            this.button1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.button1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.button1.Location = new System.Drawing.Point(245, 57);
-            this.button1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(212, 47);
-            this.button1.TabIndex = 13;
-            this.button1.Text = "Retour Placement 2019 (DoOnAction_TO_CUT_NESTING)";
-            this.button1.UseVisualStyleBackColor = false;
-            this.button1.UseWaitCursor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click_1);
             // 
             // groupBox3
             // 
@@ -331,7 +350,7 @@
             this.button2.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button2.BackgroundImage")));
             this.button2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.button2.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.button2.Location = new System.Drawing.Point(245, 114);
+            this.button2.Location = new System.Drawing.Point(245, 56);
             this.button2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(212, 47);
@@ -347,7 +366,7 @@
             this.button5.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button5.BackgroundImage")));
             this.button5.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.button5.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.button5.Location = new System.Drawing.Point(245, 169);
+            this.button5.Location = new System.Drawing.Point(245, 114);
             this.button5.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(212, 47);
@@ -357,37 +376,12 @@
             this.button5.UseWaitCursor = true;
             this.button5.Click += new System.EventHandler(this.button5_Click_1);
             // 
-            // button6
+            // suppressionStockClotureToolStripMenuItem
             // 
-            this.button6.BackColor = System.Drawing.Color.LimeGreen;
-            this.button6.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button6.BackgroundImage")));
-            this.button6.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.button6.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.button6.Location = new System.Drawing.Point(245, 224);
-            this.button6.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(212, 47);
-            this.button6.TabIndex = 18;
-            this.button6.Text = "ImportStock2019";
-            this.button6.UseVisualStyleBackColor = false;
-            this.button6.UseWaitCursor = true;
-            this.button6.Click += new System.EventHandler(this.button6_Click_1);
-            // 
-            // button7
-            // 
-            this.button7.BackColor = System.Drawing.Color.LimeGreen;
-            this.button7.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button7.BackgroundImage")));
-            this.button7.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.button7.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.button7.Location = new System.Drawing.Point(245, 279);
-            this.button7.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(212, 47);
-            this.button7.TabIndex = 19;
-            this.button7.Text = "Action de Cloture";
-            this.button7.UseVisualStyleBackColor = false;
-            this.button7.UseWaitCursor = true;
-            this.button7.Click += new System.EventHandler(this.button7_Click_1);
+            this.suppressionStockClotureToolStripMenuItem.Name = "suppressionStockClotureToolStripMenuItem";
+            this.suppressionStockClotureToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.suppressionStockClotureToolStripMenuItem.Text = "Suppression Stock Cloture";
+            this.suppressionStockClotureToolStripMenuItem.Click += new System.EventHandler(this.suppressionStockClotureToolStripMenuItem_Click);
             // 
             // AlmaCam_Clipper_Form
             // 
@@ -398,11 +392,8 @@
             this.BackgroundImage = global::AlmaCamTrainingTest.Properties.Resources.FONDExport;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.ClientSize = new System.Drawing.Size(478, 476);
-            this.Controls.Add(this.button7);
-            this.Controls.Add(this.button6);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.InfosLabel);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
@@ -455,11 +446,13 @@
         private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem2;
         private System.Windows.Forms.Label InfosLabel;
         private System.Windows.Forms.Button DoOnAction_TO_CUT_NESTING;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.ToolStripMenuItem clipper8ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importStockToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem relanceClotureToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem relanceClotureToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem suppressionStockClotureToolStripMenuItem;
     }
 }
 

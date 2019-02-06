@@ -1411,13 +1411,17 @@ namespace AF_Export_Devis_Clipper
         {
             IEntity quoteEntity = quote.QuoteEntity;
             IEntity clientEntity = quoteEntity.GetFieldValueAsEntity("_FIRM");
+
+            ///
+            string usercode  = quoteEntity.GetFieldValueAsEntity("_QUOTER").GetFieldValueAsString("USER_NAME");
+            
             //creation 
             //string dpr_directory = quote.Context.ParameterSetManager.GetParameterValue("_EXPORT", "_ACTCUT_DPR_DIRECTORY").GetValueAsString();
 
             //create dpr and directory
-            
+
             //obsolete fait par le getDrpPart
-           
+
             foreach (IEntity partEntity in quote.QuotePartList)
             {
                 IEntity materialEntity = partEntity.GetFieldValueAsEntity("_MATERIAL");
@@ -1479,132 +1483,11 @@ namespace AF_Export_Devis_Clipper
                     data[i++] = "0"; //N° identifiant GED 9
                     data[i++] = "0"; //N° identifiant GED 10
                     //////depuis la V8 ////////
-                    data[i++] = ""; // fichier joint
-                    data[i++] = ""; // date injection
-                    data[i++] = ""; // modele IMPORTANT  si 2 pieces possedent le meme nom - incrementer cette valeur [0-255 //le model est a valider dans obs devis et nomendv
-                    data[i++] = ""; // employer responsable
-                    data[i++] = "-" + partEntity.Id.ToString();  // IDCFAO --> pour correspondance clipper //
-
-                    ///
-                    /// a supprimer apres 2 mois d'instal/
-                    /*
-                      ///on laisse pour le moment
-                      ///
-                      string assistantType = partEntity.GetFieldValueAsString("_ASSISTANT_TYPE");
-                      string partFileName = partEntity.GetFieldValueAsString("_FILENAME");
-
-
-                      //ATTENTION LES GENERATION DES DPR DEPEND DE LA LICENCE/ IL FAUT UNE QUOTE CUT 
-                      //SINON IL S4AGIT DE PIECES ALMACAM
-                      //
-                      string emfFile = "";
-
-                      bool isGenericDpr = false;
-                      if (assistantType.Contains("GenericEditAssistant"))
-                      {
-                          if (string.IsNullOrEmpty(partFileName) == false)
-                          {
-                              if (partFileName.EndsWith(".dpr", StringComparison.InvariantCultureIgnoreCase))
-                              {
-                                  isGenericDpr = true;
-                              }
-                          }
-                      }
-
-
-
-
-
-                      {
-
-                         if (!string.IsNullOrEmpty(dpr_directory)) { 
-
-                              string empty_emfFile;
-
-                              //cas général
-                              emfFile = partEntity.GetFieldValueAsString("_DPR_FILENAME") + ".emf";
-                              //emfFile vide
-                              empty_emfFile = dpr_directory + "\\" + "Quote_" + quote.QuoteEntity.Id + "\\"+ partEntity.GetFieldValueAsString("_REFERENCE")+".dpr.emf"; // + Path.GetFileName(partEntity.GetImageFieldValueAsLinkFile("_PREVIEW"));
-                              //cas general
-                               emfFile = GetEmfFile(partEntity, empty_emfFile);
-
-
-                              if (assistantType.Contains("DprAssistant") || isGenericDpr)
-                              {
-
-                                  emfFile = partEntity.GetFieldValueAsString("_FILENAME")+ ".emf";
-
-                              }
-
-                              //traitement spé
-                              //cas des pieces simples//
-                              else if (assistantType.Contains("PluggedSimpleAssistantEx")) {
-                                  //creation du point rouge dans l'emf : signature des apercus de peices quotes
-                                  Sign_quote_Emf(emfFile);                               
-                              }
-
-
-                              //PluggedSketchAssistant
-                              else if (assistantType.Contains("PluggedSketchAssistant"))
-                              {
-                                  //creation du point rouge dans l'emf : signature des apercus de peices quotes
-                                  Sign_quote_Emf(emfFile);
-
-                              }
-                              //PluggedGeometryAssistant
-                              else if (assistantType.Contains("PluggedGeometryAssistant"))
-                              {
-                                  //creation du point rouge dans l'emf : signature des apercus de peices quotes
-                                  Sign_quote_Emf(emfFile);
-
-                              }
-                              //PluggedDplAssistant
-                              else if (assistantType.Contains("PluggedDplAssistan"))
-                              {   //creation du point rouge dans l'emf : signature des apercus de peices quotes
-                                  Sign_quote_Emf(emfFile);
-
-                              }
-
-                              //PluggedDxfAssistant
-                              else if (assistantType.Contains("PluggedDxfAssistant"))
-                              {   //creation du point rouge dans l'emf : signature des apercus de peices quotes
-                                  Sign_quote_Emf(emfFile);
-
-
-                              }
-
-
-                              else
-                              {  //creation du point rouge dans l'emf : signature des apercus de peices quotes
-                                  Sign_quote_Emf(emfFile);
-
-                              }
-
-
-
-
-
-
-
-
-
-                          }
-                          else
-                          {
-                              emfFile=partEntity.GetImageFieldValueAsLinkFile("_PREVIEW");
-                          }
-
-                          if (emfFile != null)
-                              data[i++] = emfFile; //Fichier joint
-                          else
-                              data[i++] = ""; //Fichier joint
-                      }*/
-
-
-                    data[i++] = GetDprPath(partEntity, quote);
+                    data[i++] = GetDprPath(partEntity, quote); //fichier joint
                     data[i++] = ""; //Date d'injection
-                    data[i++] = partModele; //Modèle
-                    data[i++] = ""; //Employé responsable                
+                    data[i++] = ""; //partModele; //Modèle
+                    data[i++] = usercode;
+                    data[i++] = "-" + partEntity.Id.ToString();  // IDCFAO --> pour correspondance clipper //
                     WriteData(data, i, ref file);
 
                     long gadevisPhase = 0;

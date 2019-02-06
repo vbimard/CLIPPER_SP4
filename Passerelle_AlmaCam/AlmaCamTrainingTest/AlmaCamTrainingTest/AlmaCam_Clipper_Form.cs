@@ -49,6 +49,7 @@ namespace AlmaCamTrainingTest
             {
 
                 InitializeComponent();
+               
             }
             catch (Exception e)
             {
@@ -82,10 +83,7 @@ namespace AlmaCamTrainingTest
         /// <param name="e"></param>
         private void Form1_Load(object sender, EventArgs e)
         {
-
-
-            
-
+            AF_ImportTools.SimplifiedMethods.NotifyMessage("ALMACAM CLIPPER", "Starting Almacam Clipper",20000);
             //creation du model repository
             IModelsRepository modelsRepository = new ModelsRepository();
             _Context = modelsRepository.GetModelContext(DbName);  //nom de la base;
@@ -616,7 +614,7 @@ namespace AlmaCamTrainingTest
         {
             //IEntity TO_CUT_nesting;
 
-            AF_Clipper_Dll.Clipper_DoOnAction_AfterSendToWorkshop2019 doonaction = new Clipper_DoOnAction_AfterSendToWorkshop2019();
+            var doonaction = new Clipper_8_DoOnAction_AfterSendToWorkshop();
             string stage = "_TO_CUT_NESTING";
 
             //creation du fichier de sortie
@@ -635,7 +633,7 @@ namespace AlmaCamTrainingTest
             {
                 foreach (IEntity nesting in nestingselector.SelectedEntity)
                 {
-                    doonaction.execute(nesting);
+                    doonaction.Execute(nesting);
 
                 }
             }
@@ -649,7 +647,8 @@ namespace AlmaCamTrainingTest
 
             //IEntity TO_CUT_nesting;
 
-            AF_Clipper_Dll.Clipper_DoOnAction_BeforeNestingRestoreEvent doonaction = new Clipper_DoOnAction_BeforeNestingRestoreEvent();
+            var Do_On_Action_Restore = new Clipper_8_Before_Nesting_Restore_Event();
+
             string stage = "_TO_CUT_NESTING";
 
             //creation du fichier de sortie
@@ -670,7 +669,7 @@ namespace AlmaCamTrainingTest
             {
                 foreach (IEntity nesting in nestingselector.SelectedEntity)
                 {
-                    doonaction.execute(nesting);
+                    Do_On_Action_Restore.Execute(nesting);
 
                 }
             }
@@ -685,31 +684,7 @@ namespace AlmaCamTrainingTest
 
         private void button5_Click_1(object sender, EventArgs e)
         {
-            AF_Clipper_Dll.Clipper_DoOnAction_BeforeNestingRestoreEvent doonaction = new Clipper_DoOnAction_BeforeNestingRestoreEvent();
-            string stage = "_CLOSED_NESTING";
-
-            //creation du fichier de sortie
-            //recupere les path
-            /*
-            Clipper_Param.GetlistParam(_Context);
-            */
-            IEntitySelector nestingselector = null;
-
-            nestingselector = new EntitySelector();
-
-            //entity type pointe sur la list d'objet du model
-            nestingselector.Init(_Context, _Context.Kernel.GetEntityType(stage));
-            nestingselector.MultiSelect = true;
-
-
-            if (nestingselector.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                foreach (IEntity nesting in nestingselector.SelectedEntity)
-                {
-                   StockManager.DeleteAlmaCamStock(nesting);
-
-                }
-            }
+            
 
 
         }
@@ -718,11 +693,7 @@ namespace AlmaCamTrainingTest
         {
             //AF_ImportTools.SimplifiedMethods.ToastNotifyMessage2("hello world", "loremIpsum...");
 
-            using (Clipper_Stock_2019 Stock = new Clipper_Stock_2019())
-            {
-                //Stock.Import(_Context, csvImportPath, dataModelstring);
-                Stock.Import(_Context);//, csvImportPath);
-            }
+           
         }
 
         private void button7_Click_1(object sender, EventArgs e)
@@ -743,6 +714,75 @@ namespace AlmaCamTrainingTest
 
 
 
+        }
+
+        private void importStockToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (var Stock = new Clipper_8_Stock())
+            {
+                Stock.Import(_Context);//, csvImportPath);
+            }
+        }
+
+        private void relanceClotureToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //IEntity TO_CUT_nesting;
+
+            var doonaction = new Clipper_8_DoOnAction_AfterSendToWorkshop();
+            string stage = "_TO_CUT_NESTING";
+
+            //creation du fichier de sortie
+            //recupere les path
+            Clipper_Param.GetlistParam(_Context);
+            IEntitySelector nestingselector = null;
+
+            nestingselector = new EntitySelector();
+
+            //entity type pointe sur la list d'objet du model
+            nestingselector.Init(_Context, _Context.Kernel.GetEntityType(stage));
+            nestingselector.MultiSelect = true;
+
+
+            if (nestingselector.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                foreach (IEntity nesting in nestingselector.SelectedEntity)
+                {
+                    doonaction.Execute(nesting);
+
+                }
+            }
+
+        }
+
+        private void suppressionStockClotureToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string stage = "_CLOSED_NESTING";
+            /*
+            AF_Clipper_Dll.Clipper_DoOnAction_BeforeNestingRestoreEvent doonaction = new Clipper_DoOnAction_BeforeNestingRestoreEvent();
+            string stage = "_CLOSED_NESTING";*/
+
+            //creation du fichier de sortie
+            //recupere les path
+            /*
+            Clipper_Param.GetlistParam(_Context);
+            */
+            IEntitySelector nestingselector = null;
+
+            nestingselector = new EntitySelector();
+
+            //entity type pointe sur la list d'objet du model
+            nestingselector.Init(_Context, _Context.Kernel.GetEntityType(stage));
+            nestingselector.MultiSelect = true;
+
+
+            if (nestingselector.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                foreach (IEntity nesting in nestingselector.SelectedEntity)
+                {
+                    StockManager.DeleteAlmaCamStock(nesting);
+
+                }
+            }
         }
     }
 
