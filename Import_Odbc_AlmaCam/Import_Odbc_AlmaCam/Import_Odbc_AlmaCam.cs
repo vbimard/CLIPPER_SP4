@@ -14,6 +14,7 @@ using Newtonsoft.Json.Linq;
 using Microsoft.Win32;
 using System.Runtime.Serialization;
 using System.Data.Common;
+using Actcut.CommonModel;
 
 namespace AF_Import_ODBC_Clipper_AlmaCam
 
@@ -33,7 +34,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
     /// <summary>
     /// bouton d'import des matieres
     /// </summary>
-    public class Clipper_ImportMatiere_Processor : CommandProcessor
+    public class Clipper8_ImportMatiere_Processor : CommandProcessor
     {
 
         public override bool Execute()
@@ -81,9 +82,7 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
             catch(Exception ie)
             {
                 MessageBox.Show(ie.Message, System.Reflection.MethodBase.GetCurrentMethod().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //logFile.WriteLine(System.Reflection.MethodBase.GetCurrentMethod().Name + " " + ie.Message);
-                //logFile.WriteLine(System.Reflection.MethodBase.GetCurrentMethod().Name + " " + ie.Message);
-                // return base.Execute();
+               
             }
         }
     }
@@ -825,7 +824,10 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                             }
                             //update and save
                                 logFile.WriteLine("mise à jour de la matiere :   " + m.getMaterialName());
-                                currentmaterial.SetFieldValue("_NAME", m.getMaterialName());
+                            currentmaterial.SetFieldValue("_NAME", m.getMaterialName());
+
+                            //CommonModelBuilder.ComputeMaterialName((newsheet.Context, newsheet);
+                            //currentmaterial.SetFieldValue("_NAME", curr)
                                 currentmaterial.SetFieldValue("_QUALITY", currentstringquality.Key);
                                 currentmaterial.SetFieldValue("_THICKNESS", m.Thickness);
                                 currentmaterial.SetFieldValue("_BUY_COST", (m.Prixart)/1000);

@@ -686,31 +686,7 @@ namespace AlmaCamTrainingTest
 
         private void relanceClotureToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //IEntity TO_CUT_nesting;
-
-            var doonaction = new Clipper_8_DoOnAction_AfterSendToWorkshop();
-            string stage = "_TO_CUT_NESTING";
-
-            //creation du fichier de sortie
-            //recupere les path
-            Clipper_Param.GetlistParam(_Context);
-            IEntitySelector nestingselector = null;
-
-            nestingselector = new EntitySelector();
-
-            //entity type pointe sur la list d'objet du model
-            nestingselector.Init(_Context, _Context.Kernel.GetEntityType(stage));
-            nestingselector.MultiSelect = true;
-
-
-            if (nestingselector.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                foreach (IEntity nesting in nestingselector.SelectedEntity)
-                {
-                    doonaction.Execute(nesting);
-
-                }
-            }
+            
 
         }
 
@@ -860,6 +836,101 @@ namespace AlmaCamTrainingTest
         private void relanceClotureToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             //IEntity TO_CUT_nesting;
+
+        }
+
+        private void relanceenvoiecoupeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //IEntity TO_CUT_nesting;
+
+            var doonaction = new Clipper_8_DoOnAction_AfterSendToWorkshop();
+            string stage = "_TO_CUT_NESTING";
+
+            //creation du fichier de sortie
+            //recupere les path
+            Clipper_Param.GetlistParam(_Context);
+            IEntitySelector nestingselector = null;
+
+            nestingselector = new EntitySelector();
+
+            //entity type pointe sur la list d'objet du model
+            nestingselector.Init(_Context, _Context.Kernel.GetEntityType(stage));
+            nestingselector.MultiSelect = true;
+
+
+            if (nestingselector.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                foreach (IEntity nesting in nestingselector.SelectedEntity)
+                {
+                    doonaction.Execute(nesting);
+
+                }
+            }
+        }
+
+        private void reinitialiserStockToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //IEntity TO_CUT_nesting;
+
+            var doonaction = new Clipper_8_Before_Nesting_Restore_Event();
+            
+            string stage = "_TO_CUT_NESTING";
+
+            //creation du fichier de sortie
+            //recupere les path
+            Clipper_Param.GetlistParam(_Context);
+            IEntitySelector nestingselector = null;
+
+            nestingselector = new EntitySelector();
+
+            //entity type pointe sur la list d'objet du model
+            nestingselector.Init(_Context, _Context.Kernel.GetEntityType(stage));
+            nestingselector.MultiSelect = true;
+
+
+            if (nestingselector.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                foreach (IEntity nesting in nestingselector.SelectedEntity)
+                {
+                    doonaction.Execute(nesting);
+
+                }
+            }
+        }
+
+        private void recreerLEmfToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            List<IEntity> stocks = SimplifiedMethods.Get_Entity_Selector(_Context, "_STOCK");
+            MessageBox.Show("Seules les Chutes pourront obtenir de nouveaux emf");
+
+            foreach (IEntity currententity in stocks)
+            {
+                // 
+                if (currententity.GetFieldValueAsEntity("_SHEET").GetFieldValueAsInt("_TYPE") == 2) { 
+                string emffilepath = StockManager.Create_EMF_Of_Stock_Entity(currententity);
+                currententity.SetFieldValue("FILENAME", emffilepath);
+                currententity.Save();
+                }
+                //
+            }
+
+
+          
+
+        }
+
+        private void relanceClotureToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            List<IEntity> cutsheets = SimplifiedMethods.Get_Entity_Selector(_Context, "_CUT_SHEET");
+
+            foreach (IEntity cutsheet in cutsheets)
+            {
+                // 
+               
+                //
+            }
+
+
 
         }
     }

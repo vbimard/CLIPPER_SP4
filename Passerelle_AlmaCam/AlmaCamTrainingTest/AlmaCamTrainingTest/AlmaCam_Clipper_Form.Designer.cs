@@ -51,8 +51,6 @@
             this.importStockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.suppressionStockClotureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.purgerToutLeStockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.relanceClotureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.relanceClotureToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.DoOnAction_TO_CUT_NESTING = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -62,6 +60,11 @@
             this.importOFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.avecDTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sansDTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.clotureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.relanceenvoiecoupeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.reinitialiserStockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.relanceClotureToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.recreerLEmfToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -253,9 +256,8 @@
             // 
             this.clipper8ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.importStockToolStripMenuItem,
-            this.relanceClotureToolStripMenuItem,
-            this.relanceClotureToolStripMenuItem1,
-            this.importOFToolStripMenuItem});
+            this.importOFToolStripMenuItem,
+            this.clotureToolStripMenuItem});
             this.clipper8ToolStripMenuItem.Name = "clipper8ToolStripMenuItem";
             this.clipper8ToolStripMenuItem.Size = new System.Drawing.Size(66, 20);
             this.clipper8ToolStripMenuItem.Text = "Clipper 8";
@@ -265,9 +267,10 @@
             this.importStockToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.suppressionStockClotureToolStripMenuItem,
             this.purgerToutLeStockToolStripMenuItem,
-            this.importerStockToolStripMenuItem});
+            this.importerStockToolStripMenuItem,
+            this.recreerLEmfToolStripMenuItem});
             this.importStockToolStripMenuItem.Name = "importStockToolStripMenuItem";
-            this.importStockToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.importStockToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.importStockToolStripMenuItem.Text = "Import Stock";
             this.importStockToolStripMenuItem.Click += new System.EventHandler(this.importStockToolStripMenuItem_Click);
             // 
@@ -284,20 +287,6 @@
             this.purgerToutLeStockToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
             this.purgerToutLeStockToolStripMenuItem.Text = "Purger Tout le stock";
             this.purgerToutLeStockToolStripMenuItem.Click += new System.EventHandler(this.purgerToutLeStockToolStripMenuItem_Click);
-            // 
-            // relanceClotureToolStripMenuItem
-            // 
-            this.relanceClotureToolStripMenuItem.Name = "relanceClotureToolStripMenuItem";
-            this.relanceClotureToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
-            this.relanceClotureToolStripMenuItem.Text = "Relance Envoie_Coupe";
-            this.relanceClotureToolStripMenuItem.Click += new System.EventHandler(this.relanceClotureToolStripMenuItem_Click);
-            // 
-            // relanceClotureToolStripMenuItem1
-            // 
-            this.relanceClotureToolStripMenuItem1.Name = "relanceClotureToolStripMenuItem1";
-            this.relanceClotureToolStripMenuItem1.Size = new System.Drawing.Size(193, 22);
-            this.relanceClotureToolStripMenuItem1.Text = "Relance Cloture";
-            this.relanceClotureToolStripMenuItem1.Click += new System.EventHandler(this.relanceClotureToolStripMenuItem1_Click);
             // 
             // groupBox2
             // 
@@ -396,6 +385,44 @@
             this.sansDTToolStripMenuItem.Text = "SansDT";
             this.sansDTToolStripMenuItem.Click += new System.EventHandler(this.sansDTToolStripMenuItem_Click);
             // 
+            // clotureToolStripMenuItem
+            // 
+            this.clotureToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.relanceenvoiecoupeToolStripMenuItem,
+            this.reinitialiserStockToolStripMenuItem,
+            this.relanceClotureToolStripMenuItem2});
+            this.clotureToolStripMenuItem.Name = "clotureToolStripMenuItem";
+            this.clotureToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.clotureToolStripMenuItem.Text = "Cloture";
+            // 
+            // relanceenvoiecoupeToolStripMenuItem
+            // 
+            this.relanceenvoiecoupeToolStripMenuItem.Name = "relanceenvoiecoupeToolStripMenuItem";
+            this.relanceenvoiecoupeToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.relanceenvoiecoupeToolStripMenuItem.Text = "Relance_envoie_coupe";
+            this.relanceenvoiecoupeToolStripMenuItem.Click += new System.EventHandler(this.relanceenvoiecoupeToolStripMenuItem_Click);
+            // 
+            // reinitialiserStockToolStripMenuItem
+            // 
+            this.reinitialiserStockToolStripMenuItem.Name = "reinitialiserStockToolStripMenuItem";
+            this.reinitialiserStockToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.reinitialiserStockToolStripMenuItem.Text = "Reinitialiser_Stock";
+            this.reinitialiserStockToolStripMenuItem.Click += new System.EventHandler(this.reinitialiserStockToolStripMenuItem_Click);
+            // 
+            // relanceClotureToolStripMenuItem2
+            // 
+            this.relanceClotureToolStripMenuItem2.Name = "relanceClotureToolStripMenuItem2";
+            this.relanceClotureToolStripMenuItem2.Size = new System.Drawing.Size(193, 22);
+            this.relanceClotureToolStripMenuItem2.Text = "Relance Cloture";
+            this.relanceClotureToolStripMenuItem2.Click += new System.EventHandler(this.relanceClotureToolStripMenuItem2_Click);
+            // 
+            // recreerLEmfToolStripMenuItem
+            // 
+            this.recreerLEmfToolStripMenuItem.Name = "recreerLEmfToolStripMenuItem";
+            this.recreerLEmfToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.recreerLEmfToolStripMenuItem.Text = "Recreer EMF D\'un stock";
+            this.recreerLEmfToolStripMenuItem.Click += new System.EventHandler(this.recreerLEmfToolStripMenuItem_Click);
+            // 
             // AlmaCam_Clipper_Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -459,14 +486,17 @@
         private System.Windows.Forms.Button DoOnAction_TO_CUT_NESTING;
         private System.Windows.Forms.ToolStripMenuItem clipper8ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importStockToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem relanceClotureToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem relanceClotureToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem suppressionStockClotureToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem purgerToutLeStockToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importerStockToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importOFToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem avecDTToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sansDTToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem clotureToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem relanceenvoiecoupeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem reinitialiserStockToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem relanceClotureToolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem recreerLEmfToolStripMenuItem;
     }
 }
 
