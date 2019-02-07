@@ -3462,1155 +3462,7 @@ namespace AF_Clipper_Dll
     }
 
 
-    #region chaieraffaire
-    public class Clipper_8_Import_OF_Processor : CommandProcessor
-    {
-        //public IContext contextlocal = null;
-        public override bool Execute()
-        {
-            //recuperation du context
-            //string DbName = Alma_RegitryInfos.GetLastDataBase();
-            // IModelsRepository modelsRepository = new ModelsRepository();
-            //contextlocal = modelsRepository.GetModelContext(DbName);
-            //contextlocal = Context;
-            Clipper_Param.GetlistParam(Context);
-            string csvImportPath = Clipper_Param.GetPath("IMPORT_CDA");
-            //recuperation du nom de fichier
-            string csvFileName = Path.GetFileNameWithoutExtension(csvImportPath);
-            string dataModelstring = Clipper_Param.GetModelCA();
-
-
-            // if (contextlocal != null)
-            if (Context != null)
-            {
-                using (Clipper_OF cahierAffaire = new Clipper_OF())
-                {
-                    cahierAffaire.Import(Context, csvImportPath, dataModelstring, false);//), csvImportPath);
-
-
-                }
-            }
-            return base.Execute();
-        }
-    }
-
-    /// <summary>
-    /// recupere les of exportes de clipper
-    /// </summary>
-    public class Clipper_8_Clipper_OF : IDisposable, IImport
-    {
-        string CsvImportPath = null;
-
-
-        public void Dispose()
-        {
-            //Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-
-
-        /// <summary>
-        /// creer une nouvelle reference a produire sous reserve de sans_donnees_technique=true et de centre de frais et is non presente
-        /// </summary>
-        /// <param name="contextlocal"></param>
-        /// <param name="line_dictionnary"></param>
-        /// <param name="CentreFrais_Dictionnary">dictionnaire des centres de frais</param>
-        /// <param name="reference_to_produce">retourn de la nouvelle reference a produire si besoin</param>
-        /// <param name="reference">reference a pointer</param>
-        /// <param name="timetag">time tag de l'import : pour groupement </param>
-        /// <param name="sans_donnees_technique">si true alors oon ne creer jamais de reference</param>
-        /// <returns></returns>
-        public bool CreateNewPartToProduce(IContext contextlocal, Dictionary<string, object> line_dictionnary, Dictionary<string, string> CentreFrais_Dictionnary, ref IEntity reference_to_produce, ref IEntity reference, string timetag, bool sans_donnees_technique)
-        {
-            bool result = false;
-
-            try
-            {
-                //la piece ne contient pas de gamme
-                //cas des pieces oranges : Pas de cf, pas de id_piece_cfao, on considere que c'est une piece orange--> on ne creer que la reference. 
-                if (Data_Model.ExistsInDictionnary("CENTREFRAIS", ref line_dictionnary) == false || sans_donnees_technique == true)
-                {
-                    return false;
-                }
-                //string referenceName = null;
-                Boolean need_prep = true;
-                //int index_extension = 0;  //> 0 si ;emf;dpr detectée
-                PartInfo machinable_part_infos = null; //infos de machinabe part
-
-                //creation de la nouvelle reference
-                reference_to_produce = contextlocal.EntityManager.CreateEntity("_TO_PRODUCE_REFERENCE");
-                //recuperation et assignaton de la machine si elle existe
-                string machine_name = "";
-                Data_Model.ExistsInDictionnary(line_dictionnary["CENTREFRAIS"].ToString(), ref CentreFrais_Dictionnary);
-                //lecture des part infos (optionnel) car le get reference fait le travail                 
-                machinable_part_infos = new PartInfo();
-                bool fastmode = true;
-                //bool result = false;
-                machinable_part_infos.GetPartinfos(ref contextlocal, reference);
-                //on control que la matiere de la reference correspond -soit bonne sinon on continue a la ligne suivante//
-                if (fastmode)
-                {
-
-                    //try { reference_to_produce.SetFieldValue("NEED_PREP", !part_infos.IsPartDefault_Preparation(contextlocal, reference, CentreFrais_Dictionnary[line_Dictionnary["CENTREFRAIS"].ToString()])); }
-                    if (Data_Model.ExistsInDictionnary(line_dictionnary["CENTREFRAIS"].ToString(), ref CentreFrais_Dictionnary))
-                    {
-                        try { need_prep = need_prep && machinable_part_infos.IsPartDefault_Preparation(reference, CentreFrais_Dictionnary[line_dictionnary["CENTREFRAIS"].ToString()]); }
-                        //reference_to_produce.SetFieldValue("NEED_PREP", !machinable_part_infos.IsPartDefault_Preparation(reference, CentreFrais_Dictionnary[line_Dictionnary["CENTREFRAIS"].ToString()])); }
-                        catch (KeyNotFoundException)
-                        {
-                            Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + "le centre de Frais  ne pointe pas vers une machine connue");
-                            MessageBox.Show(string.Format("le centre de Frais {0} ne pointe pas vers une machine connue", CentreFrais_Dictionnary[line_dictionnary["CENTREFRAIS"].ToString()]));
-                        }
-                    }
-
-                }
-                else
-                //slowmode
-                //methode par comparaison d'id
-                {
-                    if (machine_name != "")
-                    {
-                        IEntityList machines = null;
-                        IEntity machine = null;
-
-                        machine = AF_ImportTools.SimplifiedMethods.GetFirtOfList(machines);
-                        string mm = machinable_part_infos.DefaultMachineName;
-                        need_prep = need_prep && true;
-                    }
-                    else
-                    {
-                        need_prep = need_prep && true;
-
-                    }
-
-                }
-
-
-
-
-                //ecriture du time tag
-                reference_to_produce.SetFieldValue("OF_IMPORT_NUMBER", timetag.Replace("_", ""));
-                reference_to_produce.SetFieldValue("_REFERENCE", reference.Id32);
-                reference_to_produce.SetFieldValue("NEED_PREP", need_prep);
-
-
-                Update_Part_Item(contextlocal, ref reference_to_produce, ref CentreFrais_Dictionnary, ref line_dictionnary);
-                Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + "update infos succeed");
-                reference_to_produce.Save();
-                line_dictionnary.Clear();
-
-                return result;
-            }
-            catch { return result; }
-        }
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="contextlocal"></param>
-        /// <param name="line_dictionnary"></param>
-        /// <param name="CentreFrais_Dictionnary"></param>
-        /// <param name="reference_to_produce"></param>
-        /// <param name="reference"></param>
-        /// <param name="timetag"></param>
-        /// <returns></returns>
-        public bool CreateNewPartToProduce(IContext contextlocal, Dictionary<string, object> line_dictionnary, Dictionary<string, string> CentreFrais_Dictionnary, ref IEntity reference_to_produce, ref IEntity reference, string timetag)
-        {
-            bool result = false;
-
-            try
-            {
-                //la piece ne contient pas de gamme
-                //cas des pieces oranges : Pas de cf, pas de id_piece_cfao, on considere que c'est une piece orange--> on ne creer que la reference. 
-                if ((Data_Model.ExistsInDictionnary("CENTREFRAIS") == false) && (Data_Model.ExistsInDictionnary("CENTREFRAIS") == false))
-                {
-                    return false;
-                }
-                //string referenceName = null;
-                Boolean need_prep = false;
-                //int index_extension = 0;  //> 0 si ;emf;dpr detectée
-                PartInfo machinable_part_infos = null; //infos de machinabe part
-
-                //creation de la nouvelle reference
-                reference_to_produce = contextlocal.EntityManager.CreateEntity("_TO_PRODUCE_REFERENCE");
-                //recuperation et assignaton de la machine si elle existe
-                string machine_name = "";
-                //Data_Model.ExistsInDictionnary(line_dictionnary["CENTREFRAIS"].ToString(), ref CentreFrais_Dictionnary);
-                //lecture des part infos (optionnel) car le get reference fait le travail                 
-                machinable_part_infos = new PartInfo();
-                bool fastmode = true;
-                //bool result = false;
-                machinable_part_infos.GetPartinfos(ref contextlocal, reference);
-                //
-                //on control que la matiere de la reference correspond -soit bonne sinon on continue a la ligne suivante//
-                if (fastmode)
-                {
-
-                    //try { reference_to_produce.SetFieldValue("NEED_PREP", !part_infos.IsPartDefault_Preparation(contextlocal, reference, CentreFrais_Dictionnary[line_Dictionnary["CENTREFRAIS"].ToString()])); }
-                    if (Data_Model.ExistsInDictionnary(line_dictionnary["CENTREFRAIS"].ToString(), ref CentreFrais_Dictionnary))
-                    {
-                        try { need_prep = need_prep && machinable_part_infos.IsPartDefault_Preparation(reference, CentreFrais_Dictionnary[line_dictionnary["CENTREFRAIS"].ToString()]); }
-                        //reference_to_produce.SetFieldValue("NEED_PREP", !machinable_part_infos.IsPartDefault_Preparation(reference, CentreFrais_Dictionnary[line_Dictionnary["CENTREFRAIS"].ToString()])); }
-                        catch (KeyNotFoundException)
-                        {
-                            Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + "le centre de Frais  ne pointe pas vers une machine connue");
-                            MessageBox.Show(string.Format("le centre de Frais {0} ne pointe pas vers une machine connue", CentreFrais_Dictionnary[line_dictionnary["CENTREFRAIS"].ToString()]));
-                        }
-                    }
-
-                }
-                else
-                //slowmode
-                //methode par comparaison d'id
-                {
-                    if (machine_name != "")
-                    {
-                        IEntityList machines = null;
-                        IEntity machine = null;
-
-                        machine = AF_ImportTools.SimplifiedMethods.GetFirtOfList(machines);
-                        string mm = machinable_part_infos.DefaultMachineName;
-                        need_prep = need_prep && true;
-                    }
-                    else
-                    {
-                        need_prep = need_prep && true;
-
-                    }
-
-                }
-
-
-
-
-                //ecriture du time tag
-                reference_to_produce.SetFieldValue("OF_IMPORT_NUMBER", timetag.Replace("_", ""));
-                reference_to_produce.SetFieldValue("_REFERENCE", reference.Id32);
-                reference_to_produce.SetFieldValue("NEED_PREP", need_prep);
-
-
-                Update_Part_Item(contextlocal, ref reference_to_produce, ref CentreFrais_Dictionnary, ref line_dictionnary);
-                Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + "update infos succeed");
-                reference_to_produce.Save();
-                line_dictionnary.Clear();
-
-                return result;
-            }
-            catch { return result; }
-        }
-
-
-
-        /// <summary>
-        /// Recupere la liste de toutes les machines sous la forme litterale "nom machine" "centre de frais"
-        /// </summary>
-        /// <param name="contextlocal">context local</param>
-        /// <param name="Clipper_Machine">entité machine clipper</param>
-        /// <param name="Clipper_Centre_Frais">entité centre de frais clipper</param>
-        /// <returns></returns>
-        public Boolean Get_Clipper_Machine(IContext contextlocal, out IEntity Clipper_Machine, out IEntity Clipper_Centre_Frais, out Dictionary<string, string> CentreFrais_Dictionnary)
-        {
-
-
-
-            CentreFrais_Dictionnary = new Dictionary<string, string>();
-            IEntityList machine_liste = null;
-            //recuperation de la machine clipper et initialisation des listes
-            //CentreFrais_Dictionnary = null;
-            Clipper_Machine = null;
-            Clipper_Centre_Frais = null;
-            //CentreFrais_Dictionnary.Clear();
-            //verification que toutes les machineS sont conformes pour une intégration clipper
-            ///remplissage des machines et verification de la presence du centre de frais demandé par clipper
-            machine_liste = contextlocal.EntityManager.GetEntityList("_CUT_MACHINE_TYPE");
-            machine_liste.Fill(false);
-
-
-            foreach (IEntity machine in machine_liste)
-
-            {
-                IEntity cf;
-                cf = machine.GetFieldValueAsEntity("CENTREFRAIS_MACHINE");
-
-                if (!object.Equals(machine.GetFieldValueAsEntity("CENTREFRAIS_MACHINE"), null))
-                {
-                    cf = machine.GetFieldValueAsEntity("CENTREFRAIS_MACHINE");
-                }
-                else
-                {
-                    cf = null;
-                    Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": Missing  cost center on : " + machine.DefaultValue);
-                    Alma_Log.Error("centre de frais non defini sur la machine  !!!" + machine.DefaultValue, MethodBase.GetCurrentMethod().Name);
-
-                }
-
-                ///creation du dictionnaire des machines installées   
-                if (cf.DefaultValue != "" && machine.DefaultValue != "" && Clipper_Param.Get_Clipper_Machine_Cf() != null
-                    )
-                {
-                    if (CentreFrais_Dictionnary.ContainsKey(cf.DefaultValue) == false) { CentreFrais_Dictionnary.Add(cf.DefaultValue, machine.DefaultValue); }
-
-                    if (cf.DefaultValue == Clipper_Param.Get_Clipper_Machine_Cf())
-                    {
-                        if (Clipper_Param.Get_Clipper_Machine_Cf() != "Undef clipper machine")
-                        {
-                            Clipper_Centre_Frais = cf;
-                            Clipper_Machine = machine;
-                        }
-                        else
-                        {
-                            Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": Missing  clipper machine !!! ");
-                            Alma_Log.Error("IL MANQUE LA MACHINE CLIPPER !!!", MethodBase.GetCurrentMethod().Name);
-                            return false;//throw new Exception(machine.DefaultValue + " : Missing  cost center definition"); 
-                        }
-
-                    }
-
-                }
-
-                else
-                { /*on log on arrete tout */
-                    Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": Missing  cost center definition on a machine !!! ");
-                    Alma_Log.Error("IL MANQUE LE CENTRE DE FRAIS SUR L UNE DES MACHINES INSTALLEE !!!", MethodBase.GetCurrentMethod().Name);
-                    return false;//throw new Exception(machine.DefaultValue + " : Missing  cost center definition"); 
-                }
-            }
-            return true;
-
-
-        }
-
-      
-
-        /// <summary>
-        /// creation d'une references vide pour creation
-        /// </summary>
-        /// <param name="contextlocal">context</param>
-        /// <param name="line_dictionnary">dictionnaire de ligne</param>
-        public IEntity CreateNewReference(IContext contextlocal, Dictionary<string, object> line_dictionnary, ref string NewReferenceName, IEntity clipper_machine, bool Sans_Donnees_Technique)
-        {
-            try
-            {
-
-
-
-                IEntity newreference = null;
-                IEntity material = null;
-                IEntity machine = null;
-
-                Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": creation d'une nouvelle piece !! ");
-                // string referenceName = null;
-                int index_extension = 0;
-                //si la machine clipper n'est pas nulle
-                //on initialise la machine a la machine clipper
-                if (clipper_machine.Id32 != 0) { machine = clipper_machine; }
-
-                if (line_dictionnary.ContainsKey("_MATERIAL") && line_dictionnary.ContainsKey("THICKNESS") && line_dictionnary.ContainsKey("_NAME"))
-                {
-                    //recuperation de la matiere 
-                    material = GetMaterialEntity(contextlocal, ref line_dictionnary);
-                    //recupe du nom de la geométrie                 
-                    //string referenceName = "undef";    just in case mais inutiel
-                    if (NewReferenceName == null)
-                    {
-
-                        Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": Unfortunate error: NewreferenceName does not existes and new reference has been created !! ");
-                        if (Data_Model.ExistsInDictionnary("FILENAME", ref line_dictionnary))
-                        {
-
-                            NewReferenceName = line_dictionnary["FILENAME"].ToString();
-                            if (NewReferenceName.ToUpper().IndexOf(".DPR.EMF") > 0) { index_extension = 7; }
-                            if (NewReferenceName.ToUpper().IndexOf(".DPR") > 0) { index_extension = 4; }
-                        }
-                        else
-                        {
-                            NewReferenceName = line_dictionnary["_NAME"].ToString();
-                        }
-
-                        NewReferenceName = Path.GetFileNameWithoutExtension(@NewReferenceName.Substring(0, (NewReferenceName.Length) - index_extension));
-
-                    }
-
-
-                    ///////////////////////////recuperation de la machine envoyé par le cahier d'affaire
-                    //verification de la machine sur la ligne courante
-                    //affectation de la machiune clipper par defaut
-                    if (line_dictionnary.ContainsKey("CENTREFRAIS") == true)
-                    {
-                        ///remplissage des machines et verification de la presence du centre de frais demandé par clipper
-                        IEntityList machine_liste = contextlocal.EntityManager.GetEntityList("_CUT_MACHINE_TYPE");
-                        machine_liste.Fill(false);
-
-                        foreach (IEntity m in machine_liste)
-                        {
-                            IEntity cf = m.GetFieldValueAsEntity("CENTREFRAIS_MACHINE");
-                            string cfbase = cf.GetFieldValueAsString("_CODE").ToUpper();
-                            string cffile = "";
-                            /*** SI CHAMP VIDE***/
-                            if (line_dictionnary.ContainsKey("CENTREFRAIS") != true)
-                            {
-                                //recup de la machine clipper par defaut
-                                machine = clipper_machine;
-                            }
-                            else
-                            {
-                                cffile = line_dictionnary["CENTREFRAIS"].ToString().ToUpper();
-                                if (string.Compare(cfbase, cffile) == 0) { machine = m; break; }
-                                else { machine = clipper_machine; }
-                                /*on log on arrete tout */ //Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": centre de frais inconnu !! "); throw new Exception(machine.DefaultValue + " : Missing  cost center definition");
-
-
-                            }
-
-
-                        }
-                    }
-                    ///si vide alors on recupere ma machine clipper
-                    else { if (clipper_machine.Id32 != 0) { machine = clipper_machine; } }
-
-
-                    //
-
-                    //creation des infos complementaires de reference notamment les données sans dt
-                    //creation de l'entité
-                    newreference = contextlocal.EntityManager.CreateEntity("_REFERENCE");
-                    //remplacement par la machine clipper dont le cf est clip7
-                    //avant tou on let la machine clipper par defaut
-                    //champs standards
-
-                    newreference.SetFieldValue("_DEFAULT_CUT_MACHINE_TYPE", machine.Id32);
-                    newreference.SetFieldValue("_NAME", NewReferenceName);
-                    newreference.SetFieldValue("_MATERIAL", material.Id32);
-
-                    if (contextlocal.UserId != -1)
-                    {
-                        newreference.SetFieldValue("_AUTHOR", contextlocal.UserId);
-                    }
-                    //newreference.SetFieldValue("_AUTHOR", contextlocal.UserId); 
-
-                    /*
-                    //infos liées a l'import cfao
-                    //CUSTOMER_REFERENCE_INFOS;
-                    Clipper_Param.GetlistParam(contextlocal);
-                    string Field_value = Clipper_Param.GetPath("CUSTOMER_REFERENCE_INFOS");
-                    newreference.SetFieldValue("CUSTOMER", ""); 
-                    */
-                    //champs specifiques 
-
-                    //nous retournons un minimum d'infos pour la remontée de données technique
-                    if (Sans_Donnees_Technique == true || (line_dictionnary.ContainsKey("ID_PIECE_CFAO") == false))
-                    {
-
-                        if (line_dictionnary.ContainsKey("ID_PIECE_CFAO") == false) { Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": piece manquante creer a la volée, un retour clip sera necessaire !! "); }
-                        else { Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": ecriture des données sans dt !! "); }
-                        newreference.SetFieldValue("AFFAIRE", AF_ImportTools.SimplifiedMethods.ConvertNullStringToEmptystring("AFFAIRE", ref line_dictionnary));
-                        newreference.SetFieldValue("REMONTER_DT", true);
-                        newreference.SetFieldValue("_REFERENCE", AF_ImportTools.SimplifiedMethods.ConvertNullStringToEmptystring("_DESCRIPTION", ref line_dictionnary));
-                        newreference.SetFieldValue("EN_RANG", AF_ImportTools.SimplifiedMethods.ConvertNullStringToEmptystring("EN_RANG", ref line_dictionnary));
-                        newreference.SetFieldValue("EN_PERE_PIECE", AF_ImportTools.SimplifiedMethods.ConvertNullStringToEmptystring("EN_PERE_PIECE", ref line_dictionnary));
-
-
-
-
-                    }
-
-                    //concatenation affaire-nom-id
-                    //construction d'une description de piece contenant nom matiere affaire.
-                    //cette description peut etre exploitée en id d'import.
-
-                    if (Data_Model.ExistsInDictionnary("AFFAIRE", ref line_dictionnary) && Sans_Donnees_Technique == false)
-                    {
-                        //concatenation dans le champs description
-                        string affaire = line_dictionnary["AFFAIRE"].ToString().ToUpper();
-                        string material_name = AF_ImportTools.Material.getMaterial_Name(contextlocal, material.Id32);
-                        newreference.SetFieldValue("_REFERENCE", NewReferenceName + "-" + material_name + "-" + affaire);
-
-                    }
-
-                    newreference.Save();
-                    //creation de la prepâration associée
-                    AF_ImportTools.SimplifiedMethods.CreateMachinablePartFromReference(contextlocal, newreference, machine);
-
-                }
-
-
-
-                return newreference;
-
-            }
-            catch (Exception ie)
-            {
-                Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + " : Fails");
-                System.Windows.Forms.MessageBox.Show(ie.Message);
-                return null;
-            }
-
-
-
-
-
-
-        }
-
-
-
-        /// <summary>
-        ///Non utilisée
-        /// controle de l'integerite des données du fichier texte
-        /// on controle les champs obligatoires pour l'import, et l'existantce du centre de frais avant de continue l'import
-        /// </summary>
-        /// <param name="line_dictionnary">dictionnaire de ligne interprété par le datamodel</param>
-        /// <returns>false ou tuue si integre</returns>
-
-        public Boolean CheckDataIntegerity(IContext contextlocal, Dictionary<string, object> line_dictionnary) { return true; }
-
-        /// <summary>
-        /// controle de l'integerite des données du fichier texte
-        /// on controle les champs obligatoires pour l'import, et l'existantce du centre de frais avant de continue l'import
-        /// </summary>
-        /// <param name="line_dictionnary">dictionnaire de ligne interprété par le datamodel</param>
-        /// <returns>false ou tuue si integre</returns>
-        public Boolean CheckDataIntegerity(IContext contextlocal, Dictionary<string, object> line_dictionnary, Dictionary<string, string> CentreFrais_Dictionnary, bool Sans_Donnees_Technique)
-        {
-            //
-            try
-            {
-                ///////////////////////////////////////////////////////////////////////////
-                ///condition cumulées sur result?                
-                Boolean result = true;
-                ///////////////////////////////////////////////////////////////////////////
-                string currenfieldsname;
-                ///matiere
-                ///
-                currenfieldsname = "_MATERIAL";
-                if (line_dictionnary.ContainsKey(currenfieldsname))
-                {
-                    result = result & true;
-                }
-                else
-                {
-                    //MessageBox.Show(currenfieldsname + " : missing ");
-                    Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + currenfieldsname + " : missing ");
-                    Alma_Log.Write_Log_Important(MethodBase.GetCurrentMethod().Name + ":" + line_dictionnary["_MATERIAL"] + ": champs obligatoire : matiere non detectée sur la ligne a importée, line ignored"); result = result & false;
-                    result = result & false;
-                }
-
-
-                ///epaisseur
-                ///
-                currenfieldsname = "THICKNESS";
-                if (line_dictionnary.ContainsKey(currenfieldsname))
-                { result = result & true; }
-                else
-                {
-                    Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + currenfieldsname + " : missing ");
-                    Alma_Log.Write_Log_Important(MethodBase.GetCurrentMethod().Name + ":" + line_dictionnary["_THICKNESS"] + ": champs obligatoire epaisseur non detectée sur la ligne a importée, line ignored"); result = result & false;
-                    result = result & false;
-                }
-
-
-                //L' Affaire existe t elle ?
-                currenfieldsname = "AFFAIRE";
-                if (line_dictionnary.ContainsKey(currenfieldsname))
-                {
-                    result = result & true;
-                }
-                else
-                {
-                    Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + currenfieldsname + " : missing ");
-                    Alma_Log.Write_Log_Important(MethodBase.GetCurrentMethod().Name + ":" + line_dictionnary["_NAME"] + ": champs obligatoire Affaire non detectée sur la ligne a importée, line ignored"); result = result & false;
-                    result = result & false;
-                }
-
-
-                ///////////////////////////////////////////////////////////////////////////
-                //les quantités negatives sont interdites
-                currenfieldsname = "_QUANTITY";
-                if (line_dictionnary.ContainsKey(currenfieldsname))
-                {
-                    if (int.Parse(line_dictionnary["_QUANTITY"].ToString().Trim()) < 0 || int.Parse(line_dictionnary["_QUANTITY"].ToString().Trim()) == 0)
-                    {
-                        Alma_Log.Error(line_dictionnary["_NAME"] + ":_QUANTITY negative ou null detecté sur la ligne a importée, line ignored", MethodBase.GetCurrentMethod().Name);
-                        Alma_Log.Write_Log_Important(MethodBase.GetCurrentMethod().Name + ":" + line_dictionnary["_NAME"] + ": champs obligatoire :_QUANTITY non detecté sur la ligne a importée, line ignored"); result = false;
-                    }
-                }
-                else
-                {
-                    Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + currenfieldsname + " : missing ");
-                    result = result & false;
-                }
-
-                ///////////////////////////////////////////////////////////////////////////
-                //le nom de la piece à produire doit exister
-                currenfieldsname = "_NAME";
-                if (line_dictionnary.ContainsKey(currenfieldsname) != true)
-                {
-                    Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + currenfieldsname + " : missing ");
-                    Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": champs obligatoire:  pas de nom de reference trouvée"); result = result & false;
-                    Alma_Log.Write_Log_Important(MethodBase.GetCurrentMethod().Name + ":" + line_dictionnary["_NAME"] + ": champs obligatoire: pas de non de piece detecté sur la ligne a importée, line ignored"); result = result & false;
-                }
-                else
-                {
-                    result = result & true;
-                }
-
-                //////////////////////////////////////////////////////////////////////////
-                //la machine (centre de frais... )
-                //si la ligne ne possede pas de cf  c'est que c'est une piece sans gamme, cette piece prendre la machine clipper par defaut
-                currenfieldsname = "CENTREFRAIS";
-                if (line_dictionnary.ContainsKey(currenfieldsname) != true)
-                {
-                    Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": pas de centre de frais --> aucune gamme detectées: piece Orange identifiée");
-                    Alma_Log.Write_Log_Important(MethodBase.GetCurrentMethod().Name + ":" + line_dictionnary["_NAME"] + ": piece Orange identifiée : centre de frais non detecté sur la ligne a importée"); result = result & true;
-                }
-                else
-                {
-                    // si la machien envoyée n'existe pas on ne fait rien
-
-                    if (Data_Model.ExistsInDictionnary(line_dictionnary[currenfieldsname].ToString(), ref CentreFrais_Dictionnary) == false)
-                    {
-                        Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": le centre de frais spécifié n'existe pas --> la ligne sera ignorée");
-                        Alma_Log.Write_Log_Important(MethodBase.GetCurrentMethod().Name + ":" + line_dictionnary["_NAME"] + ":le centre de frais spécifié n'existe pas --> centre de frais non detecté sur la ligne à importée, la ligne sera ignorée");
-                        result = result & false;
-                    }
-
-                    result = result & true;
-                }
-
-                ///////////////////////////////////////////////////////////////////////////
-                //les matieres sont désormais obligatoires
-                //string nuance_name = line_dictionnary["_MATERIAL"].ToString().Replace('§', '*');
-                string nuance = null;
-                string material_name = null;
-                double thickness = 0;
-
-                nuance = line_dictionnary["_MATERIAL"].ToString().Replace('§', '*');
-                //thickness = line_dictionnary["THICKNESS"];
-                thickness = AF_ImportTools.SimplifiedMethods.GetDoubleInvariantCulture(line_dictionnary["THICKNESS"].ToString());
-                material_name = AF_ImportTools.Material.getMaterial_Name(contextlocal, nuance, thickness);
-
-                if (material_name == string.Empty)
-                { /*on log matiere non existante*/
-                    Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": matiere non existante :" + nuance + " ep " + thickness);
-                    result = result & false;
-                }
-
-                ///////////////////////////////////////////////////////////////////////////
-                //les matieres sont désormais obligatoires
-                //pour uniquement pourles lignes jaunes ( pas pour les ligne  sans_dt)
-
-                if (line_dictionnary.ContainsKey("IDLNROUT") != true && Sans_Donnees_Technique == false)
-                {
-                    Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": champs obligatoire:  pas de numero de gamme unique indiqué"); result = result & false;
-                    Alma_Log.Write_Log_Important(MethodBase.GetCurrentMethod().Name + ":" + line_dictionnary["IDLNROUT"] + ":champs obligatoire:  pas de numero de gamme unique indiqué sur la ligne a importée, line ignored"); result = result & false;
-                }
-                else { result = result & true; }
-
-                if (line_dictionnary.ContainsKey("IDLNBOM") != true && Sans_Donnees_Technique == false)
-                {
-                    Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": champs obligatoire:  pas d'identification unique de piece trouvée"); result = result & false;
-                    Alma_Log.Write_Log_Important(MethodBase.GetCurrentMethod().Name + ":" + line_dictionnary["IDLNBOM"] + ": champs obligatoire:  pas d'identification unique de piece detecté sur la ligne a importée, line ignored"); result = result & false;
-                }
-                else { result = result & true; }
-
-
-
-
-
-
-                return result;
-            }
-
-
-            catch (Exception ie)
-            {
-                Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": erreur : " + ie.Message);
-                // MessageBox.Show(ie.Message);
-                return false;
-            }
-
-
-
-        }
-        /// <summary>
-        /// renvoie l'entite matiere a partie de la nuance et de l'epaisseur contenu dans le line dictionnary
-        /// </summary>
-        /// <param name="contextlocal">ientity context</param>
-        /// <param name="material_name">ientity  material</param>
-        /// <param name="line_dictionnary">dictionnary <string,object> line_dictionnary</param>
-        /// <returns></returns>
-        public IEntity GetMaterialEntity(IContext contextlocal, ref Dictionary<string, object> line_dictionnary)
-        {
-            IEntity material = null;
-
-            try
-            {
-
-                //IEntityList materials = null;
-                //verification simple par nom nuance*etat epaisseur en rgardnat une structure comme ceci
-                //"SPC*BRUT 1.00" //attention pas de control de l'obsolecence pour le moment
-                if (line_dictionnary.ContainsKey("_MATERIAL") && line_dictionnary.ContainsKey("THICKNESS"))
-                {
-                    // material = Material.getMaterial_Entity(contextlocal, line_dictionnary["_MATERIAL"].ToString(), Convert.ToDouble(line_dictionnary["THICKNESS"]));
-                    material = Material.getMaterial_Entity(contextlocal, line_dictionnary["_MATERIAL"].ToString(), SimplifiedMethods.GetDoubleInvariantCulture(line_dictionnary["THICKNESS"].ToString()));
-                }
-
-
-
-
-
-                return material;
-            }
-            catch (Exception ie)
-            {
-                Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": erreur :");
-                MessageBox.Show(ie.Message);
-                return material;
-            }
-
-        }
-
-        
-        /// <summary>
-        /// recupere une reference en fonction d'un 
-        /// numero d'indice //(remplacé par un indice d'identification piece en position 27)
-        /// ce numero d'indice est egale a l'id de la piece dans la table reference sauf si l'indice est negatif.
-        /// Si l'indice est negatif alors l'indice vient d'une piece cotée.
-        /// 
-        /// </summary>
-        /// <param name="contextlocal">contexte local</param>
-        /// <param name="reference">entite reference</param>
-        /// <param name="line_dictionnary">dictionnaire de ligne</param>
-        /// <returns>true si la reference est detectee en fonction du numero de plan</returns>
-        public bool GetReference(IContext contextlocal, ref IEntity reference, ref Dictionary<string, object> line_dictionnary, ref string NewReferenceName)
-        {
-            reference = null;
-            //IEntityList references = null;
-            Int32 new_reference_id = 0;
-            IEntityList quote_part_list = null;
-            IEntity quote_part = null;
-            //IEntity material = null;
-            bool result = false;
-
-
-            try
-            {
-                //int index_extension = 7;
-                if (Data_Model.ExistsInDictionnary("ID_PIECE_CFAO", ref line_dictionnary))
-                { //IEntity reference sur la base d'un id de la quotepart
-
-                    IEntityList reference_partlist;
-                    IEntity reference_part;
-                    Int32 id_piece_cfao = 0;
-
-                    if (line_dictionnary["ID_PIECE_CFAO"].GetType() == typeof(string))
-                    {
-                        id_piece_cfao = Convert.ToInt32(line_dictionnary["ID_PIECE_CFAO"]);
-                    }
-                    else
-                    {
-                        id_piece_cfao = (int)line_dictionnary["ID_PIECE_CFAO"];
-                    }
-
-                    //on recherche une reference cree par le devis ou alors la reference directement dans la table reference                    
-                    //on regarde ensuite si le champs est negatif (--> a ce moment la c'est un quote part)
-                    if (id_piece_cfao < 0)
-                    {
-                        Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ":Pièce" + id_piece_cfao + " venant d'almaquote identifiée. ");
-                        //depuis le sp3 on recherche dans quote part
-                        id_piece_cfao = id_piece_cfao * (-1);
-                        quote_part_list = contextlocal.EntityManager.GetEntityList("_QUOTE_PART", "ID", ConditionOperator.Equal, id_piece_cfao);
-                        quote_part = AF_ImportTools.SimplifiedMethods.GetFirtOfList(quote_part_list);
-                        if (quote_part != null)
-                        {
-                            // on calcul l'id de reference sur la base du quote part
-                            new_reference_id = quote_part.GetFieldValueAsInt("_ALMACAM_REFERENCE");
-                            IEntityList Existreferences = contextlocal.EntityManager.GetEntityList("_REFERENCE", "ID", ConditionOperator.Equal, new_reference_id);
-                            Existreferences.Fill(false);
-
-                            //on test si la pieces existe vraiment dans les references
-                            if (Existreferences.Count == 0)
-                            {
-                                Alma_Log.Error("REFERENCE NON TROUVEE dans LES PIECES AlmaCam : ref " + new_reference_id.ToString(), MethodBase.GetCurrentMethod().Name + "Reference non trouvée : import impossible");
-                                Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ":" + id_piece_cfao + ": not found :");
-                                result = false;
-                            }
-
-                        }
-                        else
-                        {
-                            // sinon erreur et on creer une nouvelle piece
-                            Alma_Log.Error("Quote Part NON TROUVEE dans les pieces de devis : ref " + id_piece_cfao.ToString(), MethodBase.GetCurrentMethod().Name + "Quotepart non trouvée : import impossible");
-                            Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ":" + id_piece_cfao + ": not found :");
-                            result = false;
-                        }
-
-                    }
-                    else
-                    {
-                        //on recupere directment l'id de reference
-                        new_reference_id = id_piece_cfao;
-                    }
-
-                    //on recupere la reference piece et on regarde si elle existe bien
-                    reference_partlist = contextlocal.EntityManager.GetEntityList("_REFERENCE", "ID", ConditionOperator.Equal, new_reference_id);
-                    reference_partlist.Fill(false);
-                    reference_part = AF_ImportTools.SimplifiedMethods.GetFirtOfList(reference_partlist);
-
-
-
-                    if (reference_part != null)
-                    {
-                        NewReferenceName = reference_part.GetFieldValueAsString("_NAME");
-                        reference = reference_part;
-                        result = true;
-                    }
-                    else
-                    {
-                        Alma_Log.Error("REFERENCE NON TROUVEE : ref " + id_piece_cfao.ToString(), MethodBase.GetCurrentMethod().Name + "Reference non trouvée : import impossible");
-                        Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ":" + id_piece_cfao + ": not found :");
-                        NewReferenceName = null;
-                        result = false;
-                    }
-
-
-
-                }
-
-                else
-                {
-
-                    //reference non indiqué on cree  une nouvelle piece 
-                    Alma_Log.Error("AUCUNE REFERENCE TRANSMISE : ", MethodBase.GetCurrentMethod().Name + "Reference non trouvée : crreation d'une nouvelle piece");
-                    Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ":Part id_cfao   : not found :");
-                    NewReferenceName = line_dictionnary["_NAME"].ToString(); ;
-                    result = false;
-                    //result = true;
-
-
-                }
-
-                return result;
-
-
-            }
-
-            catch (Exception ie)
-            {
-                //on log
-                Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": erreur :");
-                MessageBox.Show(ie.Message);
-                return result;
-            }
-
-
-
-        }
-
-        /// met a jour les valeurs   dans les pieces a produires almacam
-        /// </summary>
-        /// <param name="contextlocal">contexte context</param>
-        /// <param name="sheet">ientity sheet  </param>
-        /// <param name="stock">inentity stock</param>
-        /// <param name="line_dictionnary">dictionnary linedisctionary</param>
-        /// <param name="type_tole">type tole  ou chute</param>
-        /// 
-        public void Update_Part_Item(IContext contextlocal, ref IEntity reference_to_produce, ref Dictionary<string, string> CentreFrais_Dictionnary, ref Dictionary<string, object> line_dictionnary)
-        {
-            try
-            {
-                foreach (var field in line_dictionnary)
-                {
-                    //on recupere la reference a usiner
-                    //rien pour le moment
-                    //on verifie que le champs existe bien avant de l'ecrire
-                    if (contextlocal.Kernel.GetEntityType("_TO_PRODUCE_REFERENCE").FieldList.ContainsKey(field.Key))
-                    {
-                        //traitement specifique
-                        switch (field.Key)
-                        {
-
-                            case "_MATERIAL":
-                                //rien pour le moment mais on pourrait verifier si une nouvelle matiere est a declarer ou non
-                                //recherche de l'epaisseur de la chaine 
-                                //on importe jamais une matiere qui n'existe pas
-
-                                break;
-
-                            case "CENTREFRAIS":
-
-
-                                IEntityList centre_frais = contextlocal.EntityManager.GetEntityList("_CENTRE_FRAIS", "_CODE", ConditionOperator.Equal, field.Value);
-                                centre_frais.Fill(false);
-                                if (centre_frais.Count() > 0)
-                                {
-                                    //premier de la liste ou rien
-                                    reference_to_produce.SetFieldValue(field.Key, centre_frais.FirstOrDefault());
-                                    if (Data_Model.ExistsInDictionnary(centre_frais.FirstOrDefault().GetFieldValueAsString("_CODE"), ref CentreFrais_Dictionnary))
-                                    { reference_to_produce.SetFieldValue("MACHINE_FROM_CF", CentreFrais_Dictionnary[centre_frais.FirstOrDefault().GetFieldValueAsString("_CODE")]); }
-                                    else
-                                    { centre_frais.FirstOrDefault().GetFieldValueAsString("_CODE"); }
-
-                                }
-                                else
-                                {
-                                    reference_to_produce.SetFieldValue("MACHINE_FROM_CF", string.Format(" !!{0} pas de correspondance machine sur ce centre de frais", field.Value.ToString()));
-                                    reference_to_produce.SetFieldValue("NEED_PREP", true);
-                                }
-                                break;
-
-
-
-                            case "_FIRM":
-
-                                IEntityList firmlist = contextlocal.EntityManager.GetEntityList("_FIRM", "_NAME", ConditionOperator.Equal, field.Value);
-                                firmlist.Fill(false);
-                                if (firmlist.Count() > 0)
-                                {
-                                    //premier de la liste ou rien
-                                    reference_to_produce.SetFieldValue(field.Key, firmlist.FirstOrDefault().Id);
-                                   
-
-                                }
-
-                                break;
-
-                            case "IDLNROUT":
-                                //on verifie si la reference n'exist pas deja
-
-                                IEntityList idlnrout = contextlocal.EntityManager.GetEntityList("_TO_PRODUCE_REFERENCE", "IDLNROUT", ConditionOperator.Equal, field.Value);
-                                idlnrout.Fill(false);
-                                if (idlnrout.Count() == 0)
-                                {
-                                    reference_to_produce.SetFieldValue(field.Key, field.Value);
-                                }
-                                else
-                                { //pas de mise à jour des quantités a produire                                         
-                                    //write **_
-                                    MessageBox.Show(string.Format("La gamme n° {0} a été trouvé en double, elle sera prefixé du caractère **_ pour control", field.Value));
-                                    reference_to_produce.SetFieldValue(field.Key, "**_" + field.Value);
-                                    //eventuellement on lance une exception
-                                    //throw new InvalidDataException("doublon sur le numéro de gamme  'idlnrout' voir numero prefixé par **_"); 
-
-                                }
-
-                                break;
-
-                            case "ECOQTY":
-
-                                //formatage de La date;
-                                //en cas d'erreur sur les types /// les ecoqty sont toujours en string mais dans certains base  on peut avoir l'erreur
-                                if (reference_to_produce.GetFieldValue("ECOQTY").GetType() == typeof(Int64))
-                                {
-                                    reference_to_produce.SetFieldValue(field.Key, int.Parse(field.Value.ToString()));
-                                }
-                                else
-                                {
-                                    reference_to_produce.SetFieldValue(field.Key, field.Value);
-                                }
-
-
-
-                                break;
-
-                            case "STARTDATE":
-                                //formatage de La date;
-                                reference_to_produce.SetFieldValue("_DATE", field.Value);
-                                reference_to_produce.SetFieldValue(field.Key, field.Value);
-
-                                break;
-
-                            case "AF_CDE":
-                                //formatage de La date;
-                                reference_to_produce.SetFieldValue("_CLIENT_ORDER_NUMBER", field.Value);
-                                //reference_to_produce.SetFieldValue(field.Key, field.Value);
-
-                                break;
-
-                            default:
-                                reference_to_produce.SetFieldValue(field.Key, field.Value);
-                                break;
-                        }
-                    }
-
-
-                }
-
-            }
-            catch (Exception ie)
-            {
-                Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": erreur :");
-                MessageBox.Show(ie.Message);
-            }
-        }
-
-        
-        /// <summary>
-        /// en standard
-        /// import un of 
-        /// </summary>
-        /// <param name="contextlocal">contexte alma cam</param>
-        /// <param name="pathToFile">chemin vers le fichier csv separateur ";"</param>
-        /// <param name="sans_donnees_technique">true si import sans données techniques</param>
-        /// <param name="DataModelString">string de description d'une ligne csv sous la forme 
-        /// numeroIndex#NomChampAlmaCam#Type  exemple : 0#AFFAIRE#STRING</param>
-        /// <summary>
-        public void Import(IContext contextlocal, string pathToFile, string DataModelString, Boolean Sans_Donnees_Technique)
-        {
-
-            //recuperation des path
-            CsvImportPath = pathToFile;
-
-
-            try
-
-            {
-                //verification standards
-                //creation du timetag d'import
-                string timetag = string.Format("{0:d_M_yyyy_HH_mm_ss}", DateTime.Now);
-                Alma_Log.Create_Log(Clipper_Param.GetVerbose_Log());
-                //bool import_sans_donnee_technique = false;
-                Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": importe tag :" + timetag);
-                //ouverture du fichier csv lancement du curseur
-                // Set cursor as hourglass
-                Cursor.Current = Cursors.WaitCursor;
-
-
-
-                if (File.Exists(CsvImportPath) == false)
-                {
-                    Alma_Log.Error("Fichier Non Trouvé:" + CsvImportPath, MethodBase.GetCurrentMethod().Name);
-                    throw new Exception("csv File Note Found:\r\n" + CsvImportPath);
-                }
-                //avec ou sans dt
-                if (Sans_Donnees_Technique) { Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": import  sans dt !! " + CsvImportPath); } else { Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": import standard !! " + CsvImportPath); }
-
-
-                using (StreamReader csvfile = new StreamReader(CsvImportPath, Encoding.Default))
-                {
-                    //recuperation des elements de la base almacam
-                    //declaration des dictionaires
-                    Dictionary<string, object> line_Dictionnary = new Dictionary<string, object>();
-                    //on lit les centres de frais 
-                    ; //= null;
-                    Data_Model.setFieldDictionnary(DataModelString);
-                    Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": reading data model :success !! ");
-                    ///remplissage des machines et verification de la presence du centre de frais demandé par clipper
-                    ///plus utile
-                    //IEntityList machine_liste = contextlocal.EntityManager.GetEntityList("_CUT_MACHINE_TYPE");
-                    //machine_liste.Fill(false);
-
-                    //recuperation de la machine clipper
-                    //IEntity Clipper_Machine = null;
-                    //IEntity Clipper_Centre_Frais = null;
-                    //recuperation de la machine clipper et construction de la liste machine
-                    Get_Clipper_Machine(contextlocal, out IEntity Clipper_Machine, out IEntity Clipper_Centre_Frais, out Dictionary<string, string> CentreFrais_Dictionnary);
-
-                    //verification que toutes les machines sont conformes pour une intégration clipper
-
-
-                    int ligneNumber = 0;
-                    //lecture à la ligne
-                    string line;
-                    line = null;
-
-                    while (((line = csvfile.ReadLine()) != null))
-                    {
-
-                        //on ne traite pas les lignes vides
-                        ligneNumber++;
-                        if ((line.Trim()) == "")
-                        {
-                            Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + " : " + ligneNumber + ": empty line detected !! ");
-                            continue;
-                        }
-
-                        //lecture des donnees
-                        line_Dictionnary = Data_Model.ReadCsvLine_With_Dictionnary(line);
-                        Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + " : " + ligneNumber + ": line disctionnary interpreter succeeded !! ");
-
-                        //control des données    //verification des donnée importées
-                        if (CheckDataIntegerity(contextlocal, line_Dictionnary, CentreFrais_Dictionnary, Sans_Donnees_Technique) != true)
-                        {
-                            /*on log et on continue(on passe a la ligne suivante*/
-                            Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + " : " + ligneNumber + ": data integrity fails, line ignored !!! ");
-                            continue;
-                        }
-
-
-
-
-
-                        IEntity reference_to_produce = null;
-                        IEntity reference = null;
-                        string NewReferenceName = null;
-                        //
-                        //on recherche la refeence avec la bonne matiere /epaisseur si elles n'existe pas on la creer 
-                        if (GetReference(contextlocal, ref reference, ref line_Dictionnary, ref NewReferenceName) == false | Sans_Donnees_Technique == true)
-                        {
-                            /*aucune reference n'existe dans cette matiere  alors on  la creer*/
-                            /*sauf si NewReferenceName est null */
-                            if (NewReferenceName != null)
-                            {
-                                reference = CreateNewReference(contextlocal, line_Dictionnary, ref NewReferenceName, Clipper_Machine, Sans_Donnees_Technique);
-                                Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + " : " + ligneNumber + " no reference found new part creation : success. ");
-                                //on active le need prep
-                                //need_prep = true;
-                            }
-                            else
-                            {
-
-                                continue;
-                            }
-
-                        }
-
-                        //////on met a jour les données sur les piece 2d  : CUSTOMER_REFERENCE_INFOS
-                        if (reference != null)
-                        {///champs spécifique piece 2d
-                            //infos liées a l'import cfao
-                            //CUSTOMER_REFERENCE_INFOS;
-                            Clipper_Param.GetlistParam(contextlocal);
-                            string Field_value = Clipper_Param.GetPath("CUSTOMER_REFERENCE_INFOS");
-                            Field_value.Split('|');//"CUSTOMER"
-                            reference.SetFieldValue(Field_value.Split('|')[0], line_Dictionnary[Field_value.Split('|')[1]]);
-                            reference.Save();
-                        }
-
-
-
-
-                        //creation de la nouvelle piece a produire associée
-                        if (Sans_Donnees_Technique == false)
-                        {
-                            CreateNewPartToProduce(contextlocal, line_Dictionnary, CentreFrais_Dictionnary, ref reference_to_produce, ref reference, timetag, Sans_Donnees_Technique);
-                        }
-                    }
-
-
-
-                }
-
-                // Set cursor as default arrow
-                Cursor.Current = Cursors.Default;
-                File_Tools.Rename_Csv(CsvImportPath, timetag);
-                Alma_Log.Final_Open_Log();
-                //File_tools
-            }
-
-            catch (Exception e)
-            {
-                Alma_Log.Write_Log(e.Message);
-                Alma_Log.Final_Open_Log();
-
-            }
-        }
-
-    }
-
-    #endregion
+    
     #region Import_Stock
     public class Clipper_Stock : IDisposable
     {
@@ -5691,7 +4543,1183 @@ namespace AF_Clipper_Dll
         public string ErrorMessage = "";
     }
 
-    public class Clipper_8_Stock : IDisposable
+
+    #region cahieraffaire
+    public class Clipper_8_Import_OF_Processor : CommandProcessor
+    {
+        //public IContext contextlocal = null;
+        public override bool Execute()
+        {
+            //recuperation du context
+            //string DbName = Alma_RegitryInfos.GetLastDataBase();
+            // IModelsRepository modelsRepository = new ModelsRepository();
+            //contextlocal = modelsRepository.GetModelContext(DbName);
+            //contextlocal = Context;
+            Clipper_Param.GetlistParam(Context);
+            string csvImportPath = Clipper_Param.GetPath("IMPORT_CDA");
+            //recuperation du nom de fichier
+            string csvFileName = Path.GetFileNameWithoutExtension(csvImportPath);
+            string dataModelstring = Clipper_Param.GetModelCA();
+
+
+            // if (contextlocal != null)
+            if (Context != null)
+            {
+                using (Clipper_8_Import_OF cahierAffaire = new Clipper_8_Import_OF())
+                {
+                    cahierAffaire.Import(Context, csvImportPath, dataModelstring, false);//), csvImportPath);
+
+                }
+            }
+            return base.Execute();
+        }
+    }
+
+    /// <summary>
+    /// recupere les of exportes de clipper
+    /// </summary>
+    public class Clipper_8_Import_OF : IDisposable, IImport
+    {
+        string CsvImportPath = null;
+
+
+        public void Dispose()
+        {
+            //Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+
+
+        /// <summary>
+        /// creer une nouvelle reference a produire sous reserve de sans_donnees_technique=true et de centre de frais et is non presente
+        /// </summary>
+        /// <param name="contextlocal"></param>
+        /// <param name="line_dictionnary"></param>
+        /// <param name="CentreFrais_Dictionnary">dictionnaire des centres de frais</param>
+        /// <param name="reference_to_produce">retourn de la nouvelle reference a produire si besoin</param>
+        /// <param name="reference">reference a pointer</param>
+        /// <param name="timetag">time tag de l'import : pour groupement </param>
+        /// <param name="sans_donnees_technique">si true alors oon ne creer jamais de reference</param>
+        /// <returns></returns>
+        public bool CreateNewPartToProduce(IContext contextlocal, Dictionary<string, object> line_dictionnary, Dictionary<string, string> CentreFrais_Dictionnary, ref IEntity reference_to_produce, ref IEntity reference, string timetag, bool sans_donnees_technique)
+        {
+            bool result = false;
+
+            try
+            {
+                //la piece ne contient pas de gamme
+                //cas des pieces oranges : Pas de cf, pas de id_piece_cfao, on considere que c'est une piece orange--> on ne creer que la reference. 
+                if (Data_Model.ExistsInDictionnary("CENTREFRAIS", ref line_dictionnary) == false || sans_donnees_technique == true)
+                {
+                    return false;
+                }
+                //string referenceName = null;
+                Boolean need_prep = true;
+                //int index_extension = 0;  //> 0 si ;emf;dpr detectée
+                PartInfo machinable_part_infos = null; //infos de machinabe part
+
+                //creation de la nouvelle reference
+                reference_to_produce = contextlocal.EntityManager.CreateEntity("_TO_PRODUCE_REFERENCE");
+                //recuperation et assignaton de la machine si elle existe
+                string machine_name = "";
+                Data_Model.ExistsInDictionnary(line_dictionnary["CENTREFRAIS"].ToString(), ref CentreFrais_Dictionnary);
+                //lecture des part infos (optionnel) car le get reference fait le travail                 
+                machinable_part_infos = new PartInfo();
+                bool fastmode = true;
+                //bool result = false;
+                machinable_part_infos.GetPartinfos(ref contextlocal, reference);
+                //on control que la matiere de la reference correspond -soit bonne sinon on continue a la ligne suivante//
+                if (fastmode)
+                {
+
+                    //try { reference_to_produce.SetFieldValue("NEED_PREP", !part_infos.IsPartDefault_Preparation(contextlocal, reference, CentreFrais_Dictionnary[line_Dictionnary["CENTREFRAIS"].ToString()])); }
+                    if (Data_Model.ExistsInDictionnary(line_dictionnary["CENTREFRAIS"].ToString(), ref CentreFrais_Dictionnary))
+                    {
+                        try { need_prep = need_prep && machinable_part_infos.IsPartDefault_Preparation(reference, CentreFrais_Dictionnary[line_dictionnary["CENTREFRAIS"].ToString()]); }
+                        //reference_to_produce.SetFieldValue("NEED_PREP", !machinable_part_infos.IsPartDefault_Preparation(reference, CentreFrais_Dictionnary[line_Dictionnary["CENTREFRAIS"].ToString()])); }
+                        catch (KeyNotFoundException)
+                        {
+                            Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + "le centre de Frais  ne pointe pas vers une machine connue");
+                            MessageBox.Show(string.Format("le centre de Frais {0} ne pointe pas vers une machine connue", CentreFrais_Dictionnary[line_dictionnary["CENTREFRAIS"].ToString()]));
+                        }
+                    }
+
+                }
+                else
+                //slowmode
+                //methode par comparaison d'id
+                {
+                    if (machine_name != "")
+                    {
+                        IEntityList machines = null;
+                        IEntity machine = null;
+
+                        machine = AF_ImportTools.SimplifiedMethods.GetFirtOfList(machines);
+                        string mm = machinable_part_infos.DefaultMachineName;
+                        need_prep = need_prep && true;
+                    }
+                    else
+                    {
+                        need_prep = need_prep && true;
+
+                    }
+
+                }
+
+
+
+
+                //ecriture du time tag
+                reference_to_produce.SetFieldValue("OF_IMPORT_NUMBER", timetag.Replace("_", ""));
+                reference_to_produce.SetFieldValue("_REFERENCE", reference.Id32);
+                reference_to_produce.SetFieldValue("NEED_PREP", need_prep);
+
+
+                Update_Part_Item(contextlocal, ref reference_to_produce, ref CentreFrais_Dictionnary, ref line_dictionnary);
+                Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + "update infos succeed");
+                reference_to_produce.Save();
+                line_dictionnary.Clear();
+
+                return result;
+            }
+            catch { return result; }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="contextlocal"></param>
+        /// <param name="line_dictionnary"></param>
+        /// <param name="CentreFrais_Dictionnary"></param>
+        /// <param name="reference_to_produce"></param>
+        /// <param name="reference"></param>
+        /// <param name="timetag"></param>
+        /// <returns></returns>
+        public bool CreateNewPartToProduce(IContext contextlocal, Dictionary<string, object> line_dictionnary, Dictionary<string, string> CentreFrais_Dictionnary, ref IEntity reference_to_produce, ref IEntity reference, string timetag)
+        {
+            bool result = false;
+
+            try
+            {
+                //la piece ne contient pas de gamme
+                //cas des pieces oranges : Pas de cf, pas de id_piece_cfao, on considere que c'est une piece orange--> on ne creer que la reference. 
+                if ((Data_Model.ExistsInDictionnary("CENTREFRAIS") == false) && (Data_Model.ExistsInDictionnary("CENTREFRAIS") == false))
+                {
+                    return false;
+                }
+                //string referenceName = null;
+                Boolean need_prep = false;
+                //int index_extension = 0;  //> 0 si ;emf;dpr detectée
+                PartInfo machinable_part_infos = null; //infos de machinabe part
+
+                //creation de la nouvelle reference
+                reference_to_produce = contextlocal.EntityManager.CreateEntity("_TO_PRODUCE_REFERENCE");
+                //recuperation et assignaton de la machine si elle existe
+                string machine_name = "";
+                //Data_Model.ExistsInDictionnary(line_dictionnary["CENTREFRAIS"].ToString(), ref CentreFrais_Dictionnary);
+                //lecture des part infos (optionnel) car le get reference fait le travail                 
+                machinable_part_infos = new PartInfo();
+                bool fastmode = true;
+                //bool result = false;
+                machinable_part_infos.GetPartinfos(ref contextlocal, reference);
+                //
+                //on control que la matiere de la reference correspond -soit bonne sinon on continue a la ligne suivante//
+                if (fastmode)
+                {
+
+                    //try { reference_to_produce.SetFieldValue("NEED_PREP", !part_infos.IsPartDefault_Preparation(contextlocal, reference, CentreFrais_Dictionnary[line_Dictionnary["CENTREFRAIS"].ToString()])); }
+                    if (Data_Model.ExistsInDictionnary(line_dictionnary["CENTREFRAIS"].ToString(), ref CentreFrais_Dictionnary))
+                    {
+                        try { need_prep = need_prep && machinable_part_infos.IsPartDefault_Preparation(reference, CentreFrais_Dictionnary[line_dictionnary["CENTREFRAIS"].ToString()]); }
+                        //reference_to_produce.SetFieldValue("NEED_PREP", !machinable_part_infos.IsPartDefault_Preparation(reference, CentreFrais_Dictionnary[line_Dictionnary["CENTREFRAIS"].ToString()])); }
+                        catch (KeyNotFoundException)
+                        {
+                            Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + "le centre de Frais  ne pointe pas vers une machine connue");
+                            MessageBox.Show(string.Format("le centre de Frais {0} ne pointe pas vers une machine connue", CentreFrais_Dictionnary[line_dictionnary["CENTREFRAIS"].ToString()]));
+                        }
+                    }
+
+                }
+                else
+                //slowmode
+                //methode par comparaison d'id
+                {
+                    if (machine_name != "")
+                    {
+                        IEntityList machines = null;
+                        IEntity machine = null;
+
+                        machine = AF_ImportTools.SimplifiedMethods.GetFirtOfList(machines);
+                        string mm = machinable_part_infos.DefaultMachineName;
+                        need_prep = need_prep && true;
+                    }
+                    else
+                    {
+                        need_prep = need_prep && true;
+
+                    }
+
+                }
+
+
+
+
+                //ecriture du time tag
+                reference_to_produce.SetFieldValue("OF_IMPORT_NUMBER", timetag.Replace("_", ""));
+                reference_to_produce.SetFieldValue("_REFERENCE", reference.Id32);
+                reference_to_produce.SetFieldValue("NEED_PREP", need_prep);
+
+
+                Update_Part_Item(contextlocal, ref reference_to_produce, ref CentreFrais_Dictionnary, ref line_dictionnary);
+                Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + "update infos succeed");
+                reference_to_produce.Save();
+                line_dictionnary.Clear();
+
+                return result;
+            }
+            catch { return result; }
+        }
+
+
+
+        /// <summary>
+        /// Recupere la liste de toutes les machines sous la forme litterale "nom machine" "centre de frais"
+        /// </summary>
+        /// <param name="contextlocal">context local</param>
+        /// <param name="Clipper_Machine">entité machine clipper</param>
+        /// <param name="Clipper_Centre_Frais">entité centre de frais clipper</param>
+        /// <returns></returns>
+        public Boolean Get_Clipper_Machine(IContext contextlocal, out IEntity Clipper_Machine, out IEntity Clipper_Centre_Frais, out Dictionary<string, string> CentreFrais_Dictionnary)
+        {
+
+
+
+            CentreFrais_Dictionnary = new Dictionary<string, string>();
+            IEntityList machine_liste = null;
+            //recuperation de la machine clipper et initialisation des listes
+            //CentreFrais_Dictionnary = null;
+            Clipper_Machine = null;
+            Clipper_Centre_Frais = null;
+            //CentreFrais_Dictionnary.Clear();
+            //verification que toutes les machineS sont conformes pour une intégration clipper
+            ///remplissage des machines et verification de la presence du centre de frais demandé par clipper
+            machine_liste = contextlocal.EntityManager.GetEntityList("_CUT_MACHINE_TYPE");
+            machine_liste.Fill(false);
+
+
+            foreach (IEntity machine in machine_liste)
+
+            {
+                IEntity cf;
+                cf = machine.GetFieldValueAsEntity("CENTREFRAIS_MACHINE");
+
+                if (!object.Equals(machine.GetFieldValueAsEntity("CENTREFRAIS_MACHINE"), null))
+                {
+                    cf = machine.GetFieldValueAsEntity("CENTREFRAIS_MACHINE");
+                }
+                else
+                {
+                    cf = null;
+                    Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": Missing  cost center on : " + machine.DefaultValue);
+                    Alma_Log.Error("centre de frais non defini sur la machine  !!!" + machine.DefaultValue, MethodBase.GetCurrentMethod().Name);
+
+                }
+
+                ///creation du dictionnaire des machines installées   
+                if (cf.DefaultValue != "" && machine.DefaultValue != "" && Clipper_Param.Get_Clipper_Machine_Cf() != null
+                    )
+                {
+                    if (CentreFrais_Dictionnary.ContainsKey(cf.DefaultValue) == false) { CentreFrais_Dictionnary.Add(cf.DefaultValue, machine.DefaultValue); }
+
+                    if (cf.DefaultValue == Clipper_Param.Get_Clipper_Machine_Cf())
+                    {
+                        if (Clipper_Param.Get_Clipper_Machine_Cf() != "Undef clipper machine")
+                        {
+                            Clipper_Centre_Frais = cf;
+                            Clipper_Machine = machine;
+                        }
+                        else
+                        {
+                            Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": Missing  clipper machine !!! ");
+                            Alma_Log.Error("IL MANQUE LA MACHINE CLIPPER !!!", MethodBase.GetCurrentMethod().Name);
+                            return false;//throw new Exception(machine.DefaultValue + " : Missing  cost center definition"); 
+                        }
+
+                    }
+
+                }
+
+                else
+                { /*on log on arrete tout */
+                    Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": Missing  cost center definition on a machine !!! ");
+                    Alma_Log.Error("IL MANQUE LE CENTRE DE FRAIS SUR L UNE DES MACHINES INSTALLEE !!!", MethodBase.GetCurrentMethod().Name);
+                    return false;//throw new Exception(machine.DefaultValue + " : Missing  cost center definition"); 
+                }
+            }
+            return true;
+
+
+        }
+
+
+
+        /// <summary>
+        /// creation d'une references vide pour creation
+        /// </summary>
+        /// <param name="contextlocal">context</param>
+        /// <param name="line_dictionnary">dictionnaire de ligne</param>
+        public IEntity CreateNewReference(IContext contextlocal, Dictionary<string, object> line_dictionnary, ref string NewReferenceName, IEntity clipper_machine, bool Sans_Donnees_Technique)
+        {
+            try
+            {
+
+
+
+                IEntity newreference = null;
+                IEntity material = null;
+                IEntity machine = null;
+
+                Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": creation d'une nouvelle piece !! ");
+                // string referenceName = null;
+                int index_extension = 0;
+                //si la machine clipper n'est pas nulle
+                //on initialise la machine a la machine clipper
+                if (clipper_machine.Id32 != 0) { machine = clipper_machine; }
+
+                if (line_dictionnary.ContainsKey("_MATERIAL") && line_dictionnary.ContainsKey("THICKNESS") && line_dictionnary.ContainsKey("_NAME"))
+                {
+                    //recuperation de la matiere 
+                    material = GetMaterialEntity(contextlocal, ref line_dictionnary);
+                    //recupe du nom de la geométrie                 
+                    //string referenceName = "undef";    just in case mais inutiel
+                    if (NewReferenceName == null)
+                    {
+
+                        Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": Unfortunate error: NewreferenceName does not existes and new reference has been created !! ");
+                        if (Data_Model.ExistsInDictionnary("FILENAME", ref line_dictionnary))
+                        {
+
+                            NewReferenceName = line_dictionnary["FILENAME"].ToString();
+                            if (NewReferenceName.ToUpper().IndexOf(".DPR.EMF") > 0) { index_extension = 7; }
+                            if (NewReferenceName.ToUpper().IndexOf(".DPR") > 0) { index_extension = 4; }
+                        }
+                        else
+                        {
+                            NewReferenceName = line_dictionnary["_NAME"].ToString();
+                        }
+
+                        NewReferenceName = Path.GetFileNameWithoutExtension(@NewReferenceName.Substring(0, (NewReferenceName.Length) - index_extension));
+
+                    }
+
+
+                    ///////////////////////////recuperation de la machine envoyé par le cahier d'affaire
+                    //verification de la machine sur la ligne courante
+                    //affectation de la machiune clipper par defaut
+                    if (line_dictionnary.ContainsKey("CENTREFRAIS") == true)
+                    {
+                        ///remplissage des machines et verification de la presence du centre de frais demandé par clipper
+                        IEntityList machine_liste = contextlocal.EntityManager.GetEntityList("_CUT_MACHINE_TYPE");
+                        machine_liste.Fill(false);
+
+                        foreach (IEntity m in machine_liste)
+                        {
+                            IEntity cf = m.GetFieldValueAsEntity("CENTREFRAIS_MACHINE");
+                            string cfbase = cf.GetFieldValueAsString("_CODE").ToUpper();
+                            string cffile = "";
+                            /*** SI CHAMP VIDE***/
+                            if (line_dictionnary.ContainsKey("CENTREFRAIS") != true)
+                            {
+                                //recup de la machine clipper par defaut
+                                machine = clipper_machine;
+                            }
+                            else
+                            {
+                                cffile = line_dictionnary["CENTREFRAIS"].ToString().ToUpper();
+                                if (string.Compare(cfbase, cffile) == 0) { machine = m; break; }
+                                else { machine = clipper_machine; }
+                                /*on log on arrete tout */ //Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": centre de frais inconnu !! "); throw new Exception(machine.DefaultValue + " : Missing  cost center definition");
+
+
+                            }
+
+
+                        }
+                    }
+                    ///si vide alors on recupere ma machine clipper
+                    else { if (clipper_machine.Id32 != 0) { machine = clipper_machine; } }
+
+
+                    //
+
+                    //creation des infos complementaires de reference notamment les données sans dt
+                    //creation de l'entité
+                    newreference = contextlocal.EntityManager.CreateEntity("_REFERENCE");
+                    //remplacement par la machine clipper dont le cf est clip7
+                    //avant tou on let la machine clipper par defaut
+                    //champs standards
+
+                    newreference.SetFieldValue("_DEFAULT_CUT_MACHINE_TYPE", machine.Id32);
+                    newreference.SetFieldValue("_NAME", NewReferenceName);
+                    newreference.SetFieldValue("_MATERIAL", material.Id32);
+
+                    if (contextlocal.UserId != -1)
+                    {
+                        newreference.SetFieldValue("_AUTHOR", contextlocal.UserId);
+                    }
+                    //newreference.SetFieldValue("_AUTHOR", contextlocal.UserId); 
+
+                    /*
+                    //infos liées a l'import cfao
+                    //CUSTOMER_REFERENCE_INFOS;
+                    Clipper_Param.GetlistParam(contextlocal);
+                    string Field_value = Clipper_Param.GetPath("CUSTOMER_REFERENCE_INFOS");
+                    newreference.SetFieldValue("CUSTOMER", ""); 
+                    */
+                    //champs specifiques 
+
+                    //nous retournons un minimum d'infos pour la remontée de données technique
+                    if (Sans_Donnees_Technique == true || (line_dictionnary.ContainsKey("ID_PIECE_CFAO") == false))
+                    {
+
+                        if (line_dictionnary.ContainsKey("ID_PIECE_CFAO") == false) { Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": piece manquante creer a la volée, un retour clip sera necessaire !! "); }
+                        else { Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": ecriture des données sans dt !! "); }
+                        newreference.SetFieldValue("AFFAIRE", AF_ImportTools.SimplifiedMethods.ConvertNullStringToEmptystring("AFFAIRE", ref line_dictionnary));
+                        newreference.SetFieldValue("REMONTER_DT", true);
+                        newreference.SetFieldValue("_REFERENCE", AF_ImportTools.SimplifiedMethods.ConvertNullStringToEmptystring("_DESCRIPTION", ref line_dictionnary));
+                        newreference.SetFieldValue("EN_RANG", AF_ImportTools.SimplifiedMethods.ConvertNullStringToEmptystring("EN_RANG", ref line_dictionnary));
+                        newreference.SetFieldValue("EN_PERE_PIECE", AF_ImportTools.SimplifiedMethods.ConvertNullStringToEmptystring("EN_PERE_PIECE", ref line_dictionnary));
+
+
+
+
+                    }
+
+                    //concatenation affaire-nom-id
+                    //construction d'une description de piece contenant nom matiere affaire.
+                    //cette description peut etre exploitée en id d'import.
+
+                    if (Data_Model.ExistsInDictionnary("AFFAIRE", ref line_dictionnary) && Sans_Donnees_Technique == false)
+                    {
+                        //concatenation dans le champs description
+                        string affaire = line_dictionnary["AFFAIRE"].ToString().ToUpper();
+                        string material_name = AF_ImportTools.Material.getMaterial_Name(contextlocal, material.Id32);
+                        newreference.SetFieldValue("_REFERENCE", NewReferenceName + "-" + material_name + "-" + affaire);
+
+                    }
+
+                    newreference.Save();
+                    //creation de la prepâration associée
+                    AF_ImportTools.SimplifiedMethods.CreateMachinablePartFromReference(contextlocal, newreference, machine);
+
+                }
+
+
+
+                return newreference;
+
+            }
+            catch (Exception ie)
+            {
+                Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + " : Fails");
+                System.Windows.Forms.MessageBox.Show(ie.Message);
+                return null;
+            }
+
+
+
+
+
+
+        }
+
+
+
+        /// <summary>
+        ///Non utilisée
+        /// controle de l'integerite des données du fichier texte
+        /// on controle les champs obligatoires pour l'import, et l'existantce du centre de frais avant de continue l'import
+        /// </summary>
+        /// <param name="line_dictionnary">dictionnaire de ligne interprété par le datamodel</param>
+        /// <returns>false ou tuue si integre</returns>
+
+        public Boolean CheckDataIntegerity(IContext contextlocal, Dictionary<string, object> line_dictionnary) { return true; }
+
+        /// <summary>
+        /// controle de l'integerite des données du fichier texte
+        /// on controle les champs obligatoires pour l'import, et l'existantce du centre de frais avant de continue l'import
+        /// </summary>
+        /// <param name="line_dictionnary">dictionnaire de ligne interprété par le datamodel</param>
+        /// <returns>false ou tuue si integre</returns>
+        public Boolean CheckDataIntegerity(IContext contextlocal, Dictionary<string, object> line_dictionnary, Dictionary<string, string> CentreFrais_Dictionnary, bool Sans_Donnees_Technique)
+        {
+            //
+            try
+            {
+                ///////////////////////////////////////////////////////////////////////////
+                ///condition cumulées sur result?                
+                Boolean result = true;
+                ///////////////////////////////////////////////////////////////////////////
+                string currenfieldsname;
+                ///matiere
+                ///
+                currenfieldsname = "_MATERIAL";
+                if (line_dictionnary.ContainsKey(currenfieldsname))
+                {
+                    result = result & true;
+                }
+                else
+                {
+                    //MessageBox.Show(currenfieldsname + " : missing ");
+                    Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + currenfieldsname + " : missing ");
+                    Alma_Log.Write_Log_Important(MethodBase.GetCurrentMethod().Name + ":" + line_dictionnary["_MATERIAL"] + ": champs obligatoire : matiere non detectée sur la ligne a importée, line ignored"); result = result & false;
+                    result = result & false;
+                }
+
+
+                ///epaisseur
+                ///
+                currenfieldsname = "THICKNESS";
+                if (line_dictionnary.ContainsKey(currenfieldsname))
+                { result = result & true; }
+                else
+                {
+                    Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + currenfieldsname + " : missing ");
+                    Alma_Log.Write_Log_Important(MethodBase.GetCurrentMethod().Name + ":" + line_dictionnary["_THICKNESS"] + ": champs obligatoire epaisseur non detectée sur la ligne a importée, line ignored"); result = result & false;
+                    result = result & false;
+                }
+
+
+                //L' Affaire existe t elle ?
+                currenfieldsname = "AFFAIRE";
+                if (line_dictionnary.ContainsKey(currenfieldsname))
+                {
+                    result = result & true;
+                }
+                else
+                {
+                    Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + currenfieldsname + " : missing ");
+                    Alma_Log.Write_Log_Important(MethodBase.GetCurrentMethod().Name + ":" + line_dictionnary["_NAME"] + ": champs obligatoire Affaire non detectée sur la ligne a importée, line ignored"); result = result & false;
+                    result = result & false;
+                }
+
+
+                ///////////////////////////////////////////////////////////////////////////
+                //les quantités negatives sont interdites
+                currenfieldsname = "_QUANTITY";
+                if (line_dictionnary.ContainsKey(currenfieldsname))
+                {
+                    if (int.Parse(line_dictionnary["_QUANTITY"].ToString().Trim()) < 0 || int.Parse(line_dictionnary["_QUANTITY"].ToString().Trim()) == 0)
+                    {
+                        Alma_Log.Error(line_dictionnary["_NAME"] + ":_QUANTITY negative ou null detecté sur la ligne a importée, line ignored", MethodBase.GetCurrentMethod().Name);
+                        Alma_Log.Write_Log_Important(MethodBase.GetCurrentMethod().Name + ":" + line_dictionnary["_NAME"] + ": champs obligatoire :_QUANTITY non detecté sur la ligne a importée, line ignored"); result = false;
+                    }
+                }
+                else
+                {
+                    Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + currenfieldsname + " : missing ");
+                    result = result & false;
+                }
+
+                ///////////////////////////////////////////////////////////////////////////
+                //le nom de la piece à produire doit exister
+                currenfieldsname = "_NAME";
+                if (line_dictionnary.ContainsKey(currenfieldsname) != true)
+                {
+                    Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + currenfieldsname + " : missing ");
+                    Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": champs obligatoire:  pas de nom de reference trouvée"); result = result & false;
+                    Alma_Log.Write_Log_Important(MethodBase.GetCurrentMethod().Name + ":" + line_dictionnary["_NAME"] + ": champs obligatoire: pas de non de piece detecté sur la ligne a importée, line ignored"); result = result & false;
+                }
+                else
+                {
+                    result = result & true;
+                }
+
+                //////////////////////////////////////////////////////////////////////////
+                //la machine (centre de frais... )
+                //si la ligne ne possede pas de cf  c'est que c'est une piece sans gamme, cette piece prendre la machine clipper par defaut
+                currenfieldsname = "CENTREFRAIS";
+                if (line_dictionnary.ContainsKey(currenfieldsname) != true)
+                {
+                    Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": pas de centre de frais --> aucune gamme detectées: piece Orange identifiée");
+                    Alma_Log.Write_Log_Important(MethodBase.GetCurrentMethod().Name + ":" + line_dictionnary["_NAME"] + ": piece Orange identifiée : centre de frais non detecté sur la ligne a importée"); result = result & true;
+                }
+                else
+                {
+                    // si la machien envoyée n'existe pas on ne fait rien
+
+                    if (Data_Model.ExistsInDictionnary(line_dictionnary[currenfieldsname].ToString(), ref CentreFrais_Dictionnary) == false)
+                    {
+                        Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": le centre de frais spécifié n'existe pas --> la ligne sera ignorée");
+                        Alma_Log.Write_Log_Important(MethodBase.GetCurrentMethod().Name + ":" + line_dictionnary["_NAME"] + ":le centre de frais spécifié n'existe pas --> centre de frais non detecté sur la ligne à importée, la ligne sera ignorée");
+                        result = result & false;
+                    }
+
+                    result = result & true;
+                }
+
+                ///////////////////////////////////////////////////////////////////////////
+                //les matieres sont désormais obligatoires
+                //string nuance_name = line_dictionnary["_MATERIAL"].ToString().Replace('§', '*');
+                string nuance = null;
+                string material_name = null;
+                double thickness = 0;
+
+                nuance = line_dictionnary["_MATERIAL"].ToString().Replace('§', '*');
+                //thickness = line_dictionnary["THICKNESS"];
+                thickness = AF_ImportTools.SimplifiedMethods.GetDoubleInvariantCulture(line_dictionnary["THICKNESS"].ToString());
+                material_name = AF_ImportTools.Material.getMaterial_Name(contextlocal, nuance, thickness);
+
+                if (material_name == string.Empty)
+                { /*on log matiere non existante*/
+                    Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": matiere non existante :" + nuance + " ep " + thickness);
+                    result = result & false;
+                }
+
+                ///////////////////////////////////////////////////////////////////////////
+                //les matieres sont désormais obligatoires
+                //pour uniquement pourles lignes jaunes ( pas pour les ligne  sans_dt)
+
+                if (line_dictionnary.ContainsKey("IDLNROUT") != true && Sans_Donnees_Technique == false)
+                {
+                    Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": champs obligatoire:  pas de numero de gamme unique indiqué"); result = result & false;
+                    Alma_Log.Write_Log_Important(MethodBase.GetCurrentMethod().Name + ":" + line_dictionnary["IDLNROUT"] + ":champs obligatoire:  pas de numero de gamme unique indiqué sur la ligne a importée, line ignored"); result = result & false;
+                }
+                else { result = result & true; }
+
+                if (line_dictionnary.ContainsKey("IDLNBOM") != true && Sans_Donnees_Technique == false)
+                {
+                    Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": champs obligatoire:  pas d'identification unique de piece trouvée"); result = result & false;
+                    Alma_Log.Write_Log_Important(MethodBase.GetCurrentMethod().Name + ":" + line_dictionnary["IDLNBOM"] + ": champs obligatoire:  pas d'identification unique de piece detecté sur la ligne a importée, line ignored"); result = result & false;
+                }
+                else { result = result & true; }
+
+
+
+
+
+
+                return result;
+            }
+
+
+            catch (Exception ie)
+            {
+                Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": erreur : " + ie.Message);
+                // MessageBox.Show(ie.Message);
+                return false;
+            }
+
+
+
+        }
+        /// <summary>
+        /// renvoie l'entite matiere a partie de la nuance et de l'epaisseur contenu dans le line dictionnary
+        /// </summary>
+        /// <param name="contextlocal">ientity context</param>
+        /// <param name="material_name">ientity  material</param>
+        /// <param name="line_dictionnary">dictionnary <string,object> line_dictionnary</param>
+        /// <returns></returns>
+        public IEntity GetMaterialEntity(IContext contextlocal, ref Dictionary<string, object> line_dictionnary)
+        {
+            IEntity material = null;
+
+            try
+            {
+
+                //IEntityList materials = null;
+                //verification simple par nom nuance*etat epaisseur en rgardnat une structure comme ceci
+                //"SPC*BRUT 1.00" //attention pas de control de l'obsolecence pour le moment
+                if (line_dictionnary.ContainsKey("_MATERIAL") && line_dictionnary.ContainsKey("THICKNESS"))
+                {
+                    // material = Material.getMaterial_Entity(contextlocal, line_dictionnary["_MATERIAL"].ToString(), Convert.ToDouble(line_dictionnary["THICKNESS"]));
+                    material = Material.getMaterial_Entity(contextlocal, line_dictionnary["_MATERIAL"].ToString(), SimplifiedMethods.GetDoubleInvariantCulture(line_dictionnary["THICKNESS"].ToString()));
+                }
+
+
+
+
+
+                return material;
+            }
+            catch (Exception ie)
+            {
+                Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": erreur :");
+                MessageBox.Show(ie.Message);
+                return material;
+            }
+
+        }
+
+
+        /// <summary>
+        /// recupere une reference en fonction d'un 
+        /// numero d'indice //(remplacé par un indice d'identification piece en position 27)
+        /// ce numero d'indice est egale a l'id de la piece dans la table reference sauf si l'indice est negatif.
+        /// Si l'indice est negatif alors l'indice vient d'une piece cotée.
+        /// 
+        /// </summary>
+        /// <param name="contextlocal">contexte local</param>
+        /// <param name="reference">entite reference</param>
+        /// <param name="line_dictionnary">dictionnaire de ligne</param>
+        /// <returns>true si la reference est detectee en fonction du numero de plan</returns>
+        public bool GetReference(IContext contextlocal, ref IEntity reference, ref Dictionary<string, object> line_dictionnary, ref string NewReferenceName)
+        {
+            reference = null;
+            //IEntityList references = null;
+            Int32 new_reference_id = 0;
+            IEntityList quote_part_list = null;
+            IEntity quote_part = null;
+            //IEntity material = null;
+            bool result = false;
+
+
+            try
+            {
+                //int index_extension = 7;
+                if (Data_Model.ExistsInDictionnary("ID_PIECE_CFAO", ref line_dictionnary))
+                { //IEntity reference sur la base d'un id de la quotepart
+
+                    IEntityList reference_partlist;
+                    IEntity reference_part;
+                    Int32 id_piece_cfao = 0;
+
+                    if (line_dictionnary["ID_PIECE_CFAO"].GetType() == typeof(string))
+                    {
+                        id_piece_cfao = Convert.ToInt32(line_dictionnary["ID_PIECE_CFAO"]);
+                    }
+                    else
+                    {
+                        id_piece_cfao = (int)line_dictionnary["ID_PIECE_CFAO"];
+                    }
+
+                    //on recherche une reference cree par le devis ou alors la reference directement dans la table reference                    
+                    //on regarde ensuite si le champs est negatif (--> a ce moment la c'est un quote part)
+                    if (id_piece_cfao < 0)
+                    {
+                        Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ":Pièce" + id_piece_cfao + " venant d'almaquote identifiée. ");
+                        //depuis le sp3 on recherche dans quote part
+                        id_piece_cfao = id_piece_cfao * (-1);
+                        quote_part_list = contextlocal.EntityManager.GetEntityList("_QUOTE_PART", "ID", ConditionOperator.Equal, id_piece_cfao);
+                        quote_part = AF_ImportTools.SimplifiedMethods.GetFirtOfList(quote_part_list);
+                        if (quote_part != null)
+                        {
+                            // on calcul l'id de reference sur la base du quote part
+                            new_reference_id = quote_part.GetFieldValueAsInt("_ALMACAM_REFERENCE");
+                            IEntityList Existreferences = contextlocal.EntityManager.GetEntityList("_REFERENCE", "ID", ConditionOperator.Equal, new_reference_id);
+                            Existreferences.Fill(false);
+
+                            //on test si la pieces existe vraiment dans les references
+                            if (Existreferences.Count == 0)
+                            {
+                                Alma_Log.Error("REFERENCE NON TROUVEE dans LES PIECES AlmaCam : ref " + new_reference_id.ToString(), MethodBase.GetCurrentMethod().Name + "Reference non trouvée : import impossible");
+                                Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ":" + id_piece_cfao + ": not found :");
+                                result = false;
+                            }
+
+                        }
+                        else
+                        {
+                            // sinon erreur et on creer une nouvelle piece
+                            Alma_Log.Error("Quote Part NON TROUVEE dans les pieces de devis : ref " + id_piece_cfao.ToString(), MethodBase.GetCurrentMethod().Name + "Quotepart non trouvée : import impossible");
+                            Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ":" + id_piece_cfao + ": not found :");
+                            result = false;
+                        }
+
+                    }
+                    else
+                    {
+                        //on recupere directment l'id de reference
+                        new_reference_id = id_piece_cfao;
+                    }
+
+                    //on recupere la reference piece et on regarde si elle existe bien
+                    reference_partlist = contextlocal.EntityManager.GetEntityList("_REFERENCE", "ID", ConditionOperator.Equal, new_reference_id);
+                    reference_partlist.Fill(false);
+                    reference_part = AF_ImportTools.SimplifiedMethods.GetFirtOfList(reference_partlist);
+
+
+
+                    if (reference_part != null)
+                    {
+                        NewReferenceName = reference_part.GetFieldValueAsString("_NAME");
+                        reference = reference_part;
+                        result = true;
+                    }
+                    else
+                    {
+                        Alma_Log.Error("REFERENCE NON TROUVEE : ref " + id_piece_cfao.ToString(), MethodBase.GetCurrentMethod().Name + "Reference non trouvée : import impossible");
+                        Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ":" + id_piece_cfao + ": not found :");
+                        NewReferenceName = null;
+                        result = false;
+                    }
+
+
+
+                }
+
+                else
+                {
+
+                    //reference non indiqué on cree  une nouvelle piece 
+                    Alma_Log.Error("AUCUNE REFERENCE TRANSMISE : ", MethodBase.GetCurrentMethod().Name + "Reference non trouvée : crreation d'une nouvelle piece");
+                    Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ":Part id_cfao   : not found :");
+                    NewReferenceName = line_dictionnary["_NAME"].ToString(); ;
+                    result = false;
+                    //result = true;
+
+
+                }
+
+                return result;
+
+
+            }
+
+            catch (Exception ie)
+            {
+                //on log
+                Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": erreur :");
+                MessageBox.Show(ie.Message);
+                return result;
+            }
+
+
+
+        }
+
+        /// met a jour les valeurs   dans les pieces a produires almacam
+        /// </summary>
+        /// <param name="contextlocal">contexte context</param>
+        /// <param name="sheet">ientity sheet  </param>
+        /// <param name="stock">inentity stock</param>
+        /// <param name="line_dictionnary">dictionnary linedisctionary</param>
+        /// <param name="type_tole">type tole  ou chute</param>
+        /// 
+        public void Update_Part_Item(IContext contextlocal, ref IEntity reference_to_produce, ref Dictionary<string, string> CentreFrais_Dictionnary, ref Dictionary<string, object> line_dictionnary)
+        {
+            try
+            {
+                foreach (var field in line_dictionnary)
+                {
+                    //on recupere la reference a usiner
+                    //rien pour le moment
+                    //on verifie que le champs existe bien avant de l'ecrire
+                    if (contextlocal.Kernel.GetEntityType("_TO_PRODUCE_REFERENCE").FieldList.ContainsKey(field.Key))
+                    {
+                        //traitement specifique
+                        switch (field.Key)
+                        {
+
+                            case "_MATERIAL":
+                                //rien pour le moment mais on pourrait verifier si une nouvelle matiere est a declarer ou non
+                                //recherche de l'epaisseur de la chaine 
+                                //on importe jamais une matiere qui n'existe pas
+
+                                break;
+
+                            case "CENTREFRAIS":
+
+
+                                IEntityList centre_frais = contextlocal.EntityManager.GetEntityList("_CENTRE_FRAIS", "_CODE", ConditionOperator.Equal, field.Value);
+                                centre_frais.Fill(false);
+                                if (centre_frais.Count() > 0)
+                                {
+                                    //premier de la liste ou rien
+                                    reference_to_produce.SetFieldValue(field.Key, centre_frais.FirstOrDefault());
+                                    if (Data_Model.ExistsInDictionnary(centre_frais.FirstOrDefault().GetFieldValueAsString("_CODE"), ref CentreFrais_Dictionnary))
+                                    { reference_to_produce.SetFieldValue("MACHINE_FROM_CF", CentreFrais_Dictionnary[centre_frais.FirstOrDefault().GetFieldValueAsString("_CODE")]); }
+                                    else
+                                    { centre_frais.FirstOrDefault().GetFieldValueAsString("_CODE"); }
+
+                                }
+                                else
+                                {
+                                    reference_to_produce.SetFieldValue("MACHINE_FROM_CF", string.Format(" !!{0} pas de correspondance machine sur ce centre de frais", field.Value.ToString()));
+                                    reference_to_produce.SetFieldValue("NEED_PREP", true);
+                                }
+                                break;
+
+
+
+                            case "_FIRM":
+
+                                IEntityList firmlist = contextlocal.EntityManager.GetEntityList("_FIRM", "_NAME", ConditionOperator.Equal, field.Value);
+                                firmlist.Fill(false);
+                                if (firmlist.Count() > 0)
+                                {
+                                    //premier de la liste ou rien
+                                    reference_to_produce.SetFieldValue(field.Key, firmlist.FirstOrDefault().Id);
+
+
+                                }
+
+                                break;
+
+                            case "IDLNROUT":
+                                //on verifie si la reference n'exist pas deja
+
+                                IEntityList idlnrout = contextlocal.EntityManager.GetEntityList("_TO_PRODUCE_REFERENCE", "IDLNROUT", ConditionOperator.Equal, field.Value);
+                                idlnrout.Fill(false);
+                                if (idlnrout.Count() == 0)
+                                {
+                                    reference_to_produce.SetFieldValue(field.Key, field.Value);
+                                }
+                                else
+                                { //pas de mise à jour des quantités a produire                                         
+                                    //write **_
+                                    MessageBox.Show(string.Format("La gamme n° {0} a été trouvé en double, elle sera prefixé du caractère **_ pour control", field.Value));
+                                    reference_to_produce.SetFieldValue(field.Key, "**_" + field.Value);
+                                    //eventuellement on lance une exception
+                                    //throw new InvalidDataException("doublon sur le numéro de gamme  'idlnrout' voir numero prefixé par **_"); 
+
+                                }
+
+                                break;
+
+                            case "ECOQTY":
+
+                                //formatage de La date;
+                                //en cas d'erreur sur les types /// les ecoqty sont toujours en string mais dans certains base  on peut avoir l'erreur
+                                if (reference_to_produce.GetFieldValue("ECOQTY").GetType() == typeof(Int64))
+                                {
+                                    reference_to_produce.SetFieldValue(field.Key, int.Parse(field.Value.ToString()));
+                                }
+                                else
+                                {
+                                    reference_to_produce.SetFieldValue(field.Key, field.Value);
+                                }
+
+
+
+                                break;
+
+                            case "STARTDATE":
+                                //formatage de La date;
+                                reference_to_produce.SetFieldValue("_DATE", field.Value);
+                                reference_to_produce.SetFieldValue(field.Key, field.Value);
+
+                                break;
+
+                            case "AF_CDE":
+                                //formatage de La date;
+                                reference_to_produce.SetFieldValue("_CLIENT_ORDER_NUMBER", field.Value);
+                                //reference_to_produce.SetFieldValue(field.Key, field.Value);
+
+                                break;
+
+                            default:
+                                reference_to_produce.SetFieldValue(field.Key, field.Value);
+                                break;
+                        }
+                    }
+
+
+                }
+
+            }
+            catch (Exception ie)
+            {
+                Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": erreur :");
+                MessageBox.Show(ie.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// en standard
+        /// import un of 
+        /// </summary>
+        /// <param name="contextlocal">contexte alma cam</param>
+        /// <param name="pathToFile">chemin vers le fichier csv separateur ";"</param>
+        /// <param name="sans_donnees_technique">true si import sans données techniques</param>
+        /// <param name="DataModelString">string de description d'une ligne csv sous la forme 
+        /// numeroIndex#NomChampAlmaCam#Type  exemple : 0#AFFAIRE#STRING</param>
+        /// <summary>
+        public void Import(IContext contextlocal, string pathToFile, string DataModelString, Boolean Sans_Donnees_Technique)
+        {
+
+            //recuperation des path
+            CsvImportPath = pathToFile;
+
+
+            try
+
+            {
+                //verification standards
+                //creation du timetag d'import
+                string timetag = string.Format("{0:d_M_yyyy_HH_mm_ss}", DateTime.Now);
+                Alma_Log.Create_Log(Clipper_Param.GetVerbose_Log());
+                //bool import_sans_donnee_technique = false;
+                Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": importe tag :" + timetag);
+                //ouverture du fichier csv lancement du curseur
+                // Set cursor as hourglass
+                Cursor.Current = Cursors.WaitCursor;
+
+
+
+                if (File.Exists(CsvImportPath) == false)
+                {
+                    Alma_Log.Error("Fichier Non Trouvé:" + CsvImportPath, MethodBase.GetCurrentMethod().Name);
+                    throw new Exception("csv File Note Found:\r\n" + CsvImportPath);
+                }
+                //avec ou sans dt
+                if (Sans_Donnees_Technique) { Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": import  sans dt !! " + CsvImportPath); } else { Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": import standard !! " + CsvImportPath); }
+
+
+                using (StreamReader csvfile = new StreamReader(CsvImportPath, Encoding.Default))
+                {
+                    //recuperation des elements de la base almacam
+                    //declaration des dictionaires
+                    Dictionary<string, object> line_Dictionnary = new Dictionary<string, object>();
+                    //on lit les centres de frais 
+                    ; //= null;
+                    Data_Model.setFieldDictionnary(DataModelString);
+                    Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + ": reading data model :success !! ");
+                    ///remplissage des machines et verification de la presence du centre de frais demandé par clipper
+                    ///plus utile
+                    //IEntityList machine_liste = contextlocal.EntityManager.GetEntityList("_CUT_MACHINE_TYPE");
+                    //machine_liste.Fill(false);
+
+                    //recuperation de la machine clipper
+                    //IEntity Clipper_Machine = null;
+                    //IEntity Clipper_Centre_Frais = null;
+                    //recuperation de la machine clipper et construction de la liste machine
+                    Get_Clipper_Machine(contextlocal, out IEntity Clipper_Machine, out IEntity Clipper_Centre_Frais, out Dictionary<string, string> CentreFrais_Dictionnary);
+
+                    //verification que toutes les machines sont conformes pour une intégration clipper
+
+
+                    int ligneNumber = 0;
+                    //lecture à la ligne
+                    string line;
+                    line = null;
+
+                    while (((line = csvfile.ReadLine()) != null))
+                    {
+
+                        //on ne traite pas les lignes vides
+                        ligneNumber++;
+                        if ((line.Trim()) == "")
+                        {
+                            Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + " : " + ligneNumber + ": empty line detected !! ");
+                            continue;
+                        }
+
+                        //lecture des donnees
+                        line_Dictionnary = Data_Model.ReadCsvLine_With_Dictionnary(line);
+                        Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + " : " + ligneNumber + ": line disctionnary interpreter succeeded !! ");
+
+                        //control des données    //verification des donnée importées
+                        if (CheckDataIntegerity(contextlocal, line_Dictionnary, CentreFrais_Dictionnary, Sans_Donnees_Technique) != true)
+                        {
+                            /*on log et on continue(on passe a la ligne suivante*/
+                            Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + " : " + ligneNumber + ": data integrity fails, line ignored !!! ");
+                            continue;
+                        }
+
+
+
+
+
+                        IEntity reference_to_produce = null;
+                        IEntity reference = null;
+                        string NewReferenceName = null;
+                        //
+                        //on recherche la refeence avec la bonne matiere /epaisseur si elles n'existe pas on la creer 
+                        if (GetReference(contextlocal, ref reference, ref line_Dictionnary, ref NewReferenceName) == false | Sans_Donnees_Technique == true)
+                        {
+                            /*aucune reference n'existe dans cette matiere  alors on  la creer*/
+                            /*sauf si NewReferenceName est null */
+                            if (NewReferenceName != null)
+                            {
+                                reference = CreateNewReference(contextlocal, line_Dictionnary, ref NewReferenceName, Clipper_Machine, Sans_Donnees_Technique);
+                                Alma_Log.Write_Log(MethodBase.GetCurrentMethod().Name + " : " + ligneNumber + " no reference found new part creation : success. ");
+                                //on active le need prep
+                                //need_prep = true;
+                            }
+                            else
+                            {
+
+                                continue;
+                            }
+
+                        }
+
+                        //////on met a jour les données sur les piece 2d  : CUSTOMER_REFERENCE_INFOS
+                        if (reference != null)
+                        {///champs spécifique piece 2d
+                            //infos liées a l'import cfao
+                            //CUSTOMER_REFERENCE_INFOS;
+                            Clipper_Param.GetlistParam(contextlocal);
+                            string Field_value = Clipper_Param.GetPath("CUSTOMER_REFERENCE_INFOS");
+                            Field_value.Split('|');//"CUSTOMER"
+                            reference.SetFieldValue(Field_value.Split('|')[0], line_Dictionnary[Field_value.Split('|')[1]]);
+                            reference.Save();
+                        }
+
+
+
+
+                        //creation de la nouvelle piece a produire associée
+                        if (Sans_Donnees_Technique == false)
+                        {
+                            CreateNewPartToProduce(contextlocal, line_Dictionnary, CentreFrais_Dictionnary, ref reference_to_produce, ref reference, timetag, Sans_Donnees_Technique);
+                        }
+                    }
+
+
+
+                }
+
+                // Set cursor as default arrow
+                Cursor.Current = Cursors.Default;
+                File_Tools.Rename_Csv(CsvImportPath, timetag);
+                Alma_Log.Final_Open_Log();
+                //File_tools
+            }
+
+            catch (Exception e)
+            {
+                Alma_Log.Write_Log(e.Message);
+                Alma_Log.Final_Open_Log();
+
+            }
+        }
+
+    }
+
+    #endregion
+
+
+
+
+    ////boutnon d'import du stock
+    public class Clipper_8_Import_Stock_Processor : CommandProcessor
+    {
+        //public IContext contextlocal = null;
+        public override bool Execute()
+        {
+
+
+            //declaration des listes pour post traitement
+
+            using (var Stock = new Clipper_8_Import_Stock())
+            {
+
+                Stock.Import(Context);
+
+
+            }
+
+            // MessageBox.Show(" Import terminé");
+
+            return base.Execute();
+        }
+    }
+    public class Clipper_8_Import_Stock : IDisposable
     {
         //disposable
         public void Dispose()
@@ -5845,8 +5873,6 @@ namespace AF_Clipper_Dll
         /// </summary>
         /// <param name="context"></param>
         /// 
-
-      
 
         /// <summary>
         /// main import methode
@@ -6546,14 +6572,17 @@ namespace AF_Clipper_Dll
                     newsheet.SetFieldValue("_REFERENCE", sheet_to_update_reference);
                     newsheet.SetFieldValue("_MATERIAL", material);
                     newsheet.SetFieldValue("_TYPE", (int)type_tole);
-                    newsheet.SetFieldValue("_NAME", sheet_to_update_reference);
+                    
+                    //newsheet.SetFieldValue("_NAME", sheet_to_update_reference);
                     double w = ((double)line_Dictionnary["_WIDTH"]);// SimplifiedMethods.GetDoubleInvariantCulture(line_Dictionnary["_WIDTH"].ToString());
                     double l = ((double)line_Dictionnary["_LENGTH"]);//((double)line_Dictionnary["_WIDTH"]).ToString()
                     newsheet.SetFieldValue("_WIDTH", w);
                     newsheet.SetFieldValue("_LENGTH", l);
                     newsheet.Complete = true;
+                   
+                    //creation du nom auto d'almacam
+                    CommonModelBuilder.ComputeSheetReference(newsheet.Context, newsheet);
                     newsheet.Save();
-
                 }
 
 
@@ -6731,7 +6760,7 @@ namespace AF_Clipper_Dll
                     stock.SetFieldValue("_QUANTITY", 0);
 
                     stock.Save();
-                    Alma_Log.Write_Log_Important(stock.GetFieldValueAsString("IDCLIP ") + "--OMITTED");
+                    Alma_Log.Write_Log_Important(stock.GetFieldValueAsString("IDCLIP") + "-- OMITTED");
                     rst = true;
                 }
                 //sinon do nothing
@@ -6771,7 +6800,7 @@ namespace AF_Clipper_Dll
                 //avec -100000 on recherche si le stock est en production
                 if (Clipper_Quantity == -100000)
                 {
-                    Alma_Log.Write_Log_Important(methodename + ":-----> stock clip " + idclip + ": qté clip forcé a -1000 pour omission  " + dif.ToString());
+                    Alma_Log.Write_Log_Important(methodename + ":-----> stock clip " + idclip + ": qté clip forcé ( CODE = -10000)  pour omission  " + dif.ToString());
 
                     if (booked_qty == 0)
                     {
@@ -6926,8 +6955,6 @@ namespace AF_Clipper_Dll
         {
             try
             {
-
-
                 Execute(args.NestingEntity);
             }
 
@@ -6953,28 +6980,11 @@ namespace AF_Clipper_Dll
 
             {
 
-                Clipper_Nest_Infos clipper_nest_infos = new Clipper_Nest_Infos();
+                var clipper_nest_infos = new Clipper_8_Nest_Infos();
                 clipper_nest_infos.Fill(nesting_to_cut);
                 clipper_nest_infos.Export_NestInfosToFile(export_gpao_path);
-                //Nest_Infos current_clipper_nestinfos = new Nest_Infos();
-
-                /*creatin du stock*/
-
-                //StockManager.CreateStockFromNestingToCut(nesting_to_cut);
-
-
-                /*2018
-                Clipper_Infos current_clipper_nestinfos = new Clipper_Infos();
-                //current_clipper_nestinfos.GetNestInfosBySheet(entity);
-
-                current_clipper_nestinfos.GetNestInfosByNesting(entity.Context, entity, "_TO_CUT_NESTING");
-                current_clipper_nestinfos.Export_NestInfosToFile(export_gpao_path);
-                //validation du stock
+               
                 
-                current_clipper_nestinfos = null;
-                */
-
-                //
             }
 
 
@@ -7673,7 +7683,7 @@ namespace AF_Clipper_Dll
         /// <summary>
         /// creation de la classe local clipper nest_infos
         /// </summary>
-        public class Clipper_Nest_Infos : Nest_Infos
+        public class Clipper_8_Nest_Infos : Nest_Infos
         {
 
             //creation du distionnaire d'objet

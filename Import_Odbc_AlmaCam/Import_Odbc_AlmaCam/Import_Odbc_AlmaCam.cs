@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Microsoft.Win32;
 using System.Runtime.Serialization;
+using System.Data.Common;
 
 namespace AF_Import_ODBC_Clipper_AlmaCam
 
@@ -556,7 +557,9 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
 
             private void Init()
             {    ///premier paramertre dsn = clipper dsn= data source name
-                try
+                    //var DbConnection =new OdbcConnection("DSN=" + DSN);
+
+            try
                 {
                    logFile.WriteLine("initialisatin de la methode");
 
@@ -571,16 +574,20 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
 
 
                 /// if      (AlmaCamTool.Is_Odbc_Exists())
-                
-                if      (AlmaCamTool.Is_Odbc_Exists(DSN))
+
+                //if      (AlmaCamTool.Is_Odbc_Exists(DSN))
+                if (AlmaCamTool.Is_Odbc_Exists(DSN))
+                    
                 {
 
 
-                    DbConnection = null;
-                    DbCommand = null;
-                    this.DbConnection = new OdbcConnection("DSN=" + DSN);
-                    this.DbConnection.Open();
-                    this.DbCommand = DbConnection.CreateCommand();
+                    //DbConnection = null;
+                    //DbCommand = null;
+                    
+                    DbConnection = new OdbcConnection("DSN=" + DSN); 
+                   
+                    DbConnection.Open();
+                    DbCommand = DbConnection.CreateCommand();
                     logFile.WriteLine("etat de la connexion " + DbConnection.State.ToString());
 
 
@@ -598,6 +605,12 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                 //Console.Write(ie.Message.ToString());
 
                 }
+            finally
+            {
+                //DbConnection.Close();
+            }
+
+
             }
             private void GetMaterial()
             {
@@ -2754,16 +2767,11 @@ namespace AF_Import_ODBC_Clipper_AlmaCam
                     {
                         IEntity Fourniture_Entity;
 
-                        //string key = Guid.NewGuid().ToString();
-                        //creation de la section
-                        //screwEntity = contextlocal.EntityManager.CreateEntity(Key);
+                     
                         Fourniture_Entity = contextlocal.EntityManager.CreateEntity("_SUPPLY");
                         Fourniture_Entity.SetFieldValue("_REFERENCE", fourniture.Name);
                         Fourniture_Entity.SetFieldValue("_COMMENTS", "");
-                        //screwEntity.SetFieldValue("_BUY_COST", vis.PRIXART);
-                        //screwEntity.SetFieldValue("_DIAMETER", vis.Diametre);
-                        //screwEntity.SetFieldValue("_LENGTH", vis.Longueur);
-                        //screwEntity.SetFieldValue("_FINITION", vis.Nuance);
+                      
                         Fourniture_Entity.Save();
                     }
 
@@ -2817,11 +2825,11 @@ internal class Missing_Obdc_Exception : Exception
    
       
     
-        public Missing_Obdc_Exception()
+        public Missing_Obdc_Exception( string nomodbc)
 
         {
 
-            MessageBox.Show("la connexion odbc n'est pas configurée. Contactez Clipper pour ce point ou bien referez vous a la documentation d'installaitons");
+            MessageBox.Show("la connexion odbc "+ nomodbc + " n'est pas configurée. Contactez Clipper pour ce point ou bien referez vous a la documentation d'installaitons");
             Environment.Exit(0);
 
         }
@@ -2871,7 +2879,7 @@ public static class AlmaCamTool
 
 
 
-    public static bool Is_Odbc_Exists()
+    /*public static bool Is_Odbc_Exists()
     {
 
         string CLIPPER_ODBC_INI_REG_PATH = "Software\\ODBC\\ODBCINST.INI\\";
@@ -2884,7 +2892,7 @@ public static class AlmaCamTool
             if (sourcesKey == null)
             {
                 rst = false;
-                throw new Missing_Obdc_Exception();
+                throw new Missing_Obdc_Exception("");
 
             }
 
@@ -2900,37 +2908,33 @@ public static class AlmaCamTool
 
             
         }
-    }
+    }*/
     public static bool Is_Odbc_Exists(string DSN)
     {
+        bool rst = true;
+        var mDbConnection = new OdbcConnection("DSN=" + DSN);
 
-        string CLIPPER_ODBC_INI_REG_PATH = "Software\\ODBC\\ODBCINST.INI\\"+DSN;
-        //string dsnname = "Clipper8_Serveur";
-        try
-        {
-            var sourcesKey = Registry.LocalMachine.OpenSubKey(CLIPPER_ODBC_INI_REG_PATH);
-            //String value = (String)sourcesKey.GetValue(dsnname+"\\Analyse");
+        try {
+            
 
-            bool rst = true;
-            if (sourcesKey == null)
+            
+         
+            using (mDbConnection)
             {
-                rst = false;
-                throw new Missing_Obdc_Exception();
+                mDbConnection.Open();
 
+                rst = true;
             }
+            
 
             return rst;
-        }
 
-        catch (Exception ex)
+
+        } catch(Exception ie)
         {
-
-            MessageBox.Show(ex.Message);
             return false;
-
-
-
         }
+        finally { mDbConnection.Close(); }
     }
 }
 #endregion

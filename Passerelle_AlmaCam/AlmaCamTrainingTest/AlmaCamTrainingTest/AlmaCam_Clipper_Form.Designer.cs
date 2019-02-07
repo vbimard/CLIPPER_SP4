@@ -49,6 +49,8 @@
             this.fichierToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clipper8ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importStockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.suppressionStockClotureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.purgerToutLeStockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.relanceClotureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.relanceClotureToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -56,9 +58,10 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.quitToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.InfosLabel = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
-            this.suppressionStockClotureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importerStockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importOFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.avecDTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sansDTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -140,7 +143,7 @@
             this.clipper8ToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(478, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(304, 24);
             this.menuStrip1.TabIndex = 12;
             this.menuStrip1.Text = "menuStrip1";
             this.menuStrip1.UseWaitCursor = true;
@@ -251,7 +254,8 @@
             this.clipper8ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.importStockToolStripMenuItem,
             this.relanceClotureToolStripMenuItem,
-            this.relanceClotureToolStripMenuItem1});
+            this.relanceClotureToolStripMenuItem1,
+            this.importOFToolStripMenuItem});
             this.clipper8ToolStripMenuItem.Name = "clipper8ToolStripMenuItem";
             this.clipper8ToolStripMenuItem.Size = new System.Drawing.Size(66, 20);
             this.clipper8ToolStripMenuItem.Text = "Clipper 8";
@@ -259,11 +263,27 @@
             // importStockToolStripMenuItem
             // 
             this.importStockToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.suppressionStockClotureToolStripMenuItem});
+            this.suppressionStockClotureToolStripMenuItem,
+            this.purgerToutLeStockToolStripMenuItem,
+            this.importerStockToolStripMenuItem});
             this.importStockToolStripMenuItem.Name = "importStockToolStripMenuItem";
             this.importStockToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
             this.importStockToolStripMenuItem.Text = "Import Stock";
             this.importStockToolStripMenuItem.Click += new System.EventHandler(this.importStockToolStripMenuItem_Click);
+            // 
+            // suppressionStockClotureToolStripMenuItem
+            // 
+            this.suppressionStockClotureToolStripMenuItem.Name = "suppressionStockClotureToolStripMenuItem";
+            this.suppressionStockClotureToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.suppressionStockClotureToolStripMenuItem.Text = "Suppression Stock Cloture";
+            this.suppressionStockClotureToolStripMenuItem.Click += new System.EventHandler(this.suppressionStockClotureToolStripMenuItem_Click);
+            // 
+            // purgerToutLeStockToolStripMenuItem
+            // 
+            this.purgerToutLeStockToolStripMenuItem.Name = "purgerToutLeStockToolStripMenuItem";
+            this.purgerToutLeStockToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.purgerToutLeStockToolStripMenuItem.Text = "Purger Tout le stock";
+            this.purgerToutLeStockToolStripMenuItem.Click += new System.EventHandler(this.purgerToutLeStockToolStripMenuItem_Click);
             // 
             // relanceClotureToolStripMenuItem
             // 
@@ -277,6 +297,7 @@
             this.relanceClotureToolStripMenuItem1.Name = "relanceClotureToolStripMenuItem1";
             this.relanceClotureToolStripMenuItem1.Size = new System.Drawing.Size(193, 22);
             this.relanceClotureToolStripMenuItem1.Text = "Relance Cloture";
+            this.relanceClotureToolStripMenuItem1.Click += new System.EventHandler(this.relanceClotureToolStripMenuItem1_Click);
             // 
             // groupBox2
             // 
@@ -344,44 +365,36 @@
             this.InfosLabel.Text = "Infos";
             this.InfosLabel.UseWaitCursor = true;
             // 
-            // button2
+            // importerStockToolStripMenuItem
             // 
-            this.button2.BackColor = System.Drawing.Color.LimeGreen;
-            this.button2.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button2.BackgroundImage")));
-            this.button2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.button2.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.button2.Location = new System.Drawing.Point(245, 56);
-            this.button2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(212, 47);
-            this.button2.TabIndex = 16;
-            this.button2.Text = "Suppression stock placement";
-            this.button2.UseVisualStyleBackColor = false;
-            this.button2.UseWaitCursor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click_1);
+            this.importerStockToolStripMenuItem.Name = "importerStockToolStripMenuItem";
+            this.importerStockToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.importerStockToolStripMenuItem.Text = "Importer Stock";
+            this.importerStockToolStripMenuItem.Click += new System.EventHandler(this.importerStockToolStripMenuItem_Click);
             // 
-            // button5
+            // importOFToolStripMenuItem
             // 
-            this.button5.BackColor = System.Drawing.Color.LimeGreen;
-            this.button5.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button5.BackgroundImage")));
-            this.button5.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.button5.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.button5.Location = new System.Drawing.Point(245, 114);
-            this.button5.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(212, 47);
-            this.button5.TabIndex = 17;
-            this.button5.Text = "Suppression stock placement";
-            this.button5.UseVisualStyleBackColor = false;
-            this.button5.UseWaitCursor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click_1);
+            this.importOFToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.avecDTToolStripMenuItem,
+            this.sansDTToolStripMenuItem});
+            this.importOFToolStripMenuItem.Name = "importOFToolStripMenuItem";
+            this.importOFToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.importOFToolStripMenuItem.Text = "Import_OF";
+            this.importOFToolStripMenuItem.Click += new System.EventHandler(this.importOFToolStripMenuItem_Click);
             // 
-            // suppressionStockClotureToolStripMenuItem
+            // avecDTToolStripMenuItem
             // 
-            this.suppressionStockClotureToolStripMenuItem.Name = "suppressionStockClotureToolStripMenuItem";
-            this.suppressionStockClotureToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
-            this.suppressionStockClotureToolStripMenuItem.Text = "Suppression Stock Cloture";
-            this.suppressionStockClotureToolStripMenuItem.Click += new System.EventHandler(this.suppressionStockClotureToolStripMenuItem_Click);
+            this.avecDTToolStripMenuItem.Name = "avecDTToolStripMenuItem";
+            this.avecDTToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.avecDTToolStripMenuItem.Text = "AvecDT";
+            this.avecDTToolStripMenuItem.Click += new System.EventHandler(this.avecDTToolStripMenuItem_Click);
+            // 
+            // sansDTToolStripMenuItem
+            // 
+            this.sansDTToolStripMenuItem.Name = "sansDTToolStripMenuItem";
+            this.sansDTToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.sansDTToolStripMenuItem.Text = "SansDT";
+            this.sansDTToolStripMenuItem.Click += new System.EventHandler(this.sansDTToolStripMenuItem_Click);
             // 
             // AlmaCam_Clipper_Form
             // 
@@ -391,9 +404,7 @@
             this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.BackgroundImage = global::AlmaCamTrainingTest.Properties.Resources.FONDExport;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.ClientSize = new System.Drawing.Size(478, 476);
-            this.Controls.Add(this.button5);
-            this.Controls.Add(this.button2);
+            this.ClientSize = new System.Drawing.Size(304, 476);
             this.Controls.Add(this.InfosLabel);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
@@ -446,13 +457,16 @@
         private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem2;
         private System.Windows.Forms.Label InfosLabel;
         private System.Windows.Forms.Button DoOnAction_TO_CUT_NESTING;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button5;
         private System.Windows.Forms.ToolStripMenuItem clipper8ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importStockToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem relanceClotureToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem relanceClotureToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem suppressionStockClotureToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem purgerToutLeStockToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importerStockToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importOFToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem avecDTToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem sansDTToolStripMenuItem;
     }
 }
 

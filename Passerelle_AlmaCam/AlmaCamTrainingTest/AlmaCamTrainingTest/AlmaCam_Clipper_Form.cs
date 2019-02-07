@@ -118,6 +118,9 @@ namespace AlmaCamTrainingTest
                     format.Delete();
                 }
 
+
+                MessageBox.Show("Terminé");
+
             }
         }
     
@@ -312,47 +315,7 @@ namespace AlmaCamTrainingTest
         private void purgerLeStockToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
-            try {
-
-                //purge stock
-                IEntityList stocks = _Context.EntityManager.GetEntityList("_STOCK");
-                stocks.Fill(false);
-                DialogResult res = MessageBox.Show("Do you really want to destroy all sheets from the stock?", "Warnig", MessageBoxButtons.OKCancel);
-                if (res == DialogResult.OK)
-                {
-                    foreach (IEntity stock in stocks)
-                    {
-                        if (stock.GetFieldValueAsEntity("_SHEET").GetFieldValueAsLong("_IN_PRODUCTION_QUANTITY")== 0)
-                        {
-                            stock.Delete();
-                        }
-
-
-
-                    }
-                   
-                    //suppression formats
-                    IEntityList formats = _Context.EntityManager.GetEntityList("_SHEET");
-                    formats.Fill(false);
-
-                    foreach (IEntity format in formats)
-                    {
-                        if (format.GetFieldValueAsLong("_IN_PRODUCTION_QUANTITY") == 0)
-                        {
-                            format.Delete();
-                        }
-                       
-                    }
-
-                }
-            }
-
-
-            
-            catch (Exception ie) {
-                MessageBox.Show(ie.Message);
-               
-            }
+       
            
 
         }
@@ -718,10 +681,7 @@ namespace AlmaCamTrainingTest
 
         private void importStockToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (var Stock = new Clipper_8_Stock())
-            {
-                Stock.Import(_Context);//, csvImportPath);
-            }
+           
         }
 
         private void relanceClotureToolStripMenuItem_Click(object sender, EventArgs e)
@@ -783,6 +743,124 @@ namespace AlmaCamTrainingTest
 
                 }
             }
+        }
+
+        private void purgerToutLeStockToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+
+                //purge stock
+                IEntityList stocks = _Context.EntityManager.GetEntityList("_STOCK");
+                stocks.Fill(false);
+                DialogResult res = MessageBox.Show("Do you really want to destroy all sheets from the stock?", "Warnig", MessageBoxButtons.OKCancel);
+                if (res == DialogResult.OK)
+                {
+                    foreach (IEntity stock in stocks)
+                    {
+                        if (stock.GetFieldValueAsEntity("_SHEET").GetFieldValueAsLong("_IN_PRODUCTION_QUANTITY") == 0)
+                        {
+                            stock.Delete();
+                        }
+
+
+                    }
+
+                    //suppression formats
+                    IEntityList formats = _Context.EntityManager.GetEntityList("_SHEET");
+                    formats.Fill(false);
+
+                    foreach (IEntity format in formats)
+                    {
+                        if (format.GetFieldValueAsLong("_IN_PRODUCTION_QUANTITY") == 0)
+                        {
+                            format.Delete();
+                        }
+
+                    }
+
+                }
+
+                MessageBox.Show("Fin...");
+            }
+
+
+
+            catch (Exception ie)
+            {
+                MessageBox.Show(ie.Message);
+
+            }
+        }
+
+        private void importerStockToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            using (var Stock = new Clipper_8_Import_Stock())
+            {
+                Stock.Import(_Context);//, csvImportPath);
+            }
+
+
+        
+        }
+
+        private void importOFToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //import of
+            //chargement de sparamètres
+            // bool SansDt=false;
+
+        }
+
+        private void avecDTToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            Clipper_Param.GetlistParam(_Context);
+            string csvImportPath = Clipper_Param.GetPath("IMPORT_CDA");
+            //recuperation du nom de fichier
+            string csvFileName = Path.GetFileNameWithoutExtension(csvImportPath);
+            string csvDirectory = Path.GetDirectoryName(csvImportPath);
+            string csvImportSandDt = csvDirectory + "\\" + csvFileName + "_SANSDT.csv";
+
+
+            string dataModelstring = Clipper_Param.GetModelCA();
+
+
+            using (var CahierAffaire = new Clipper_8_Import_OF())
+            {
+
+                CahierAffaire.Import(_Context, csvImportPath, dataModelstring, false);
+            
+            }
+        }
+
+        private void sansDTToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            Clipper_Param.GetlistParam(_Context);
+            string csvImportPath = Clipper_Param.GetPath("IMPORT_CDA");
+            //recuperation du nom de fichier
+            string csvFileName = Path.GetFileNameWithoutExtension(csvImportPath);
+            string csvDirectory = Path.GetDirectoryName(csvImportPath);
+            string csvImportSandDt = csvDirectory + "\\" + csvFileName + "_SANSDT.csv";
+            
+            string dataModelstring = Clipper_Param.GetModelCA();
+
+
+            using (var CahierAffaire = new Clipper_8_Import_OF())
+            {
+
+                CahierAffaire.Import(_Context, csvImportSandDt, dataModelstring, true);
+                //}
+
+            }
+        }
+
+        private void relanceClotureToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            //IEntity TO_CUT_nesting;
+
         }
     }
 

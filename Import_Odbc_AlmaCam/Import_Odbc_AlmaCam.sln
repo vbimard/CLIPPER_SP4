@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AF_Import_ODBC_Clipper_AlmaCam", "Import_Odbc_AlmaCam\AF_Import_ODBC_Clipper_AlmaCam.csproj", "{AC690F2F-EF70-4A78-90C4-B5EAA55576CF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlmaCamTrainingTest", "ConsoleApp2\AlmaCamTrainingTest.csproj", "{379565D9-656B-4818-A681-1B22FE40B49E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AC690F2F-EF70-4A78-90C4-B5EAA55576CF} = {AC690F2F-EF70-4A78-90C4-B5EAA55576CF}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
