@@ -4366,9 +4366,11 @@ namespace AF_Clipper_Dll
                 //current_clipper_nestinfos.GetNestInfosBySheet(entity);
 
                 current_clipper_nestinfos.GetNestInfosByNesting(entity.Context, entity, "_TO_CUT_NESTING");
-                current_clipper_nestinfos.Export_NestInfosToFile(export_gpao_path);
-                //validation du stock
-
+                 // verfification des propriétés du dossier
+                 if (File_Tools.HasAccess(export_gpao_path))
+                    {// creation du fichier de stock 
+                        current_clipper_nestinfos.Export_NestInfosToFile(export_gpao_path);
+                    }
 
                 current_clipper_nestinfos = null;
             }
@@ -6465,7 +6467,7 @@ namespace AF_Clipper_Dll
 
                 using (StreamReader csvfile = new StreamReader(CsvImportPath, Encoding.Default, true))
                 {
-                    IEntity stock;
+                    //IEntity Stock;
                     int etape = 0;
                     int totaletapes = 4;
 
@@ -6663,7 +6665,7 @@ namespace AF_Clipper_Dll
 
 
                                 //
-                                stock = null;
+                                //stock = null;
                             }
                             ///traitement des toles nueuves elles seront ajoutées a la fin pour 
                             ///ne pas refaire de requetes ni meme ajouter des données a la liste des toles
@@ -7494,8 +7496,10 @@ namespace AF_Clipper_Dll
 
                 var clipper_nest_infos = new Clipper_8_Nest_Infos();
                 clipper_nest_infos.Fill(nesting_to_cut);
+                //verificaion de l'acces
+                if (File_Tools.HasAccess(export_gpao_path)) { 
                 clipper_nest_infos.Export_NestInfosToFile(export_gpao_path);
-
+                }
 
             }
 
@@ -7511,6 +7515,7 @@ namespace AF_Clipper_Dll
     /// <summary>
     /// apres envoie à la coupe 
     /// on supprime les toles non cfao si elle ne sont pas utilisées
+    /// comme ca on enleve tous lien avec le stock almacam
     /// </summary>
     public class Clipper_8_DoOnAction_After_Cutting_end : AfterEndCuttingEvent
     {
@@ -7530,24 +7535,8 @@ namespace AF_Clipper_Dll
             //supression du stock alma
             IEntity nesting = ToCutSheet.Context.EntityManager.GetEntity(ToCutSheet.GetFieldValueAsInt("_TO_CUT_NESTING"), "_NESTING");
             int nestingMultiplicity = nesting.GetFieldValueAsInt("_QUANTITY");
-
-            IEntityList tolesCoupees = ToCutSheet.Context.EntityManager.GetEntityList("_SHEET", "_SEQUENCED_NESTING", ConditionOperator.Equal, nesting.Id32);
-            tolesCoupees.Fill(false);
-
-            foreach (IEntity toleCoupee in tolesCoupees)
-            {
-
-
-
-            }
-            ///validation du stock cfao
-            foreach (IEntity toleCoupee in tolesCoupees)
-            {
-
-
-
-            }
-
+            StockManager.DeleteAlmaCamStock(ToCutSheet);
+           
         }
     }
     #endregion
@@ -7638,21 +7627,23 @@ namespace AF_Clipper_Dll
 
                                         int iheader = 0;
                                         string headerline;
-
-                                        HEADER[iheader++] = "HEADER";
-                                        HEADER[iheader++] = SimplifiedMethods.EmptyString(tole.Stock_Name);
-                                        HEADER[iheader++] = SimplifiedMethods.NumberToString(tole.Sheet_Length, format);
-                                        HEADER[iheader++] = SimplifiedMethods.NumberToString(tole.Sheet_Width, format);
-                                        HEADER[iheader++] = SimplifiedMethods.NumberToString(tole.Thickness, format);
-                                        HEADER[iheader++] = SimplifiedMethods.EmptyString(tole.GradeName);
-                                        HEADER[iheader++] = String.Format(format, (Nesting_Sheet_loadingTimeInit / 60));
-                                        HEADER[iheader++] = SimplifiedMethods.EmptyString(Nesting_CentreFrais_Machine);
-                                        HEADER[iheader++] = SimplifiedMethods.EmptyString(Nesting_Emf_File);//emf
                                         tole.Specific_Fields.Get<string>("NUMMATLOT", out string NUMMATLOT);
-                                        HEADER[iheader++] = SimplifiedMethods.EmptyString(NUMMATLOT);
-                                        HEADER[iheader++] = SimplifiedMethods.NumberToString((Nesting_Sheet_loadingTimeEnd / 60), format);
+                                        HEADER[iheader++] = "HEADER";
+                                        HEADER[iheader++] = SimplifiedMethods.EmptyString(tole.Stock_Name);//nom
+                                        HEADER[iheader++] = SimplifiedMethods.NumberToString(tole.Sheet_Length, format);//longeur
+                                        HEADER[iheader++] = SimplifiedMethods.NumberToString(tole.Sheet_Width, format);//largeur
+                                        HEADER[iheader++] = SimplifiedMethods.NumberToString(tole.Thickness, format);//epaisseur
+                                        HEADER[iheader++] = SimplifiedMethods.EmptyString(tole.GradeName);//matiere
+                                        HEADER[iheader++] = "1"; //mutliplicité forcée a 1 pour le moment
+                                        HEADER[iheader++] = String.Format(format, (Nesting_Sheet_loadingTimeInit / 60));//temps de chargement
+                                        HEADER[iheader++] = SimplifiedMethods.EmptyString(Nesting_CentreFrais_Machine);//centre de frais
+                                        HEADER[iheader++] = "";
+                                        HEADER[iheader++] = SimplifiedMethods.EmptyString(Nesting_Emf_File);//emf
+                                        HEADER[iheader++] = SimplifiedMethods.EmptyString(NUMMATLOT);   //numero de lot
+                                        HEADER[iheader++] = SimplifiedMethods.NumberToString((Nesting_Sheet_loadingTimeEnd / 60), format);//temps de dechargement
+                                        HEADER[iheader++] = "";
 
-                                        headerline = SimplifiedMethods.WriteTableToLine(HEADER, iheader, Separator);
+                                    headerline = SimplifiedMethods.WriteTableToLine(HEADER, iheader, Separator);
                                         // PART //
 
                                         foreach (Nested_PartInfo part in tole.List_Nested_Part_Infos)
@@ -7662,18 +7653,18 @@ namespace AF_Clipper_Dll
                                             PART[ipart++] = "DETAIL";
                                             part.Specific_Fields.Get<string>("IDLNROUT", out string idlnrout);
                                             part.Specific_Fields.Get<string>("IDLNBOM", out string idlnbom);
-                                            PART[ipart++] = SimplifiedMethods.EmptyString(idlnrout);
-                                            PART[ipart++] = SimplifiedMethods.EmptyString(idlnbom);
-                                            PART[ipart++] = SimplifiedMethods.NumberToString(part.Nested_Quantity, format);
-                                            PART[ipart++] = SimplifiedMethods.NumberToString(part.Height, format);
-                                            PART[ipart++] = SimplifiedMethods.NumberToString(part.Width, format);
 
                                             double partweightcoef = part.Part_Balanced_Weight * part.Nested_Quantity / (tole.Sheet_Weight);
 
-                                            PART[ipart++] = SimplifiedMethods.NumberToString(partweightcoef, format);
-                                            PART[ipart++] = SimplifiedMethods.NumberToString(part.Weight * 0.001, format);
-                                            PART[ipart++] = SimplifiedMethods.NumberToString(part.Part_Time, format);
 
+                                            PART[ipart++] = SimplifiedMethods.EmptyString(idlnrout);  //id unuqie clip  
+                                            PART[ipart++] = SimplifiedMethods.EmptyString(idlnbom);  //id nomenclature
+                                            PART[ipart++] = SimplifiedMethods.NumberToString(part.Nested_Quantity, format); // qté par placement (normalement)
+                                            PART[ipart++] = SimplifiedMethods.NumberToString(part.Height, format); //hauteur 
+                                            PART[ipart++] = SimplifiedMethods.NumberToString(part.Width, format); //largeur
+                                            PART[ipart++] = SimplifiedMethods.NumberToString(partweightcoef, format);//poids ratio
+                                            PART[ipart++] = SimplifiedMethods.NumberToString(part.Weight * 0.001, format);//poids reel en kg
+                                            PART[ipart++] = SimplifiedMethods.NumberToString(part.Part_Time, format);//temps de coupe
 
                                             partline = SimplifiedMethods.WriteTableToLine(PART, ipart, Separator);
                                             DETAIL.Add(partline);
@@ -7690,8 +7681,9 @@ namespace AF_Clipper_Dll
                                             string offcutline = "";
                                             double longueur = offcut.Sheet_Length;
                                             double largeur = offcut.Sheet_Width;
+                                            double surface = offcut.Sheet_Surface;
 
-                                            string IsRectagular = (longueur == largeur) == true ? "1" : "0";
+                                            string IsRectagular = (longueur*largeur == surface) == true ? "1" : "0";
 
                                             if (offcut.Sheet_Is_rotated)
                                             {
@@ -7707,13 +7699,13 @@ namespace AF_Clipper_Dll
                                             OFFCUT[ioffcut++] = SimplifiedMethods.NumberToString(largeur, format);
                                             OFFCUT[ioffcut++] = SimplifiedMethods.NumberToString(offcut.Mutliplicity, format);
                                             OFFCUT[ioffcut++] = SimplifiedMethods.NumberToString((offcut.Sheet_Surface / Nesting_Surface), format);
-                                            OFFCUT[ioffcut++] = IsRectagular;
+                                            OFFCUT[ioffcut++] = IsRectagular;  //si la chute est care mettre 1
                                             OFFCUT[ioffcut++] = "";
                                             OFFCUT[ioffcut++] = offcut.Sheet_EmfFile;
 
                                             offcutline = SimplifiedMethods.WriteTableToLine(OFFCUT, ioffcut, Separator);
                                             CHUTE.Add(offcutline);
-                                        //on set les infos du fichier gp en sortie pour le supprimer avec les chutes si necessaire
+                                            //on set les infos du fichier gp en sortie pour le supprimer avec les chutes si necessaire
                                             if (offcut.StockEntity !=null)
                                             offcut.StockEntity.SetFieldValue("AF_GPAO_FILE", af_gpao_file_name);
                                             offcut.StockEntity.Save();

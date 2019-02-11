@@ -922,11 +922,11 @@ namespace AlmaCamTrainingTest
         private void relanceClotureToolStripMenuItem2_Click(object sender, EventArgs e)
         {
             List<IEntity> cutsheets = SimplifiedMethods.Get_Entity_Selector(_Context, "_CUT_SHEET");
-
+            var doonaction = new Clipper_8_DoOnAction_After_Cutting_end();
             foreach (IEntity cutsheet in cutsheets)
             {
                 // 
-               
+                doonaction.Execute(cutsheet);
                 //
             }
 
