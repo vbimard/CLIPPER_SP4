@@ -37,7 +37,7 @@ namespace AlmaCamTrainingTest
 
 
 
-    public partial class AlmaCam_Clipper_Form : Form
+    public partial class AlmaCam_Clipper_Form : Form,IDisposable
     {
 
         //initialisation des listes
@@ -127,6 +127,7 @@ namespace AlmaCamTrainingTest
                 MessageBox.Show("Terminé");
 
             }
+            _Context = null;
         }
     
         private void button3_Click(object sender, EventArgs e)
@@ -443,6 +444,7 @@ namespace AlmaCamTrainingTest
 
 
             }
+            finally { _Context = null; }
 
           
         }
@@ -482,6 +484,9 @@ namespace AlmaCamTrainingTest
 
                 }
             }
+
+
+              _Context = null; 
         }
 
         private void purgerToutLeStockToolStripMenuItem_Click(object sender, EventArgs e)
@@ -532,6 +537,7 @@ namespace AlmaCamTrainingTest
                 MessageBox.Show(ie.Message);
 
             }
+            finally { _Context = null; }
         }
 
         private void importerStockToolStripMenuItem_Click(object sender, EventArgs e)
@@ -544,8 +550,8 @@ namespace AlmaCamTrainingTest
                 Stock.Import(_Context);//, csvImportPath);
             }
 
+                  _Context = null;
 
-        
         }
 
         private void importOFToolStripMenuItem_Click(object sender, EventArgs e)
@@ -578,6 +584,7 @@ namespace AlmaCamTrainingTest
                 CahierAffaire.Import(_Context, csvImportPath, dataModelstring, false);
             
             }
+             _Context = null; 
         }
 
         private void sansDTToolStripMenuItem_Click(object sender, EventArgs e)
@@ -602,6 +609,7 @@ namespace AlmaCamTrainingTest
                 //}
 
             }
+              _Context = null; 
         }
 
         private void relanceClotureToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -639,6 +647,7 @@ namespace AlmaCamTrainingTest
 
                 }
             }
+              _Context = null; 
         }
 
         private void reinitialiserStockToolStripMenuItem_Click(object sender, EventArgs e)
@@ -672,7 +681,7 @@ namespace AlmaCamTrainingTest
 
                 }
             }
-        }
+             _Context = null;         }
 
         private void recreerLEmfToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -692,9 +701,10 @@ namespace AlmaCamTrainingTest
                 }
                 //
             }
+             _Context = null; 
 
 
-          
+
 
         }
 
@@ -723,6 +733,7 @@ namespace AlmaCamTrainingTest
             }
 
             Cursor.Current = Cursors.Default;
+            _Context = null; 
 
         }
 
@@ -762,6 +773,7 @@ namespace AlmaCamTrainingTest
                 //}
 
             }
+             _Context = null; 
         }
 
         private void c7ImpoortStockToolStripMenuItem_Click(object sender, EventArgs e)
@@ -777,15 +789,17 @@ namespace AlmaCamTrainingTest
             }
 
             MessageBox.Show("import Stock terminé");
+            _Context = null; 
         }
 
         private void remonterDTToolStripMenuItem_Click(object sender, EventArgs e)
         {
             IModelsRepository modelsRepository = new ModelsRepository();
-            IContext myContext = modelsRepository.GetModelContext(Lst_Model.Text);  //nom de la base;
+            IContext _Context = modelsRepository.GetModelContext(Lst_Model.Text);  //nom de la base;
 
             AF_Clipper_Dll.Clipper_Export_DT Export_dt = new AF_Clipper_Dll.Clipper_Export_DT();
             Export_dt.execute(_Context);
+            _Context = null; 
 
         }
 
@@ -814,7 +828,7 @@ namespace AlmaCamTrainingTest
                 doonaction.execute(Entityselector.SelectedEntity);
             }
 
-
+              _Context = null; 
         }
 
         private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
@@ -871,9 +885,9 @@ namespace AlmaCamTrainingTest
 
                 //creation du model repository
                 IModelsRepository modelsRepository = new ModelsRepository();
-                IContext myContext = modelsRepository.GetModelContext(Lst_Model.Text);  //nom de la base;
+                IContext _Context = modelsRepository.GetModelContext(Lst_Model.Text);  //nom de la base;
                                                                                         //set value 
-                IEntityList stocks = myContext.EntityManager.GetEntityList("_STOCK");
+                IEntityList stocks = _Context.EntityManager.GetEntityList("_STOCK");
                 stocks.Fill(false);
 
 
@@ -930,7 +944,9 @@ namespace AlmaCamTrainingTest
                 //MessageBox.Show("Operation terminée");
             }
 
-            finally {
+            finally
+            {
+                  _Context = null; 
                 Cursor.Current = Cursors.Default;
             }
         
@@ -951,7 +967,7 @@ namespace AlmaCamTrainingTest
             var Export_dt = new AF_Clipper_Dll.Clipper_8_Export_DT();
             Export_dt.Execute(_Context);
 
-
+              _Context = null; 
         }
     }
 
@@ -962,6 +978,7 @@ namespace AlmaCamTrainingTest
         IContext _Context;
         
         IContext _HostContext ;
+
         public InstallclipperTest(IContext context){
           
             IModelsRepository modelsRepository = new ModelsRepository();

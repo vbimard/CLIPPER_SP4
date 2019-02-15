@@ -6716,7 +6716,7 @@ namespace AF_Clipper_Dll
                     string etapemessage = etape.ToString() + " \\ " + totaletapes.ToString();
                     SimplifiedMethods.NotifyMessage(methodename, etapemessage + " verification du fichier de stock...");
                     /// on liste les toles cfao dont le champs idclip est non et qui ne sont pas omises
-                    double totallinenumber = 0;
+                    long totallinenumber = 0;
                     ligneNumber = 0;
                     string newline = null;
                     Alma_Log.Write_Log(methodename + " Lecture du fichier de stock et construction du dictionnaire de ligne");
@@ -6727,13 +6727,15 @@ namespace AF_Clipper_Dll
                     {
                         ligneNumber++;
                         //affichage a traiter dans un thread
+                        SimplifiedMethods.NotifyStatusMessage(methodename, etapemessage, totallinenumber, ligneNumber, ref step, seuil);
+                        /*
                         double ratio = ligneNumber / totallinenumber;
                         if (ratio > seuil * step)
                         {
 
                             SimplifiedMethods.NotifyMessage(methodename, etapemessage + " En cours " + seuil * step * 100 + " %");
                             step++;
-                        }
+                        }*/
                         ///
 
                         newline = csvfile.ReadLine();
@@ -6768,9 +6770,7 @@ namespace AF_Clipper_Dll
                             csvfile_list_lines.Add(newline);
                             //construction du dictionnaire de lignes indexe
                             csvfile_list_dictionnary.Add(idclipobject.ToString(), line_Dictionnary);
-                            //line_Dictionnary = null;
-                            //Alma_Log.Write_Log(methodename + ":-----> line " + ligneNumber + ":" + line_Dictionnary["_NAME"] + ":integrity tests fails, line ignored");
-                            //continue;
+                     
 
                         }
 
@@ -6803,45 +6803,40 @@ namespace AF_Clipper_Dll
                     stocks_indentifie_en_cours.Fill(false);
 
 
-                    //string line = null;
-                    //pas de stock on ignore cette etape
-                    //if (stocks_indentifie_en_cours.Count() != 0)
+                  
 
                     Alma_Log.Write_Log_Important(methodename + ":*********************** traitement du stock existant (possedant des idclip)********************************* ");
                     Alma_Log.Write_Log(methodename + PHASE + ": stock almacam : nombre de toles identifiees et non omises  :  " + stocks_indentifie_en_cours.Count());
 
                     //premiere lecture du fichier de stock clipper 
-                    //line = csvfile.ReadLine();
+                   
                     ligneNumber = 0;
-                    //while (!csvfile.EndOfStream)
-                    //foreach (string line in csvfile_list_lines)
+                 
                     step = 1;
                     foreach (string idclip in sheetId_list_from_txt_file)
                     {
                         ligneNumber++;
 
                         //affichage a traiter dans un thread
+                        //string notification_message = etapemessage ;
+                        SimplifiedMethods.NotifyStatusMessage(methodename, etapemessage,totallinenumber,ligneNumber,ref step,seuil);
+                        /*
                         double ratio = ligneNumber / totallinenumber;
                         if (ratio > seuil * step)
                         {
 
                             SimplifiedMethods.NotifyMessage(methodename, etapemessage + " En cours " + seuil * step * 100 + " %");
                             step++;
-                        }
+                        }*/
                         ///
 
 
                         //line = csvfile.ReadLine();
                         Alma_Log.Write_Log(" +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++   LIGNE  " + ligneNumber + " +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
                         //interpretation de la ligne dans le dictionnaire de ligne
-                        //line_Dictionnary = Data_Model.ReadCsvLine_With_Dictionnary(line);
-                        line_Dictionnary = csvfile_list_dictionnary[idclip];///Data_Model.ReadCsvLine_With_Dictionnary(line);
-                        /****
-                        //construction de la liste des toles envoyées par clipper
-                        object idclipobject = null;
-                        line_Dictionnary.TryGetValue("IDCLIP", out idclipobject);
-                        sheetId_list_from_txt_file.Add(idclipobject.ToString());
-                        ****/
+                       
+                        line_Dictionnary = csvfile_list_dictionnary[idclip];
+                      
                         ///
                         //IEnumerable<IExtendedEntity> stockentityList = stocks_indentifie_en_cours.Where(s => s.GetFieldValue("IDCLIP").ToString().Trim() == line_Dictionnary["IDCLIP"].ToString());
                         IEntity stockentity = AF_ImportTools.SimplifiedMethods.GetEntityFrom_ClipId(stocks_indentifie_en_cours, idclip);
@@ -6849,26 +6844,10 @@ namespace AF_Clipper_Dll
                         {
                             //recuperation du stock
                             //ici on travail les modifs.
-                            //check de l'integrite des données
-                            //on verifie les données d'entrées (matiere existe, longeur largeur !=0, quantité decimales)
-
-                            /***
-                            if (CheckDataIntegerity(contextlocal, line_Dictionnary) == false)
-                            {
-                                Alma_Log.Write_Log_Important(methodename + ":-----> line " + ligneNumber + ":" + line_Dictionnary["_NAME"] + ":integrity tests fails, line ignored");
-                                continue;
-                            }
-                            ***/
-
-                            /***else
-                            { ///mise a jours
-                            ***/
+                            ///mise a jours
+                            
                             Update_Stock_Item(stockentity, line_Dictionnary);
                             Alma_Log.Write_Log(methodename + PHASE + " " + line_Dictionnary["IDCLIP"] + ":-----> line " + ligneNumber + " STOCK UPDATED.");
-                            //}
-
-
-                            //
                             //stock = null;
                         }
 
@@ -6883,15 +6862,13 @@ namespace AF_Clipper_Dll
                             //idclip n'existe pas dans le stock
                             object filename = null;
                             line_Dictionnary.TryGetValue("FILENAME", out filename);
-                            //object idclip = null;
-                            //line_Dictionnary.TryGetValue("IDCLIP", out idclip);
+                           
                             //
                             Alma_Log.Write_Log("La Tole/chute envoyée par clipper  " + idclip + " : " + filename + ": n'existe pas encore dans le stock");
 
                             if (filename == null)
                             {
                                 /////filename  vide et idclip non vide c'est une tole neuve
-                                //verif_newToles.Add(line_Dictionnary["IDCLIP"].ToString());
                                 //declaration de la liste des toles neuves
                                 Liste_new_Toles.Add(idclip);
                                 //verif_newToles.Add(idclip);
@@ -6948,9 +6925,7 @@ namespace AF_Clipper_Dll
                     /// on se base sur la liste des nouvelles chutes
                     if (chutes_cfao_non_identifiees_en_cours.Count() != 0)
                     {
-                        //Alma_Log.Write_Log(methodename + PHASE + ":------------------------ MAJ CHUTES CFAO ------------------------ ");
-                        //Alma_Log.Write_Log(methodename + PHASE + ": found " + chutes_cfao_non_identifiees_en_cours.Count().ToString());
-                        //on rembobine
+                          //on rembobine
                         csvfile.BaseStream.Position = 0;
                         ligneNumber = 0;
 
@@ -6963,13 +6938,15 @@ namespace AF_Clipper_Dll
                             ligneNumber++;
 
                             //affichage a traiter dans un thread
+                            SimplifiedMethods.NotifyStatusMessage(methodename, etapemessage, totallinenumber, ligneNumber, ref step, seuil);
+                            /*
                             double ratio = ligneNumber / totallinenumber;
                             if (ratio > seuil * step)
                             {
 
                                 SimplifiedMethods.NotifyMessage(methodename, etapemessage + " En cours " + seuil * step * 100 + " %");
                                 step++;
-                            }
+                            }*/
 
 
                             line_Dictionnary = csvfile_list_dictionnary[idclip];
@@ -6989,14 +6966,7 @@ namespace AF_Clipper_Dll
                             if (stockentity == null)
                             {
                                 ///on pourrait creer les toles neuves ici// a prevoire  //
-                                ///
-                                /***
-                                if (CheckDataIntegerity(contextlocal, line_Dictionnary) == false)
-                                {
-                                    Alma_Log.Write_Log(methodename + ":-----> line " + ligneNumber + ":" + line_Dictionnary["_NAME"] + ":integrity tests fails, line ignored");
-                                    continue;
-                                }
-                                ***/
+                             
 
 
 
@@ -7044,18 +7014,7 @@ namespace AF_Clipper_Dll
                     {
                         sheetId_list_from_database.Add(xe.Entity.GetFieldValueAsString("IDCLIP"));
                     }
-                    /***
-                    if (new_full_stocks.Count() != 0)
-                    {
-
-                        sheetId_list_from_database = SimplifiedMethods.Get_Extended_EntityList_Field_Value_AsString_List(new_full_stocks, "IDCLIP");
-
-                        Liste_new_Tole = GetNewStock(sheetId_list_from_txt_file, sheetId_list_from_database);
-
-                        Alma_Log.Write_Log_Important(methodename + PHASE + ": traitement des nouvelles chutes ");
-                        Alma_Log.Write_Log(methodename + PHASE + ": found " + new_full_stocks.Count().ToString());
-                        //on rembobine
-                    }***/
+                  
                     csvfile.BaseStream.Position = 0;
                     ligneNumber = 0;
                     //line = csvfile.ReadLine();
@@ -7299,7 +7258,7 @@ namespace AF_Clipper_Dll
                                 long Qty = 0;
                                 Qty = CaclulateSheetQuantity(stock, line_dictionnary);
                                 stock.SetFieldValue(field.Key, Qty);
-                                //cas baroux ou le client n'utilise pas les numéro de lot
+                                //cas barou ou le client n'utilise pas les numéro de lot
                                 //permet de debloquer les clotures.
                                 stock.SetFieldValue("_USED_QUANTITY", 0);
 
@@ -7407,9 +7366,7 @@ namespace AF_Clipper_Dll
                 long sheetid = newsheet.Id;
 
                 IEntity newstock = contextlocal.EntityManager.CreateEntity("_STOCK");
-                //string filename = null;
-                ///filename = AF_ImportTools.SimplifiedMethods.GetDictionnaryValue(line_Dictionnary, "FILENAME").ToString();
-
+         
                 newstock.SetFieldValue("_SHEET", newsheet);
                 newstock.Save();
                 Update_Stock_Item(newstock, line_Dictionnary);
@@ -8909,7 +8866,7 @@ namespace AF_Clipper_Dll
     #endregion
 
     #region Integration
-    public class Clipper_integrate{
+    public class Clipper_8_integrate{
 
 
         public void Integrate_All(string databasemane)
