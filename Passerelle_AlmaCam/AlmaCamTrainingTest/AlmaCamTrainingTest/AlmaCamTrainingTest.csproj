@@ -152,6 +152,10 @@
       <HintPath>C:\AlmaCAM\Bin\Wpm.Implement.Manager.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Wpm.Implement.ModelSetting, Version=2.1.4.35644, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\..\AlmaCAM\Bin\Wpm.Implement.ModelSetting.dll</HintPath>
+    </Reference>
     <Reference Include="Wpm.Implement.Processor">
       <HintPath>C:\AlmaCAM\Bin\Wpm.Implement.Processor.dll</HintPath>
       <Private>False</Private>
@@ -162,6 +166,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AboutBox1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AboutBox1.Designer.cs">
+      <DependentUpon>AboutBox1.cs</DependentUpon>
+    </Compile>
     <Compile Include="AlmaCam_Clipper_Form.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -176,6 +186,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="AboutBox1.resx">
+      <DependentUpon>AboutBox1.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AlmaCam_Clipper_Form.resx">
       <DependentUpon>AlmaCam_Clipper_Form.cs</DependentUpon>
     </EmbeddedResource>

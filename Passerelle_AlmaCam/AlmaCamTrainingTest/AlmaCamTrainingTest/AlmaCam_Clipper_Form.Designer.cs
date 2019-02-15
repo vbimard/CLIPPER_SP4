@@ -29,27 +29,16 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AlmaCam_Clipper_Form));
-            this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button9 = new System.Windows.Forms.Button();
-            this.AfterClose = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.cAToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.stockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.donnéesTechniquesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.sheetRequiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.retourPlacementToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.stockToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.purgerLeStockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quitToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.fichierToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.iMportChaierDaffaireToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.creerRetourGPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.remonterDTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.c7ImpoortStockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clipper8ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importStockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.suppressionStockClotureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.purgerToutLeStockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importerStockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.recreerLEmfToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -58,179 +47,36 @@
             this.sansDTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clotureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.relanceenvoiecoupeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.reinitialiserStockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.relanceClotureToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.DoOnAction_TO_CUT_NESTING = new System.Windows.Forms.Button();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.integrationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.extraireChampsClipperToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.preparerLaBasePourClipperToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.initialiserStockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.quitToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.InfosLabel = new System.Windows.Forms.Label();
+            this.Lst_Model = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.remonteeDTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
-            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // button3
-            // 
-            this.button3.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.button3.BackgroundImage = global::AlmaCamTrainingTest.Properties.Resources.BUTTON;
-            this.button3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.button3.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.button3.Location = new System.Drawing.Point(8, 76);
-            this.button3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(212, 47);
-            this.button3.TabIndex = 2;
-            this.button3.Text = "Import du Stock";
-            this.button3.UseVisualStyleBackColor = false;
-            this.button3.UseWaitCursor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
-            // 
-            // button4
-            // 
-            this.button4.BackColor = System.Drawing.SystemColors.InactiveBorder;
-            this.button4.BackgroundImage = global::AlmaCamTrainingTest.Properties.Resources.BUTTON;
-            this.button4.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.button4.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.button4.Location = new System.Drawing.Point(8, 18);
-            this.button4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(212, 48);
-            this.button4.TabIndex = 3;
-            this.button4.Text = "Import Cahier Affaire";
-            this.button4.UseVisualStyleBackColor = false;
-            this.button4.UseWaitCursor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
-            // 
-            // button9
-            // 
-            this.button9.BackColor = System.Drawing.Color.Cyan;
-            this.button9.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button9.BackgroundImage")));
-            this.button9.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.button9.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.button9.Location = new System.Drawing.Point(8, 72);
-            this.button9.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(212, 47);
-            this.button9.TabIndex = 8;
-            this.button9.Text = "Remonter les dossiers Techniques";
-            this.button9.UseVisualStyleBackColor = false;
-            this.button9.UseWaitCursor = true;
-            this.button9.Click += new System.EventHandler(this.button9_Click);
-            // 
-            // AfterClose
-            // 
-            this.AfterClose.BackColor = System.Drawing.Color.LimeGreen;
-            this.AfterClose.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("AfterClose.BackgroundImage")));
-            this.AfterClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.AfterClose.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.AfterClose.Location = new System.Drawing.Point(8, 20);
-            this.AfterClose.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.AfterClose.Name = "AfterClose";
-            this.AfterClose.Size = new System.Drawing.Size(212, 47);
-            this.AfterClose.TabIndex = 11;
-            this.AfterClose.Text = "Retour Placement Clos (DoOnAction_After_Cutting_end)";
-            this.AfterClose.UseVisualStyleBackColor = false;
-            this.AfterClose.UseWaitCursor = true;
-            this.AfterClose.Click += new System.EventHandler(this.AfterClose_Click);
             // 
             // menuStrip1
             // 
             this.menuStrip1.BackColor = System.Drawing.Color.Gray;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.importToolStripMenuItem,
-            this.exportToolStripMenuItem,
-            this.stockToolStripMenuItem1,
             this.fileToolStripMenuItem,
             this.fichierToolStripMenuItem,
-            this.clipper8ToolStripMenuItem});
+            this.clipper8ToolStripMenuItem,
+            this.integrationToolStripMenuItem,
+            this.aboutToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(247, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(284, 24);
             this.menuStrip1.TabIndex = 12;
             this.menuStrip1.Text = "menuStrip1";
-            this.menuStrip1.UseWaitCursor = true;
-            // 
-            // importToolStripMenuItem
-            // 
-            this.importToolStripMenuItem.BackColor = System.Drawing.Color.Gray;
-            this.importToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.cAToolStripMenuItem,
-            this.stockToolStripMenuItem,
-            this.quitToolStripMenuItem});
-            this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
-            this.importToolStripMenuItem.Text = "Import";
-            this.importToolStripMenuItem.Visible = false;
-            // 
-            // cAToolStripMenuItem
-            // 
-            this.cAToolStripMenuItem.Name = "cAToolStripMenuItem";
-            this.cAToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
-            this.cAToolStripMenuItem.Text = "CA";
-            this.cAToolStripMenuItem.Click += new System.EventHandler(this.cAToolStripMenuItem_Click);
-            // 
-            // stockToolStripMenuItem
-            // 
-            this.stockToolStripMenuItem.Name = "stockToolStripMenuItem";
-            this.stockToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
-            this.stockToolStripMenuItem.Text = "Stock";
-            this.stockToolStripMenuItem.Click += new System.EventHandler(this.stockToolStripMenuItem_Click);
-            // 
-            // quitToolStripMenuItem
-            // 
-            this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
-            this.quitToolStripMenuItem.Text = "Quit";
-            this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
-            // 
-            // exportToolStripMenuItem
-            // 
-            this.exportToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.donnéesTechniquesToolStripMenuItem,
-            this.sheetRequiToolStripMenuItem,
-            this.retourPlacementToolStripMenuItem});
-            this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
-            this.exportToolStripMenuItem.Text = "Export";
-            this.exportToolStripMenuItem.Visible = false;
-            // 
-            // donnéesTechniquesToolStripMenuItem
-            // 
-            this.donnéesTechniquesToolStripMenuItem.Name = "donnéesTechniquesToolStripMenuItem";
-            this.donnéesTechniquesToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
-            this.donnéesTechniquesToolStripMenuItem.Text = "Données Techniques";
-            this.donnéesTechniquesToolStripMenuItem.Click += new System.EventHandler(this.donnéesTechniquesToolStripMenuItem_Click);
-            // 
-            // sheetRequiToolStripMenuItem
-            // 
-            this.sheetRequiToolStripMenuItem.Name = "sheetRequiToolStripMenuItem";
-            this.sheetRequiToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
-            this.sheetRequiToolStripMenuItem.Text = "Sheet Requi.";
-            this.sheetRequiToolStripMenuItem.Click += new System.EventHandler(this.sheetRequiToolStripMenuItem_Click);
-            // 
-            // retourPlacementToolStripMenuItem
-            // 
-            this.retourPlacementToolStripMenuItem.Name = "retourPlacementToolStripMenuItem";
-            this.retourPlacementToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
-            this.retourPlacementToolStripMenuItem.Text = "Retour Placement";
-            this.retourPlacementToolStripMenuItem.Click += new System.EventHandler(this.retourPlacementToolStripMenuItem_Click);
-            // 
-            // stockToolStripMenuItem1
-            // 
-            this.stockToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.purgerLeStockToolStripMenuItem});
-            this.stockToolStripMenuItem1.Name = "stockToolStripMenuItem1";
-            this.stockToolStripMenuItem1.Size = new System.Drawing.Size(48, 20);
-            this.stockToolStripMenuItem1.Text = "Stock";
-            // 
-            // purgerLeStockToolStripMenuItem
-            // 
-            this.purgerLeStockToolStripMenuItem.Name = "purgerLeStockToolStripMenuItem";
-            this.purgerLeStockToolStripMenuItem.ShowShortcutKeys = false;
-            this.purgerLeStockToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
-            this.purgerLeStockToolStripMenuItem.Text = "Purger le Stock";
-            this.purgerLeStockToolStripMenuItem.Click += new System.EventHandler(this.purgerLeStockToolStripMenuItem_Click);
+            this.menuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip1_ItemClicked);
             // 
             // fileToolStripMenuItem
             // 
@@ -249,8 +95,42 @@
             // 
             // fichierToolStripMenuItem
             // 
+            this.fichierToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.iMportChaierDaffaireToolStripMenuItem,
+            this.creerRetourGPToolStripMenuItem,
+            this.remonterDTToolStripMenuItem,
+            this.c7ImpoortStockToolStripMenuItem});
             this.fichierToolStripMenuItem.Name = "fichierToolStripMenuItem";
-            this.fichierToolStripMenuItem.Size = new System.Drawing.Size(12, 20);
+            this.fichierToolStripMenuItem.Size = new System.Drawing.Size(66, 20);
+            this.fichierToolStripMenuItem.Text = "Clipper 7";
+            // 
+            // iMportChaierDaffaireToolStripMenuItem
+            // 
+            this.iMportChaierDaffaireToolStripMenuItem.Name = "iMportChaierDaffaireToolStripMenuItem";
+            this.iMportChaierDaffaireToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.iMportChaierDaffaireToolStripMenuItem.Text = "c7_Import Cahier Affaire";
+            this.iMportChaierDaffaireToolStripMenuItem.Click += new System.EventHandler(this.iMportChaierDaffaireToolStripMenuItem_Click);
+            // 
+            // creerRetourGPToolStripMenuItem
+            // 
+            this.creerRetourGPToolStripMenuItem.Name = "creerRetourGPToolStripMenuItem";
+            this.creerRetourGPToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.creerRetourGPToolStripMenuItem.Text = "c7_Creer Retour GP";
+            this.creerRetourGPToolStripMenuItem.Click += new System.EventHandler(this.creerRetourGPToolStripMenuItem_Click);
+            // 
+            // remonterDTToolStripMenuItem
+            // 
+            this.remonterDTToolStripMenuItem.Name = "remonterDTToolStripMenuItem";
+            this.remonterDTToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.remonterDTToolStripMenuItem.Text = "c7_Remonter DT";
+            this.remonterDTToolStripMenuItem.Click += new System.EventHandler(this.remonterDTToolStripMenuItem_Click);
+            // 
+            // c7ImpoortStockToolStripMenuItem
+            // 
+            this.c7ImpoortStockToolStripMenuItem.Name = "c7ImpoortStockToolStripMenuItem";
+            this.c7ImpoortStockToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.c7ImpoortStockToolStripMenuItem.Text = "c7_Import Stock";
+            this.c7ImpoortStockToolStripMenuItem.Click += new System.EventHandler(this.c7ImpoortStockToolStripMenuItem_Click);
             // 
             // clipper8ToolStripMenuItem
             // 
@@ -265,41 +145,39 @@
             // importStockToolStripMenuItem
             // 
             this.importStockToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.suppressionStockClotureToolStripMenuItem,
             this.purgerToutLeStockToolStripMenuItem,
             this.importerStockToolStripMenuItem,
             this.recreerLEmfToolStripMenuItem});
             this.importStockToolStripMenuItem.Name = "importStockToolStripMenuItem";
             this.importStockToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.importStockToolStripMenuItem.Text = "Import Stock";
+            this.importStockToolStripMenuItem.Text = "Stock";
             this.importStockToolStripMenuItem.Click += new System.EventHandler(this.importStockToolStripMenuItem_Click);
-            // 
-            // suppressionStockClotureToolStripMenuItem
-            // 
-            this.suppressionStockClotureToolStripMenuItem.Name = "suppressionStockClotureToolStripMenuItem";
-            this.suppressionStockClotureToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
-            this.suppressionStockClotureToolStripMenuItem.Text = "Suppression Stock Cloture";
-            this.suppressionStockClotureToolStripMenuItem.Click += new System.EventHandler(this.suppressionStockClotureToolStripMenuItem_Click);
             // 
             // purgerToutLeStockToolStripMenuItem
             // 
+            this.purgerToutLeStockToolStripMenuItem.AutoToolTip = true;
             this.purgerToutLeStockToolStripMenuItem.Name = "purgerToutLeStockToolStripMenuItem";
-            this.purgerToutLeStockToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.purgerToutLeStockToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
             this.purgerToutLeStockToolStripMenuItem.Text = "Purger Tout le stock";
+            this.purgerToutLeStockToolStripMenuItem.ToolTipText = "Puge toutes les toles non utilisées dans le stock almacam";
             this.purgerToutLeStockToolStripMenuItem.Click += new System.EventHandler(this.purgerToutLeStockToolStripMenuItem_Click);
             // 
             // importerStockToolStripMenuItem
             // 
+            this.importerStockToolStripMenuItem.AutoToolTip = true;
             this.importerStockToolStripMenuItem.Name = "importerStockToolStripMenuItem";
-            this.importerStockToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.importerStockToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
             this.importerStockToolStripMenuItem.Text = "Importer Stock";
+            this.importerStockToolStripMenuItem.ToolTipText = "Importe le Stock ImportDM";
             this.importerStockToolStripMenuItem.Click += new System.EventHandler(this.importerStockToolStripMenuItem_Click);
             // 
             // recreerLEmfToolStripMenuItem
             // 
+            this.recreerLEmfToolStripMenuItem.AutoToolTip = true;
             this.recreerLEmfToolStripMenuItem.Name = "recreerLEmfToolStripMenuItem";
-            this.recreerLEmfToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
-            this.recreerLEmfToolStripMenuItem.Text = "Recreer EMF D\'un stock";
+            this.recreerLEmfToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.recreerLEmfToolStripMenuItem.Text = "Recreer des EMF du stock";
+            this.recreerLEmfToolStripMenuItem.ToolTipText = "Recreer les EMF du stock selectionné";
             this.recreerLEmfToolStripMenuItem.Click += new System.EventHandler(this.recreerLEmfToolStripMenuItem_Click);
             // 
             // importOFToolStripMenuItem
@@ -315,93 +193,91 @@
             // avecDTToolStripMenuItem
             // 
             this.avecDTToolStripMenuItem.Name = "avecDTToolStripMenuItem";
-            this.avecDTToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.avecDTToolStripMenuItem.Text = "AvecDT";
+            this.avecDTToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.avecDTToolStripMenuItem.Text = "Avec Données techniques";
             this.avecDTToolStripMenuItem.Click += new System.EventHandler(this.avecDTToolStripMenuItem_Click);
             // 
             // sansDTToolStripMenuItem
             // 
             this.sansDTToolStripMenuItem.Name = "sansDTToolStripMenuItem";
-            this.sansDTToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.sansDTToolStripMenuItem.Text = "SansDT";
+            this.sansDTToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.sansDTToolStripMenuItem.Text = "Sans Données techniques";
             this.sansDTToolStripMenuItem.Click += new System.EventHandler(this.sansDTToolStripMenuItem_Click);
             // 
             // clotureToolStripMenuItem
             // 
             this.clotureToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.relanceenvoiecoupeToolStripMenuItem,
-            this.reinitialiserStockToolStripMenuItem,
-            this.relanceClotureToolStripMenuItem2});
+            this.relanceClotureToolStripMenuItem2,
+            this.remonteeDTToolStripMenuItem});
             this.clotureToolStripMenuItem.Name = "clotureToolStripMenuItem";
             this.clotureToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.clotureToolStripMenuItem.Text = "Cloture";
+            this.clotureToolStripMenuItem.Text = "Retour Gp";
             // 
             // relanceenvoiecoupeToolStripMenuItem
             // 
             this.relanceenvoiecoupeToolStripMenuItem.Name = "relanceenvoiecoupeToolStripMenuItem";
-            this.relanceenvoiecoupeToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
-            this.relanceenvoiecoupeToolStripMenuItem.Text = "Relance_envoie_coupe";
+            this.relanceenvoiecoupeToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+            this.relanceenvoiecoupeToolStripMenuItem.Text = "Creation du retour GP";
             this.relanceenvoiecoupeToolStripMenuItem.Click += new System.EventHandler(this.relanceenvoiecoupeToolStripMenuItem_Click);
-            // 
-            // reinitialiserStockToolStripMenuItem
-            // 
-            this.reinitialiserStockToolStripMenuItem.Name = "reinitialiserStockToolStripMenuItem";
-            this.reinitialiserStockToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
-            this.reinitialiserStockToolStripMenuItem.Text = "Reinitialiser_Stock";
-            this.reinitialiserStockToolStripMenuItem.Click += new System.EventHandler(this.reinitialiserStockToolStripMenuItem_Click);
             // 
             // relanceClotureToolStripMenuItem2
             // 
             this.relanceClotureToolStripMenuItem2.Name = "relanceClotureToolStripMenuItem2";
-            this.relanceClotureToolStripMenuItem2.Size = new System.Drawing.Size(193, 22);
+            this.relanceClotureToolStripMenuItem2.Size = new System.Drawing.Size(189, 22);
             this.relanceClotureToolStripMenuItem2.Text = "Relancer la Cloture";
             this.relanceClotureToolStripMenuItem2.Click += new System.EventHandler(this.relanceClotureToolStripMenuItem2_Click);
             // 
-            // groupBox2
+            // integrationToolStripMenuItem
             // 
-            this.groupBox2.BackColor = System.Drawing.Color.Transparent;
-            this.groupBox2.Controls.Add(this.DoOnAction_TO_CUT_NESTING);
-            this.groupBox2.Controls.Add(this.AfterClose);
-            this.groupBox2.Controls.Add(this.button9);
-            this.groupBox2.Location = new System.Drawing.Point(9, 181);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(230, 235);
-            this.groupBox2.TabIndex = 13;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Export";
-            this.groupBox2.UseWaitCursor = true;
+            this.integrationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.extraireChampsClipperToolStripMenuItem,
+            this.preparerLaBasePourClipperToolStripMenuItem,
+            this.initialiserStockToolStripMenuItem});
+            this.integrationToolStripMenuItem.Name = "integrationToolStripMenuItem";
+            this.integrationToolStripMenuItem.Size = new System.Drawing.Size(77, 20);
+            this.integrationToolStripMenuItem.Text = "Integration";
+            this.integrationToolStripMenuItem.ToolTipText = "Active le boléan Is_Omitted ";
             // 
-            // DoOnAction_TO_CUT_NESTING
+            // extraireChampsClipperToolStripMenuItem
             // 
-            this.DoOnAction_TO_CUT_NESTING.BackColor = System.Drawing.Color.LimeGreen;
-            this.DoOnAction_TO_CUT_NESTING.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("DoOnAction_TO_CUT_NESTING.BackgroundImage")));
-            this.DoOnAction_TO_CUT_NESTING.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.DoOnAction_TO_CUT_NESTING.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.DoOnAction_TO_CUT_NESTING.Location = new System.Drawing.Point(8, 127);
-            this.DoOnAction_TO_CUT_NESTING.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.DoOnAction_TO_CUT_NESTING.Name = "DoOnAction_TO_CUT_NESTING";
-            this.DoOnAction_TO_CUT_NESTING.Size = new System.Drawing.Size(212, 47);
-            this.DoOnAction_TO_CUT_NESTING.TabIndex = 12;
-            this.DoOnAction_TO_CUT_NESTING.Text = "Retour Placement Clos (DoOnAction_TO_CUT_NESTING)";
-            this.DoOnAction_TO_CUT_NESTING.UseVisualStyleBackColor = false;
-            this.DoOnAction_TO_CUT_NESTING.UseWaitCursor = true;
-            this.DoOnAction_TO_CUT_NESTING.Click += new System.EventHandler(this.AfterSendToWorkshop_Click);
+            this.extraireChampsClipperToolStripMenuItem.AutoToolTip = true;
+            this.extraireChampsClipperToolStripMenuItem.Name = "extraireChampsClipperToolStripMenuItem";
+            this.extraireChampsClipperToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+            this.extraireChampsClipperToolStripMenuItem.Text = "Extraire champs Clipper";
+            this.extraireChampsClipperToolStripMenuItem.ToolTipText = "Extraire champs specifiques de Clipper";
+            this.extraireChampsClipperToolStripMenuItem.Click += new System.EventHandler(this.extraireChampsClipperToolStripMenuItem_Click);
             // 
-            // groupBox3
+            // preparerLaBasePourClipperToolStripMenuItem
             // 
-            this.groupBox3.BackColor = System.Drawing.Color.Transparent;
-            this.groupBox3.Controls.Add(this.button4);
-            this.groupBox3.Controls.Add(this.button3);
-            this.groupBox3.Cursor = System.Windows.Forms.Cursors.WaitCursor;
-            this.groupBox3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox3.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.groupBox3.Location = new System.Drawing.Point(9, 38);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(230, 136);
-            this.groupBox3.TabIndex = 14;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Import";
-            this.groupBox3.UseWaitCursor = true;
+            this.preparerLaBasePourClipperToolStripMenuItem.AutoToolTip = true;
+            this.preparerLaBasePourClipperToolStripMenuItem.Name = "preparerLaBasePourClipperToolStripMenuItem";
+            this.preparerLaBasePourClipperToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+            this.preparerLaBasePourClipperToolStripMenuItem.Text = "Preparer la Base pour Clipper";
+            this.preparerLaBasePourClipperToolStripMenuItem.ToolTipText = "Integre les nouveaux champs par rapport a une base de reference";
+            this.preparerLaBasePourClipperToolStripMenuItem.Click += new System.EventHandler(this.preparerLaBasePourClipperToolStripMenuItem_Click);
+            // 
+            // initialiserStockToolStripMenuItem
+            // 
+            this.initialiserStockToolStripMenuItem.Name = "initialiserStockToolStripMenuItem";
+            this.initialiserStockToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+            this.initialiserStockToolStripMenuItem.Text = "Initialiser Stock";
+            this.initialiserStockToolStripMenuItem.Click += new System.EventHandler(this.initialiserStockToolStripMenuItem_Click);
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.aboutToolStripMenuItem1});
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(24, 20);
+            this.aboutToolStripMenuItem.Text = "?";
+            // 
+            // aboutToolStripMenuItem1
+            // 
+            this.aboutToolStripMenuItem1.Name = "aboutToolStripMenuItem1";
+            this.aboutToolStripMenuItem1.Size = new System.Drawing.Size(107, 22);
+            this.aboutToolStripMenuItem1.Text = "About";
+            this.aboutToolStripMenuItem1.Click += new System.EventHandler(this.aboutToolStripMenuItem1_Click);
             // 
             // quitToolStripMenuItem1
             // 
@@ -421,7 +297,31 @@
             this.InfosLabel.Size = new System.Drawing.Size(42, 15);
             this.InfosLabel.TabIndex = 15;
             this.InfosLabel.Text = "Infos";
-            this.InfosLabel.UseWaitCursor = true;
+            // 
+            // Lst_Model
+            // 
+            this.Lst_Model.FormattingEnabled = true;
+            this.Lst_Model.Location = new System.Drawing.Point(12, 80);
+            this.Lst_Model.Name = "Lst_Model";
+            this.Lst_Model.Size = new System.Drawing.Size(260, 21);
+            this.Lst_Model.TabIndex = 16;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 64);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(36, 13);
+            this.label1.TabIndex = 17;
+            this.label1.Text = "Model";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
+            // 
+            // remonteeDTToolStripMenuItem
+            // 
+            this.remonteeDTToolStripMenuItem.Name = "remonteeDTToolStripMenuItem";
+            this.remonteeDTToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+            this.remonteeDTToolStripMenuItem.Text = "Remontee DT";
+            this.remonteeDTToolStripMenuItem.Click += new System.EventHandler(this.remonteeDTToolStripMenuItem_Click);
             // 
             // AlmaCam_Clipper_Form
             // 
@@ -431,12 +331,12 @@
             this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.BackgroundImage = global::AlmaCamTrainingTest.Properties.Resources.FONDExport;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.ClientSize = new System.Drawing.Size(247, 455);
+            this.ClientSize = new System.Drawing.Size(284, 436);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.Lst_Model);
             this.Controls.Add(this.InfosLabel);
-            this.Controls.Add(this.groupBox3);
-            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.menuStrip1);
-            this.Cursor = System.Windows.Forms.Cursors.WaitCursor;
+            this.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -449,44 +349,23 @@
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "AlmaCam_Clipper";
-            this.UseWaitCursor = true;
             this.Load += new System.EventHandler(this.Form1_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.Button button9;
         private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem cAToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem stockToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem donnéesTechniquesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem sheetRequiToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem stockToolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem purgerLeStockToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem retourPlacementToolStripMenuItem;
-        private System.Windows.Forms.Button AfterClose;
-        private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem fichierToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem2;
         private System.Windows.Forms.Label InfosLabel;
-        private System.Windows.Forms.Button DoOnAction_TO_CUT_NESTING;
         private System.Windows.Forms.ToolStripMenuItem clipper8ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importStockToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem suppressionStockClotureToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem purgerToutLeStockToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importerStockToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importOFToolStripMenuItem;
@@ -494,9 +373,21 @@
         private System.Windows.Forms.ToolStripMenuItem sansDTToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem clotureToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem relanceenvoiecoupeToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem reinitialiserStockToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem relanceClotureToolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem recreerLEmfToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem integrationToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem extraireChampsClipperToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem preparerLaBasePourClipperToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem iMportChaierDaffaireToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem creerRetourGPToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem remonterDTToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem c7ImpoortStockToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem1;
+        private System.Windows.Forms.ComboBox Lst_Model;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ToolStripMenuItem initialiserStockToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem remonteeDTToolStripMenuItem;
     }
 }
 

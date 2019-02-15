@@ -61,6 +61,81 @@ namespace AF_Clipper_Dll.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à using System;
+        ///using System.IO;
+        ///using System.Collections.Generic;
+        ///using System.Windows.Forms;
+        ///using Wpm.Schema.Kernel;
+        ///using Wpm.Implement.Manager;
+        ///using Wpm.Implement.ModelSetting;
+        ///using Alma.BaseUI.DescriptionEditor;
+        ///
+        ///namespace Wpm.Implement.ModelSetting
+        ///{
+        ///    public partial class ImportUserCommandType : ScriptModelCustomization, IScriptModelCustomization
+        ///    {
+        ///        public override bool Execute(IContext context, IContext hostContext)
+        ///        {
+        ///            #region CLIP Configuration
+        ///      [le reste de la chaîne a été tronqué]&quot;;.
+        /// </summary>
+        internal static string All_Commandes {
+            get {
+                return ResourceManager.GetString("All_Commandes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à using System;
+        ///using System.IO;
+        ///using System.Collections.Generic;
+        ///using Wpm.Schema.Kernel;
+        ///using Wpm.Implement.Manager;
+        ///using Wpm.Implement.ModelSetting;
+        ///using Alma.BaseUI.DescriptionEditor;
+        ///
+        ///namespace Wpm.Implement.ModelSetting
+        ///{
+        ///    public partial class ImportUserEntityType : ScriptModelCustomization, IScriptModelCustomization
+        ///    {
+        ///        public override bool Execute(IContext context, IContext hostContext)
+        ///        {
+        ///            #region Tôles
+        ///            
+        ///            {
+        ///                IEn [le reste de la chaîne a été tronqué]&quot;;.
+        /// </summary>
+        internal static string All_Entities {
+            get {
+                return ResourceManager.GetString("All_Entities", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à using System;
+        ///using System.IO;
+        ///using System.Collections.Generic;
+        ///using System.Windows.Forms;
+        ///using Wpm.Schema.Kernel;
+        ///using Wpm.Implement.Manager;
+        ///using Wpm.Implement.ModelSetting;
+        ///using Alma.BaseUI.DescriptionEditor;
+        ///
+        ///namespace Wpm.Implement.ModelSetting
+        ///{
+        ///    public partial class ImportCustomizedFormulaEventType : ScriptModelCustomization, IScriptModelCustomization
+        ///    {
+        ///        public override bool Execute(IContext context, IContext hostContext)
+        ///        {
+        ///            ITransaction transacti [le reste de la chaîne a été tronqué]&quot;;.
+        /// </summary>
+        internal static string All_Events {
+            get {
+                return ResourceManager.GetString("All_Events", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à 2.1.4.
         /// </summary>
         internal static string Almcam_Version {
