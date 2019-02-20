@@ -969,6 +969,40 @@ namespace AlmaCamTrainingTest
 
               _Context = null; 
         }
+
+        private void c7PlanningToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+           
+                //IEntity TO_CUT_nesting;
+                IModelsRepository modelsRepository = new ModelsRepository();
+                _Context = modelsRepository.GetModelContext(Lst_Model.Text);
+
+                var doonaction = new Clipper_DoOnAction_AfterSendToWorkshop_ForPlanning();
+                string stage = "_TO_CUT_NESTING";
+           
+                //creation du fichier de sortie
+                //recupere les path
+                Clipper_Param.GetlistParam(_Context);
+                IEntitySelector nestingselector = null;
+
+                nestingselector = new EntitySelector();
+
+                //entity type pointe sur la list d'objet du model
+                nestingselector.Init(_Context, _Context.Kernel.GetEntityType(stage));
+                nestingselector.MultiSelect = true;
+
+
+                if (nestingselector.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    foreach (IEntity nesting in nestingselector.SelectedEntity)
+                    {
+                        doonaction.Execute(nesting);
+
+                    }
+                }
+                _Context = null;
+            
+        }
     }
 
 

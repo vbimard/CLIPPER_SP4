@@ -4735,16 +4735,30 @@ namespace AF_Clipper_Dll
                             {
                                 NUMMATLOT = string.Empty;
                             }
+                            string dim_tole;
+
+                           
+                            {
+                                dim_tole = currentnestinfos.Tole_Nesting.Sheet_Length + Separator +
+                               //largeur
+                               currentnestinfos.Tole_Nesting.Sheet_Width + Separator;
+                            }
+
                             //ecriture des entetes de nesting
                             string Header_Line = "HEADER" + Separator +
                             //currentnestinfos.Tole_Nesting.To_Cut_Sheet_Name + Separator +
                             //ecriture des entetes de nesting
                             // currentnestinfos.Tole_Nesting.Sheet_Reference + Separator +
                             currentnestinfos.Tole_Nesting.Stock_Name + Separator +
+
+                            dim_tole+
+                            /* 
                             //longeur
                             currentnestinfos.Tole_Nesting.Sheet_Length + Separator +
                             //largeur
                             currentnestinfos.Tole_Nesting.Sheet_Width + Separator +
+                            */
+                                 
                             //epaisseur
                             currentnestinfos.Tole_Nesting.Thickness + Separator +
                             //nuance
@@ -4861,6 +4875,22 @@ namespace AF_Clipper_Dll
 
 
                                 string Separator = ";";
+
+                                //
+                                string dim_tole;
+                                
+                                
+                                {
+                                    dim_tole = currentnestinfos.Tole_Nesting.Sheet_Length + Separator +
+                                   //largeur
+                                   currentnestinfos.Tole_Nesting.Sheet_Width + Separator;
+                                }
+                                
+
+
+
+                                //
+
                                 //recuperaiton des champs specifiques
                                 //string NUMMATLOT="";
                                 currentnestinfos.Tole_Nesting.Specific_Tole_Fields.Get<string>("NUMMATLOT", out string NUMMATLOT);
@@ -4874,11 +4904,14 @@ namespace AF_Clipper_Dll
                                 //ecriture des entetes de nesting
                                 // currentnestinfos.Tole_Nesting.Sheet_Reference + Separator +
                                 currentnestinfos.Tole_Nesting.Stock_Name + Separator +
-                                //longeur
+
+                                dim_tole+
+                                /*//longeur
                                 currentnestinfos.Tole_Nesting.Sheet_Length + Separator +
                                 //largeur
                                 currentnestinfos.Tole_Nesting.Sheet_Width + Separator +
-                                //epaisseur
+                                //epaisseur*/
+
                                 currentnestinfos.Tole_Nesting.Thickness + Separator +
                                 //nuance
                                 currentnestinfos.Tole_Nesting.GradeName + Separator +
@@ -4936,7 +4969,7 @@ namespace AF_Clipper_Dll
                                     //si la tole est tournée, on inverse longueur et largeur
                                     longueur = currentoffcut.Sheet_Length;
                                     largeur = currentoffcut.Sheet_Width;
-
+                                    //
                                     if (currentoffcut.Sheet_Is_rotated)
                                     {
                                         longueur = currentoffcut.Sheet_Width;
@@ -5005,12 +5038,14 @@ namespace AF_Clipper_Dll
         public override void SetSpecific_Tole_Infos(Tole Tole)
         {
             base.SetSpecific_Tole_Infos(Tole);
+
+            if (Tole.StockEntity != null) { 
             string numatlot = Tole.StockEntity.GetFieldValueAsString("NUMMATLOT");
             string numlot = Tole.StockEntity.GetFieldValueAsString("NUMLOT");
 
-            Tole.Specific_Tole_Fields.Add<string>("NUMMATLOT", Tole.StockEntity.GetFieldValueAsString("NUMMATLOT"));
+             Tole.Specific_Tole_Fields.Add<string>("NUMMATLOT", Tole.StockEntity.GetFieldValueAsString("NUMMATLOT"));
             Tole.Specific_Tole_Fields.Add<string>("NUMLOT", Tole.StockEntity.GetFieldValueAsString("NUMLOT"));
-
+            }
         }
 
         //inofs specifiques des parts
