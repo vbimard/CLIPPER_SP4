@@ -6837,8 +6837,10 @@ namespace AF_Clipper_Dll
                     stocks_indentifie_en_cours = contextlocal.EntityManager.GetExtendedEntityList(QUERY_STOCK_IDENTIFIE);
                     stocks_indentifie_en_cours.Fill(false);
 
+                    //chargement de la liste des entity dans un dictionnaire
+                    var stock_identife_dictionnary = stocks_indentifie_en_cours.ToDictionary(keySelector => keySelector.Entity.GetFieldValueAsString("IDCLIP"));
 
-                  
+
 
                     Alma_Log.Write_Log_Important(methodename + ":*********************** traitement du stock existant (possedant des idclip)********************************* ");
                     Alma_Log.Write_Log(methodename + PHASE + ": stock almacam : nombre de toles identifiees et non omises  :  " + stocks_indentifie_en_cours.Count());
@@ -6855,26 +6857,28 @@ namespace AF_Clipper_Dll
                         //affichage a traiter dans un thread
                         //string notification_message = etapemessage ;
                         SimplifiedMethods.NotifyStatusMessage(methodename, etapemessage,totallinenumber,ligneNumber,ref step,seuil);
-                        /*
-                        double ratio = ligneNumber / totallinenumber;
-                        if (ratio > seuil * step)
-                        {
-
-                            SimplifiedMethods.NotifyMessage(methodename, etapemessage + " En cours " + seuil * step * 100 + " %");
-                            step++;
-                        }*/
-                        ///
-
-
-                        //line = csvfile.ReadLine();
+                    
                         Alma_Log.Write_Log(" +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++   LIGNE  " + ligneNumber + " +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
                         //interpretation de la ligne dans le dictionnaire de ligne
                        
                         line_Dictionnary = csvfile_list_dictionnary[idclip];
-                      
-                        ///
-                        //IEnumerable<IExtendedEntity> stockentityList = stocks_indentifie_en_cours.Where(s => s.GetFieldValue("IDCLIP").ToString().Trim() == line_Dictionnary["IDCLIP"].ToString());
-                        IEntity stockentity = AF_ImportTools.SimplifiedMethods.GetEntityFrom_ClipId(stocks_indentifie_en_cours, idclip);
+
+                        ///fonction classique de recherche
+                        IExtendedEntity stockXentity;
+                        IEntity stockentity = null; 
+
+                        //IEntity stockentity = AF_ImportTools.SimplifiedMethods.GetEntityFrom_ClipId(stocks_indentifie_en_cours, idclip);
+                        
+                        ///on recupere l'entité
+                        bool hasValue = stock_identife_dictionnary.TryGetValue(idclip, out stockXentity);
+                        if (hasValue)
+                        {
+                            stockentity = stockXentity.Entity;
+                        }
+                        
+
+
+
                         if (stockentity != null)
                         {
                             //recuperation du stock
