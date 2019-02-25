@@ -6384,9 +6384,17 @@ namespace AF_Clipper_Dll
 
     public class Clipper_8_Import_Stock : IDisposable
     {
+
+
+        ~Clipper_8_Import_Stock()
+        {
+            Dispose();
+        }
+
         //disposable
         public void Dispose()
         {
+            
             GC.SuppressFinalize(this);
         }
 
@@ -6546,7 +6554,8 @@ namespace AF_Clipper_Dll
         {
             try
             {
-
+                //gc collector optimized
+                //GC.Collect(2, GCCollectionMode.Optimized);
                 Clipper_Param.GetlistParam(contextlocal);
                 //creation du timetag d'import//
                 string methodename = MethodBase.GetCurrentMethod().Name;
@@ -6704,14 +6713,13 @@ namespace AF_Clipper_Dll
                         LogicOperator.And,
                         //IDCLIP_EMPTY,
                         IDCLIP_NULL,
-                        AF_IS_OMMITED_FALSE,
-                        AF_STOCK_CFAO_TRUE);
+                        AF_IS_OMMITED_FALSE
+                        //AF_STOCK_CFAO_TRUE//enlevé au cas ou les chutes soient d'anciennes chutes
+                        );
 
                     IQuery QUERY_CHUTES_CFAO_NON_IDENTIFIEES = contextlocal.QueryManager.CreateQuery("_STOCK", chutes_cfao_non_identifiees_en_cours_condition_type);
 
                     /// recuperation des nouvelles toles pleines
-                    /// full_sheet_stocks = contextlocal.EntityManager.GetEntityList("_STOCK", LogicOperator.And, "AF_IS_OMMITED", ConditionOperator.Equal, false, "AF_STOCK_CFAO", ConditionOperator.Equal, false, "FILENAME", ConditionOperator.Equal, string.Empty);
-                    //contextlocal.EntityManager.GetEntityList("_STOCK", LogicOperator.And, "AF_IS_OMMITED", ConditionOperator.Equal, false, "AF_STOCK_CFAO", ConditionOperator.Equal, false, "FILENAME", ConditionOperator.Equal, string.Empty);
                     IConditionType new_full_sheet_stock_condition_type = null;
                     new_full_sheet_stock_condition_type = contextlocal.Kernel.ConditionTypeManager.CreateCompositeConditionType(
                         LogicOperator.And,
@@ -6728,8 +6736,8 @@ namespace AF_Clipper_Dll
                     IConditionType new_full_stock_condition_type = null;
                     new_full_stock_condition_type = contextlocal.Kernel.ConditionTypeManager.CreateCompositeConditionType(
                         LogicOperator.And,
-                        IDCLIP_NOT_EMPTY,
-                        AF_IS_OMMITED_FALSE
+                        IDCLIP_NOT_EMPTY
+                        //AF_IS_OMMITED_FALSE  // car il faut detecté toutes les toles pour eviter les doublons
                         //AF_STOCK_CFAO_FALSE,
                         //FILENAME_EMPTY
                         );
@@ -6758,62 +6766,59 @@ namespace AF_Clipper_Dll
                     string[] lines = System.IO.File.ReadAllLines(CsvImportPath);
                     totallinenumber = lines.Count();
                     int step = 1;
-                    while (!csvfile.EndOfStream)
-                    {
-                        ligneNumber++;
-                        //affichage a traiter dans un thread
-                        SimplifiedMethods.NotifyStatusMessage(methodename, etapemessage, totallinenumber, ligneNumber, ref step, seuil);
-                        /*
-                        double ratio = ligneNumber / totallinenumber;
-                        if (ratio > seuil * step)
+
+                    //using (StreamReader csvfile = new StreamReader(CsvImportPath, Encoding.Default, true))
+                    //{
+
+                        while (!csvfile.EndOfStream)
                         {
+                            ligneNumber++;
+                            //affichage a traiter dans un thread
+                            SimplifiedMethods.NotifyStatusMessage(methodename, etapemessage, totallinenumber, ligneNumber, ref step, seuil);
 
-                            SimplifiedMethods.NotifyMessage(methodename, etapemessage + " En cours " + seuil * step * 100 + " %");
-                            step++;
-                        }*/
-                        ///
+                            ///
 
-                        newline = csvfile.ReadLine();
+                            newline = csvfile.ReadLine();
 
-                        //check de la ligne si elle est vie
-                        if (string.IsNullOrEmpty(newline.Trim()))
-                        {
-                            Alma_Log.Write_Log(methodename + PHASE + ": empty line detected  :  " + ligneNumber);
-                            continue;
-                        }
+                            //check de la ligne si elle est vie
+                            if (string.IsNullOrEmpty(newline.Trim()))
+                            {
+                                Alma_Log.Write_Log(methodename + PHASE + ": empty line detected  :  " + ligneNumber);
+                                continue;
+                            }
 
-                        line_Dictionnary = Data_Model.ReadCsvLine_With_Dictionnary(newline);
-                        object idclipobject = null;
-                        line_Dictionnary.TryGetValue("IDCLIP", out idclipobject);
-                        if (idclipobject != null)
-                        {
-
-                            if (CheckDataIntegerity(contextlocal, line_Dictionnary) == false)
+                            line_Dictionnary = Data_Model.ReadCsvLine_With_Dictionnary(newline);
+                            object idclipobject = null;
+                            line_Dictionnary.TryGetValue("IDCLIP", out idclipobject);
+                            if (idclipobject != null)
                             {
 
+                                if (CheckDataIntegerity(contextlocal, line_Dictionnary) == false)
+                                {
 
-                                Alma_Log.Write_Log(methodename + ":-----> line " + ligneNumber + ":" + line_Dictionnary["_NAME"] + ":integrity tests fails, line ignored");
-                                continue;
+
+                                    Alma_Log.Write_Log(methodename + ":-----> line " + ligneNumber + ":" + line_Dictionnary["_NAME"] + ":integrity tests fails, line ignored");
+                                    continue;
+
+
+                                }
+
+
+                                //chargement des indexes
+                                sheetId_list_from_txt_file.Add(idclipobject.ToString());
+                                //chargement de la liste des lignes csv non ignorée
+                                //csvfile_list_lines.Add(newline);
+                                //construction du dictionnaire de lignes indexe
+                                csvfile_list_dictionnary.Add(idclipobject.ToString(), line_Dictionnary);
 
 
                             }
 
 
-                            //chargement des indexes
-                            sheetId_list_from_txt_file.Add(idclipobject.ToString());
-                            //chargelment de la liste des lignes csv non ignorée
-                            csvfile_list_lines.Add(newline);
-                            //construction du dictionnaire de lignes indexe
-                            csvfile_list_dictionnary.Add(idclipobject.ToString(), line_Dictionnary);
-                     
 
                         }
 
-
-
-                    }
-
-
+                   // }
                     Alma_Log.Write_Log(methodename + PHASE + ": nombre de toles / chutes modifiables apres verification du fichier de stcok  (found)  :  " + csvfile_list_lines.Count());
 
 
@@ -6837,111 +6842,123 @@ namespace AF_Clipper_Dll
                     stocks_indentifie_en_cours = contextlocal.EntityManager.GetExtendedEntityList(QUERY_STOCK_IDENTIFIE);
                     stocks_indentifie_en_cours.Fill(false);
 
-                    //chargement de la liste des entity dans un dictionnaire
-                    var stock_identife_dictionnary = stocks_indentifie_en_cours.ToDictionary(keySelector => keySelector.Entity.GetFieldValueAsString("IDCLIP"));
 
-
-
-                    Alma_Log.Write_Log_Important(methodename + ":*********************** traitement du stock existant (possedant des idclip)********************************* ");
-                    Alma_Log.Write_Log(methodename + PHASE + ": stock almacam : nombre de toles identifiees et non omises  :  " + stocks_indentifie_en_cours.Count());
-
-                    //premiere lecture du fichier de stock clipper 
-                   
-                    ligneNumber = 0;
-                 
-                    step = 1;
-                    foreach (string idclip in sheetId_list_from_txt_file)
+                    if(stocks_indentifie_en_cours.Count()>0)
                     {
-                        ligneNumber++;
-
-                        //affichage a traiter dans un thread
-                        //string notification_message = etapemessage ;
-                        SimplifiedMethods.NotifyStatusMessage(methodename, etapemessage,totallinenumber,ligneNumber,ref step,seuil);
-                    
-                        Alma_Log.Write_Log(" +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++   LIGNE  " + ligneNumber + " +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-                        //interpretation de la ligne dans le dictionnaire de ligne
-                       
-                        line_Dictionnary = csvfile_list_dictionnary[idclip];
-
-                        ///fonction classique de recherche
-                        IExtendedEntity stockXentity;
-                        IEntity stockentity = null; 
-
-                        //IEntity stockentity = AF_ImportTools.SimplifiedMethods.GetEntityFrom_ClipId(stocks_indentifie_en_cours, idclip);
-                        
-                        ///on recupere l'entité
-                        bool hasValue = stock_identife_dictionnary.TryGetValue(idclip, out stockXentity);
-                        if (hasValue)
-                        {
-                            stockentity = stockXentity.Entity;
-                        }
-                        
+                        //chargement de la liste des entity dans un dictionnaire
+                        //var stock_identifed_dictionnary = stocks_indentifie_en_cours.ToDictionary(keySelector => keySelector.Entity.GetFieldValueAsString("IDCLIP"));
+                        //on est obligé de gerer les doublons
+                        var stock_identifed_dictionnary = new Dictionary<string, IEntity>();
 
 
-
-                        if (stockentity != null)
-                        {
-                            //recuperation du stock
-                            //ici on travail les modifs.
-                            ///mise a jours
-                            
-                            Update_Stock_Item(stockentity, line_Dictionnary);
-                            Alma_Log.Write_Log(methodename + PHASE + " " + line_Dictionnary["IDCLIP"] + ":-----> line " + ligneNumber + " STOCK UPDATED.");
-                            //stock = null;
-                        }
-
-                        ///traitement des toles neuves elles seront ajoutées a la fin pour 
-                        ///ne pas refaire de requetes ni meme ajouter des données a la liste des toles
-                        //construction de liste des toles neuves
-                        //si les toles envoyées par clip  ne sont pas dans le stock 
-                        else if (stockentity == null)
-                        {
-                            ///lecture du stock alma
-                            //remplacé par la soustraction mais peut servir
-                            //idclip n'existe pas dans le stock
-                            object filename = null;
-                            line_Dictionnary.TryGetValue("FILENAME", out filename);
-                           
-                            //
-                            Alma_Log.Write_Log("La Tole/chute envoyée par clipper  " + idclip + " : " + filename + ": n'existe pas encore dans le stock");
-
-                            if (filename == null)
-                            {
-                                /////filename  vide et idclip non vide c'est une tole neuve
-                                //declaration de la liste des toles neuves
-                                Liste_new_Toles.Add(idclip);
-                                //verif_newToles.Add(idclip);
-                                Alma_Log.Write_Log("La Tole " + idclip + " sera ajoutée en phase 3  ");
-
-                            }
-                            else if (idclip != null && filename != null)
-                            {
-                                ///filename non vide et idclip non vide c'est une chute
-                                Liste_new_chutes.Add(idclip);
-                                Alma_Log.Write_Log("La chute " + idclip + " sera completée en phase 3  " + " : " + filename);
-                            }
-                            else
-                            {
-                                //aucun id aucune filename --> cas non traité
-                                Alma_Log.Write_Log(ligneNumber.ToString() + " Impossible de traiter cette ligne ");
-                            }
+                        foreach (IExtendedEntity xstock in stocks_indentifie_en_cours)
+                        { string idclip = null;
+                            idclip = xstock.Entity.GetFieldValueAsString("IDCLIP");
+                            if (stock_identifed_dictionnary.ContainsKey(idclip) == false) {
+                                stock_identifed_dictionnary.Add(idclip, xstock.Entity); }
                         }
 
 
+                        stocks_indentifie_en_cours = null;
+                        Dispose();
 
+
+
+                        Alma_Log.Write_Log_Important(methodename + ":*********************** traitement du stock existant (possedant des idclip)********************************* ");
+                        Alma_Log.Write_Log(methodename + PHASE + ": stock almacam : nombre de toles identifiees et non omises  :  " + stocks_indentifie_en_cours.Count());
+
+                        //premiere lecture du fichier de stock clipper 
+
+                        ligneNumber = 0;
+                        step = 1;
+
+                        foreach (string idclip in sheetId_list_from_txt_file)
+                        {
+                            ligneNumber++;
+
+                            //affichage a traiter dans un thread
+                            //string notification_message = etapemessage ;
+                            SimplifiedMethods.NotifyStatusMessage(methodename, etapemessage, totallinenumber, ligneNumber, ref step, seuil);
+
+                            Alma_Log.Write_Log(" +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++   LIGNE  " + ligneNumber + " +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+                            //interpretation de la ligne dans le dictionnaire de ligne
+
+                            line_Dictionnary = csvfile_list_dictionnary[idclip];
+
+                            ///fonction classique de recherche
+
+                            IEntity stockentity = null;
+
+                            ///on recupere l'entité
+                            //bool hasValue = stock_identifed_dictionnary.TryGetValue(idclip, out stockentity);
+
+                            if (stock_identifed_dictionnary.TryGetValue(idclip, out stockentity) == true)
+                            {
+                                //recuperation du stock
+                                //ici on travail les modifs.
+                                ///mise a jours
+
+                                Update_Stock_Item(stockentity, line_Dictionnary);
+                                Alma_Log.Write_Log(methodename + PHASE + " " + line_Dictionnary["IDCLIP"] + ":-----> line " + ligneNumber + " STOCK UPDATED.");
+                                //stock = null;
+                            }
+
+                            ///traitement des toles neuves elles seront ajoutées a la fin pour 
+                            ///ne pas refaire de requetes ni meme ajouter des données a la liste des toles
+                            //construction de liste des toles neuves
+                            //si les toles envoyées par clip  ne sont pas dans le stock 
+                            else if (stockentity == null)
+                            {
+                                ///lecture du stock alma
+                                //remplacé par la soustraction mais peut servir
+                                //idclip n'existe pas dans le stock ou est omise
+                                object filename = null;
+                                line_Dictionnary.TryGetValue("FILENAME", out filename);
+
+                                //
+                                Alma_Log.Write_Log("La Tole/chute envoyée par clipper  " + idclip + " : " + filename + ": n'existe pas encore dans le stock");
+
+                                if (filename == null)
+                                {
+                                    /////filename  vide et idclip non vide c'est une tole neuve
+                                    //declaration de la liste des toles neuves
+                                    Liste_new_Toles.Add(idclip);
+                                    //verif_newToles.Add(idclip);
+                                    Alma_Log.Write_Log("La Tole " + idclip + " sera ajoutée en phase 3  ");
+
+                                }
+                                else if (idclip != null && filename != null)
+                                {
+                                    ///filename non vide et idclip  vide c'est une chute neuve
+                                    Liste_new_chutes.Add(idclip);
+                                    Alma_Log.Write_Log("La chute " + idclip + " sera completée en phase 3  " + " : " + filename);
+                                }
+                                else
+                                {
+                                    //aucun id aucune filename --> cas non traité
+                                    Alma_Log.Write_Log(ligneNumber.ToString() + " Impossible de traiter cette ligne ");
+                                }
+                            }
+
+
+
+                        }
+                        //purge = null;
+
+                        Alma_Log.Write_Log(methodename + PHASE + ": nombre de toles neuves detectées dans le fichier csv  :  " + Liste_new_Toles.Count());
+                        Alma_Log.Write_Log(methodename + PHASE + ": nombre de chutesnouvelles  cfao  detectées dans le fichier csv :  " + Liste_new_chutes.Count());
+
+
+
+
+                        //aucun stock n'est identifié
+
+
+                        //stocks_indentifie_en_cours = null;
+                        stock_identifed_dictionnary.Clear();
+                        stock_identifed_dictionnary = null;
                     }
-                    //purge = null;
-
-                    Alma_Log.Write_Log(methodename + PHASE + ": nombre de toles neuves detectées dans le fichier csv  :  " + Liste_new_Toles.Count());
-                    Alma_Log.Write_Log(methodename + PHASE + ": nombre de chutesnouvelles  cfao  detectées dans le fichier csv :  " + Liste_new_chutes.Count());
-
-
-                    //else
-
-                    //aucun stock n'est identifié
-
-
-                    stocks_indentifie_en_cours = null;
+                    Dispose();
                     #endregion
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     ///////////////////// CHUTE CFAO ///////////////////
@@ -6958,68 +6975,93 @@ namespace AF_Clipper_Dll
                     chutes_cfao_non_identifiees_en_cours = contextlocal.EntityManager.GetExtendedEntityList(QUERY_CHUTES_CFAO_NON_IDENTIFIEES);
                     chutes_cfao_non_identifiees_en_cours.Fill(false);
 
-                    Alma_Log.Write_Log(methodename + PHASE + ": stock almacam : nombre de chutes avec idclip null (attention pas de chaines vides) , non omises, crees par l'interface cfao  " + chutes_cfao_non_identifiees_en_cours.Count());
-
-                    /// pas de chutes // on ignore cette etape //
-                    /// on se base sur la liste des nouvelles chutes
-                    if (chutes_cfao_non_identifiees_en_cours.Count() != 0)
+                    if (chutes_cfao_non_identifiees_en_cours.Count > 0)
                     {
-                          //on rembobine
-                        csvfile.BaseStream.Position = 0;
-                        ligneNumber = 0;
+                        //chargement de la liste des entity dans un dictionnaire
+                        //var chutes_cfao_non_identifiees_dictionnary = chutes_cfao_non_identifiees_en_cours.ToDictionary(keySelector => keySelector.Entity.GetFieldValueAsString("FILENAME"));
+                        //on est obligé de gerer les doublons
+                        var chutes_cfao_non_identifiees_dictionnary = new Dictionary<string, IEntity>();
 
-                        totallinenumber = Liste_new_chutes.Count();
-                        step = 1;
-                        foreach (string idclip in Liste_new_chutes)
+                        foreach (IExtendedEntity xstock in chutes_cfao_non_identifiees_en_cours)
                         {
-
-                            //line = csvfile.ReadLine();
-                            ligneNumber++;
-
-                            //affichage a traiter dans un thread
-                            SimplifiedMethods.NotifyStatusMessage(methodename, etapemessage, totallinenumber, ligneNumber, ref step, seuil);
-                            /*
-                            double ratio = ligneNumber / totallinenumber;
-                            if (ratio > seuil * step)
+                            string filename = null;
+                            filename = xstock.Entity.GetFieldValueAsString("FILENAME");
+                            if (chutes_cfao_non_identifiees_dictionnary.ContainsKey(filename) == false)
                             {
-
-                                SimplifiedMethods.NotifyMessage(methodename, etapemessage + " En cours " + seuil * step * 100 + " %");
-                                step++;
-                            }*/
-
-
-                            line_Dictionnary = csvfile_list_dictionnary[idclip];
-
-                            //Alma_Log.Write_Log(methodename + ": line " + ligneNumber + ":line_dictionnary success !!    ");
-                            if (SimplifiedMethods.GetDictionnaryValue(line_Dictionnary, "FILENAME") == null)
-                            {
-                                Alma_Log.Write_Log(methodename + ": no file name detected, moving next line :   for" + SimplifiedMethods.GetDictionnaryValue(line_Dictionnary, "IDCLIP").ToString());
-                                continue;
+                                chutes_cfao_non_identifiees_dictionnary.Add(filename, xstock.Entity);
                             }
-                            ///
-                            ///
-                            ///pas obligatoire
-                            IEntity stockentity = AF_ImportTools.SimplifiedMethods.GetEntityFromFieldNameAsString(chutes_cfao_non_identifiees_en_cours, "FILENAME", line_Dictionnary["FILENAME"].ToString().Trim());
-                            //la tole n'est pas listée
-                            // c'est une nouvelle tole
-                            if (stockentity == null)
-                            {
-                                ///on pourrait creer les toles neuves ici// a prevoire  //
-                             
-
-
-
-                            }
-                            ///mise a jours
-                            else
-                            { Update_Stock_Item(stockentity, line_Dictionnary); }
-
-
-
                         }
 
+                        Alma_Log.Write_Log(methodename + PHASE + ": stock almacam : nombre de chutes avec idclip null (attention pas de chaines vides) , non omises, crees par l'interface cfao  " + chutes_cfao_non_identifiees_en_cours.Count());
+
+                        chutes_cfao_non_identifiees_en_cours = null;
+
+
+                        Dispose();
+
+
+
+                        /// pas de chutes // on ignore cette etape //
+                        /// on se base sur la liste des nouvelles chutes
+                        if (chutes_cfao_non_identifiees_en_cours.Count() != 0)
+                        {
+                            //on rembobine
+                            //csvfile.BaseStream.Position = 0;
+                            ligneNumber = 0;
+                            totallinenumber = Liste_new_chutes.Count();
+                            step = 1;
+                            foreach (string idclip in Liste_new_chutes)
+                            {
+
+                                ///fonction classique de recherche
+                                //IExtendedEntity stockXentity=null;
+                                IEntity stockentity = null;
+                                string filename = null;
+                                //line = csvfile.ReadLine();
+                                ligneNumber++;
+
+                                //affichage a traiter dans un thread
+                                SimplifiedMethods.NotifyStatusMessage(methodename, etapemessage, totallinenumber, ligneNumber, ref step, seuil);
+
+                                line_Dictionnary = csvfile_list_dictionnary[idclip];
+
+                                if (SimplifiedMethods.GetDictionnaryValue(line_Dictionnary, "FILENAME") == null)
+                                {
+                                    Alma_Log.Write_Log(methodename + ": no file name detected, moving next line :   for" + SimplifiedMethods.GetDictionnaryValue(line_Dictionnary, "IDCLIP").ToString());
+                                    continue;
+                                }
+                                else
+                                {
+                                    filename = SimplifiedMethods.GetDictionnaryValue(line_Dictionnary, "FILENAME").ToString();
+                                }
+                                ///
+                                ///
+                                ///pas obligatoire
+                                ///
+
+                                // bool hasValue = chutes_cfao_non_identifiees_dictionnary.TryGetValue(filename, out stockentity);
+                                if (chutes_cfao_non_identifiees_dictionnary.TryGetValue(filename, out stockentity) == true)
+                                {   ///mise a jours
+                                    Update_Stock_Item(stockentity, line_Dictionnary);
+
+                                }
+
+                                else
+                                { //rien
+                                }
+
+
+
+                            }
+
+                        }
+                        chutes_cfao_non_identifiees_en_cours = null;
+                        chutes_cfao_non_identifiees_dictionnary.Clear();
+                        chutes_cfao_non_identifiees_dictionnary = null;
+
                     }
-                    chutes_cfao_non_identifiees_en_cours = null;
+                     Dispose();
+
                     #endregion
 
 
@@ -7041,104 +7083,82 @@ namespace AF_Clipper_Dll
                     /// on liste les toles pleines du nouveau stock
 
                     IExtendedEntityList new_full_stocks = null;
+                    bool stockneuf=false;
+                    var new_full_stocks_dictionnary = new Dictionary<string, IEntity>();
                     //new_full_sheet_stocks = contextlocal.EntityManager.GetExtendedEntityList(QUERY_NEW_FULL_SHEET_STOCK);
                     new_full_stocks = contextlocal.EntityManager.GetExtendedEntityList(QUERY_NEW_FULL_STOCK);
                     new_full_stocks.Fill(false);
+                    //detection d'un stockneuf 
+                    if (new_full_stocks.Count()==0) { stockneuf = true; }
+                    else
+                    {
+                       
+
+                        foreach (IExtendedEntity xstock in new_full_stocks)
+                        {
+                            string idclip = null;
+                            idclip = xstock.Entity.GetFieldValueAsString("IDCLIP");
+                            if (new_full_stocks_dictionnary.ContainsKey(idclip) == false)
+                            {
+                                new_full_stocks_dictionnary.Add(idclip, xstock.Entity);
+                                sheetId_list_from_database.Add(idclip);
+                            }
+                            else
+                            {
+                                Alma_Log.Write_Log(methodename + PHASE + "< : doublons detectés sur idclip :   " + idclip + " : >");
+
+                            }
+                        }
+
+                    }
+                    //on est obligé de gerer les doublons
+                    //un dictionnaire n'est pas vraiment necessaire ici
+                    //mais cela peut servir au cas ou une information sur le doublon doivent etre ajouté au log
+                    // on purge        
+                    new_full_stocks = null;
+                    Dispose();
 
 
                     Alma_Log.Write_Log(methodename + PHASE + ": stock almacam : nombre de toles nom omises, avec idclip  " + new_full_stocks.Count());
 
-                    //recuperation des id su nouveau stock
-                    foreach (IExtendedEntity xe in new_full_stocks)
-                    {
-                        sheetId_list_from_database.Add(xe.Entity.GetFieldValueAsString("IDCLIP"));
-                    }
-                  
-                    csvfile.BaseStream.Position = 0;
+                                      
+                    //csvfile.BaseStream.Position = 0;
                     ligneNumber = 0;
-                    //line = csvfile.ReadLine();
-                    ///while (!csvfile.EndOfStream)
-                    ///
                     totallinenumber = Liste_new_Toles.Count();
                     step = 1;
-                    //foreach (string line in csvfile_list_lines)
-                    foreach (string idclip in Liste_new_Toles)
+
+                     foreach ( string idclip in Liste_new_Toles)
+                     //foreach (var line_Dictionnary_value in csvfile_list_dictionnary)
                     {
-                        //{
-                        //line = csvfile.ReadLine();
+
+                        IEntity stockentity = null;
+                        line_Dictionnary = null;
+                        
+
                         ligneNumber++;
-                        //affichage a traiter dans un thread
-                        double ratio = ligneNumber / totallinenumber;
-                        if (ratio > seuil * step)
-                        {
+                        SimplifiedMethods.NotifyStatusMessage(methodename, etapemessage, totallinenumber, ligneNumber, ref step, seuil);
+                        //recuperation des valeurs
+                        line_Dictionnary = csvfile_list_dictionnary[idclip]; //line_Dictionnary_value.Value; //csvfile_list_dictionnary.Values; // csvfile_list_dictionnary[idclip];                        
+                        //idclip = line_Dictionnary_value.Key;
 
-                            SimplifiedMethods.NotifyMessage(methodename, etapemessage + " En cours " + seuil * step * 100 + " %");
-                            step++;
-                        }
-                        //interpretation de la ligne dans le dictionnaire de ligne
-                        line_Dictionnary = csvfile_list_dictionnary[idclip];//Data_Model.ReadCsvLine_With_Dictionnary(line);
-                                                                            //Alma_Log.Write_Log(methodename + ": line " + ligneNumber +" Tole " + line_Dictionnary["IDCLIP"].ToString() + ":  line_dictionnary success !!    ");
 
-                        //creation de la tole neuve
-                        /***
-                        if (CheckDataIntegerity(contextlocal, line_Dictionnary) == false)
-                        {
-                            Alma_Log.Write_Log(methodename + ":-----> line " + ligneNumber + ":" + line_Dictionnary["_NAME"] + ":integrity tests fails, line ignored");
-                            continue;
-                        }
-                        ***/
-                        //if (Liste_new_Tole.Count > 0 && Liste_new_Tole.Contains(line_Dictionnary["IDCLIP"].ToString()))
-                        //{
-                        //on verifie que la tole n'existe pas deja
-                        //IEnumerable<IExtendedEntity> stockentityList = new_full_sheet_stocks.Where(e => { return e.GetFieldValue("IDCLIP").ToString().Trim() == idclip.Trim(); });
-
-                        //string checkedidclip = AF_ImportTools.SimplifiedMethods.GetDictionnaryValue(line_Dictionnary, "IDCLIP").ToString();
-                        IEntity stockentity = AF_ImportTools.SimplifiedMethods.GetEntityFromFieldNameAsString(new_full_stocks, "IDCLIP", idclip);
-                        Alma_Log.Write_Log(methodename + " CREATION TOLE DE LA TOLE " + idclip);
-                        if (stockentity == null)
-                        {
-                            Alma_Log.Write_Log(methodename + " CONFIRMATION:  AUCUNE TOLE trouver avec l'id" + idclip);
-                            Create_Stock_Item(contextlocal, line_Dictionnary);
-                            Alma_Log.Write_Log(methodename + " TOLE CREEE " + idclip);
-                        }
-                        /*
-                        else
-                        {
-                            Alma_Log.Write_Log(methodename + " IDCLIP :  " + idclip + " : existe deja traitement ignoré ");
-
-                        }
-                        */
-                        // }
-
-                        /****
-
-                        else if (Liste_new_Toles.Count == 0)
-                        {//tous les stock est neuf//
-                         //on creeer sous reserve
-
-                            Alma_Log.Write_Log(methodename + "STOCK NEUF DETECTE ");
-
-                            string checkedidclip = AF_ImportTools.SimplifiedMethods.GetDictionnaryValue(line_Dictionnary, "IDCLIP").ToString();
-                            IEntity stockentity = AF_ImportTools.SimplifiedMethods.GetEntityFromFieldNameAsString(new_full_stocks, "IDCLIP", checkedidclip.Trim());
-
-                            if (stockentity == null)
+                        if (new_full_stocks_dictionnary.TryGetValue(idclip, out stockentity)==false || stockneuf == true)
                             {
-                                Alma_Log.Write_Log(methodename + " Creation de la tole " + line_Dictionnary["IDCLIP"]);
+                            Alma_Log.Write_Log(methodename + " CONFIRMATION:  AUCUNE TOLE trouver avec l'id" + idclip);
+                                Alma_Log.Write_Log(methodename + " CREATION TOLE DE LA TOLE " + idclip);
                                 Create_Stock_Item(contextlocal, line_Dictionnary);
-                                Alma_Log.Write_Log(methodename + "TOLE CREEE ");
-
+                            Alma_Log.Write_Log(methodename + " TOLE CREEE " + idclip);
                             }
+                            else {
+                            Alma_Log.Write_Log(methodename + " CETTE TOLE A ETE DESACTIVEE PAR CLIPPER  " + idclip);
+                        }
 
 
-                        }
-                        else
-                        {
-                            Alma_Log.Write_Log(methodename + "AUCUNE MODIFICATION A FAIRE SUR LE STOCK");
-                        }
-                            ****/
+                        Dispose();
                     }
                     new_full_stocks = null;
-
+                    new_full_stocks_dictionnary.Clear();
+                    new_full_stocks_dictionnary = null;
                     #endregion
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     ///////////////////// TRAITEMENT DES OMISSIONS SUR TOUT LE STOCK  ////
@@ -7158,13 +7178,10 @@ namespace AF_Clipper_Dll
                     new_full_UnOmitted_stocks = contextlocal.EntityManager.GetExtendedEntityList(QUERY_NEW_FULL_STOCK);
                     new_full_UnOmitted_stocks.Fill(false);
 
-
                     Alma_Log.Write_Log(methodename + PHASE + ": stock almacam :   " + new_full_UnOmitted_stocks.Count());
-
                     Alma_Log.Write_Log_Important(methodename + "-------------------------------   OMISSION  -------------------------------------- ");
                     Alma_Log.Write_Log(methodename + ": found " + new_full_UnOmitted_stocks.Count().ToString());
-
-                    //calcul des toles a ommettre
+                   //calcul des toles a ommettre
                     Alma_Log.Write_Log(methodename + PHASE + ": stock almacam : QTE CSV  " + sheetId_list_from_txt_file.Count());
                     Alma_Log.Write_Log(methodename + PHASE + ": stock almacam : QTE ALMACAM  " + sheetId_list_from_database.Count());
                     Alma_Log.Write_Log(methodename + PHASE + ": stock almacam : dif =  " + (sheetId_list_from_txt_file.Count() - sheetId_list_from_database.Count()));
@@ -7173,17 +7190,30 @@ namespace AF_Clipper_Dll
 
                     if (new_full_UnOmitted_stocks.Count() > 0)
                     {
-
+                      
                         List<string> liste_tole_a_omettre = GetOmmittedSheet(sheetId_list_from_txt_file, sheetId_list_from_database);
                         Alma_Log.Write_Log(methodename + PHASE + ": stock almacam : a omettre  " + liste_tole_a_omettre.Count());
 
 
                         if (liste_tole_a_omettre.Count > 0)
                         {
+
+                            ligneNumber = 0;
+                            step = 1;
+                            totallinenumber = liste_tole_a_omettre.Count();
+
                             foreach (string idclip in liste_tole_a_omettre)
                             {
                                 IEntity stockentity = SimplifiedMethods.GetEntityFrom_ClipId(new_full_UnOmitted_stocks, idclip.Trim());
                                 //IEnumerable<IExtendedEntity> stockentityList = new_full_UnOmitted_stocks.Where(e => { return e.GetFieldValue("IDCLIP").ToString().Trim() == idclip.Trim(); });
+                                ligneNumber++;
+
+                                //affichage a traiter dans un thread
+                                SimplifiedMethods.NotifyStatusMessage(methodename, etapemessage, totallinenumber, ligneNumber, ref step, seuil);
+
+
+
+
                                 if (stockentity != null)
                                 {
                                     Alma_Log.Write_Log(methodename + ": found and not ommitted " + idclip);
@@ -7208,10 +7238,26 @@ namespace AF_Clipper_Dll
 
 
                         new_full_UnOmitted_stocks = null;
-
+                        liste_tole_a_omettre.Clear();
                         #endregion
                         }
+
+
+                  
+                     sheetId_list_from_database.Clear();
+                     //chargement des indexes
+                     sheetId_list_from_txt_file.Clear();
+                    //chargement de la liste des lignes csv non ignorée
+                    csvfile_list_lines.Clear();
+                    //construction du dictionnaire de lignes indexe
+                    csvfile_list_dictionnary.Clear();
+
                 }
+
+
+               
+
+
 
                 ///////renommage du fichier
                 // Set cursor as default arrow
@@ -7223,9 +7269,10 @@ namespace AF_Clipper_Dll
                 Alma_Log.Write_Log_Important(" Stock imported successfully.");
                 Alma_Log.Final_Open_Log(ligneNumber);
 
+                Dispose();
 
 
-
+                //csvfile.close
 
             }
 
@@ -7235,11 +7282,13 @@ namespace AF_Clipper_Dll
             catch (Exception ie)
             {
                 System.Windows.Forms.MessageBox.Show(System.Reflection.MethodBase.GetCurrentMethod().Name + " : " + ie.Message);
-
+                
             }
 
             finally
             {
+               // csvfile = null;
+                Dispose();
                
 
             }
@@ -7323,6 +7372,8 @@ namespace AF_Clipper_Dll
                 //creation du nom auto d'almacam
                 CommonModelBuilder.ComputeSheetReference(stock.Context, stock.GetFieldValueAsEntity("_SHEET"));
                 stock.GetFieldValueAsEntity("_SHEET").Save();
+                stock = null;
+                Dispose();
                 
             }
             catch (Exception ie)
@@ -7410,6 +7461,16 @@ namespace AF_Clipper_Dll
                 newstock.Save();
                 Update_Stock_Item(newstock, line_Dictionnary);
 
+
+
+
+                newstock = null;
+                newsheet = null;
+                material = null;
+                sheets_list = null;
+
+                Dispose();
+
             }
             catch (Exception ie)
             {
@@ -7417,6 +7478,8 @@ namespace AF_Clipper_Dll
             }
         }
 
+
+       
         /// <summary>
         /// retourne la liste des chute ommise dans le fichier en comparant les toles de qté >0
         /// avec les toles envoyées par clipper

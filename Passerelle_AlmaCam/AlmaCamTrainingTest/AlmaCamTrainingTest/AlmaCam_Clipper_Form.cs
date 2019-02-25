@@ -506,10 +506,18 @@ namespace AlmaCamTrainingTest
                     {
                         if (stock.GetFieldValueAsEntity("_SHEET").GetFieldValueAsLong("_IN_PRODUCTION_QUANTITY") == 0)
                         {
-                            stock.Delete();
+                            //stock.Delete();
+
+                            if (stock.GetFieldValueAsLong("_USED_QUANTITY") == 0)
+                            {
+                                stock.Delete();
+                            }
+                            else if (stock.GetFieldValueAsLong("_BOOKED_QUANTITY") == 0)
+                            {
+                                stock.Delete();
+                            }
+
                         }
-
-
                     }
 
                     //suppression formats
@@ -519,7 +527,7 @@ namespace AlmaCamTrainingTest
                     foreach (IEntity format in formats)
                     {
                         if (format.GetFieldValueAsLong("_IN_PRODUCTION_QUANTITY") == 0)
-                        {
+                        {  
                             format.Delete();
                         }
 
@@ -689,19 +697,28 @@ namespace AlmaCamTrainingTest
             _Context = modelsRepository.GetModelContext(Lst_Model.Text);
 
             List<IEntity> stocks = SimplifiedMethods.Get_Entity_Selector(_Context, "_STOCK");
-            MessageBox.Show("Seules les Chutes pourront obtenir de nouveaux emf");
-
-            foreach (IEntity currententity in stocks)
+            if (stocks.Count>0)
             {
-                // 
-                if (currententity.GetFieldValueAsEntity("_SHEET").GetFieldValueAsInt("_TYPE") == 2) { 
-                string emffilepath = StockManager.Create_EMF_Of_Stock_Entity(currententity);
-                currententity.SetFieldValue("FILENAME", emffilepath);
-                currententity.Save();
-                }
+                MessageBox.Show("Seules les Chutes pourront obtenir de nouveaux emf");
+            
+
+                        foreach (IEntity currentstockentity in stocks)
+                        {
+                            // 
+                            if (currentstockentity.GetFieldValueAsEntity("_SHEET").GetFieldValueAsInt("_TYPE") == 2) {
+                                string fieldvalue = currentstockentity.GetFieldValueAsString("FILENAME");
+                                //on ne remplace que les chaine filname vides.
+                                if (String.IsNullOrEmpty(fieldvalue)==true){ 
+                                    string emffilepath = StockManager.Create_EMF_Of_Stock_Entity(currentstockentity);
+                                    currentstockentity.SetFieldValue("FILENAME", emffilepath);
+                                    currentstockentity.Save();
+                                }
+                            }
                 //
             }
-             _Context = null; 
+
+            }
+            _Context = null; 
 
 
 
@@ -871,11 +888,7 @@ namespace AlmaCamTrainingTest
           
         }
 
-        private void ajusterLesTolesOmisesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
+       
         private void initialiserStockToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
@@ -903,18 +916,23 @@ namespace AlmaCamTrainingTest
 
                     SimplifiedMethods.NotifyStatusMessage("", " Initialisation   en cours ...", stocks.Count(), position,ref step, 0);
 
-
-
-
+                    /*
                     if (stock.GetFieldValueAsLong("_QUANTITY") == 0 && stock.GetFieldValueAsLong("_BOOKED_QUANTITY") == 0)
                     { stock.SetFieldValue("AF_IS_OMMITED", true); }
                     else
                     { stock.SetFieldValue("AF_IS_OMMITED", false); }
+                    */
+                    //les données seront settées par clipper
 
 
+                    stock.SetFieldValue("AF_IS_OMMITED", false);
                     if (stock.GetFieldValueAsString("IDCLIP") == string.Empty)
 
-                    { stock.SetFieldValue("IDCLIP", null); }
+                    {// non ttraite
+                        stock.SetFieldValue("IDCLIP", null);
+                        //stock.SetFieldValue("AF_IS_OMMITED", true);
+
+                    }
                     //recuperation du champs filename de la tole dans le champs filename du stock
 
                     ///recupération du filename des sheet dans le stock
