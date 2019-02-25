@@ -6845,6 +6845,15 @@ namespace AF_Clipper_Dll
 
                     if(stocks_indentifie_en_cours.Count()>0)
                     {
+                        Alma_Log.Write_Log(methodename + PHASE + ": stock almacam : nombre de toles identifiees et non omises  :  " + stocks_indentifie_en_cours.Count());
+                    }
+                    else
+                    {
+                        Alma_Log.Write_Log(methodename + PHASE + ": stock almacam : nombre de toles identifiees et non omises  :  0" );
+
+                    }
+
+                    {
                         //chargement de la liste des entity dans un dictionnaire
                         //var stock_identifed_dictionnary = stocks_indentifie_en_cours.ToDictionary(keySelector => keySelector.Entity.GetFieldValueAsString("IDCLIP"));
                         //on est obligé de gerer les doublons
@@ -6858,15 +6867,14 @@ namespace AF_Clipper_Dll
                                 stock_identifed_dictionnary.Add(idclip, xstock.Entity); }
                         }
 
+                        Alma_Log.Write_Log_Important(methodename + ":*********************** traitement du stock existant (possedant des idclip)********************************* ");
+                      
+
+
+
 
                         stocks_indentifie_en_cours = null;
                         Dispose();
-
-
-
-                        Alma_Log.Write_Log_Important(methodename + ":*********************** traitement du stock existant (possedant des idclip)********************************* ");
-                        Alma_Log.Write_Log(methodename + PHASE + ": stock almacam : nombre de toles identifiees et non omises  :  " + stocks_indentifie_en_cours.Count());
-
                         //premiere lecture du fichier de stock clipper 
 
                         ligneNumber = 0;
@@ -7003,7 +7011,7 @@ namespace AF_Clipper_Dll
 
                         /// pas de chutes // on ignore cette etape //
                         /// on se base sur la liste des nouvelles chutes
-                        if (chutes_cfao_non_identifiees_en_cours.Count() != 0)
+                        if (chutes_cfao_non_identifiees_dictionnary.Count() != 0)
                         {
                             //on rembobine
                             //csvfile.BaseStream.Position = 0;
@@ -7089,10 +7097,14 @@ namespace AF_Clipper_Dll
                     new_full_stocks = contextlocal.EntityManager.GetExtendedEntityList(QUERY_NEW_FULL_STOCK);
                     new_full_stocks.Fill(false);
                     //detection d'un stockneuf 
-                    if (new_full_stocks.Count()==0) { stockneuf = true; }
+                    if (new_full_stocks.Count()==0) { stockneuf = true;
+                        Alma_Log.Write_Log(methodename + PHASE + ": stock almacam : nombre de toles nom omises, avec idclip : 0, stock neuf ");
+
+                    }
                     else
                     {
-                       
+
+                        Alma_Log.Write_Log(methodename + PHASE + ": stock almacam : nombre de toles nom omises, avec idclip  " + new_full_stocks.Count());
 
                         foreach (IExtendedEntity xstock in new_full_stocks)
                         {
@@ -7119,8 +7131,7 @@ namespace AF_Clipper_Dll
                     Dispose();
 
 
-                    Alma_Log.Write_Log(methodename + PHASE + ": stock almacam : nombre de toles nom omises, avec idclip  " + new_full_stocks.Count());
-
+               
                                       
                     //csvfile.BaseStream.Position = 0;
                     ligneNumber = 0;
@@ -7144,10 +7155,10 @@ namespace AF_Clipper_Dll
 
                         if (new_full_stocks_dictionnary.TryGetValue(idclip, out stockentity)==false || stockneuf == true)
                             {
-                            Alma_Log.Write_Log(methodename + " CONFIRMATION:  AUCUNE TOLE trouver avec l'id" + idclip);
-                                Alma_Log.Write_Log(methodename + " CREATION TOLE DE LA TOLE " + idclip);
+                                //Alma_Log.Write_Log(methodename + " CONFIRMATION:  AUCUNE TOLE trouver avec l'id" + idclip);
+                                //Alma_Log.Write_Log(methodename + " CREATION TOLE DE LA TOLE " + idclip);
                                 Create_Stock_Item(contextlocal, line_Dictionnary);
-                            Alma_Log.Write_Log(methodename + " TOLE CREEE " + idclip);
+                                Alma_Log.Write_Log(methodename + " TOLE CREEE " + idclip);
                             }
                             else {
                             Alma_Log.Write_Log(methodename + " CETTE TOLE A ETE DESACTIVEE PAR CLIPPER  " + idclip);
