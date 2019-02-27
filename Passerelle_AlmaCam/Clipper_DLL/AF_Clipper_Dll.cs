@@ -7993,6 +7993,8 @@ namespace AF_Clipper_Dll
                                         part.Specific_Fields.Get<string>("IDLNROUT", out string idlnrout);
                                         part.Specific_Fields.Get<string>("IDLNBOM", out string idlnbom);
 
+                                        double Part_Cutting_Time_Ratio = (part.Part_Time == 0 && tole.Calculus_GPAO_Parts_Total_Time==0) == false ? (part.Part_Time * part.Nested_Quantity / tole.Calculus_GPAO_Parts_Total_Time) : 0;
+
                                         double partweightcoef = part.Part_Balanced_Weight * part.Nested_Quantity / (tole.Sheet_Weight);
 
 
@@ -8003,7 +8005,7 @@ namespace AF_Clipper_Dll
                                         PART[ipart++] = SimplifiedMethods.NumberToString(part.Width, format); //largeur
                                         PART[ipart++] = SimplifiedMethods.NumberToString(partweightcoef, format);//poids ratio
                                         PART[ipart++] = SimplifiedMethods.NumberToString(part.Weight * 0.001, format);//poids reel en kg
-                                        PART[ipart++] = SimplifiedMethods.NumberToString(part.Part_Time, format);//temps de coupe
+                                        PART[ipart++] = SimplifiedMethods.NumberToString(Part_Cutting_Time_Ratio, format);//temps de coupe
 
                                         partline = SimplifiedMethods.WriteTableToLine(PART, ipart, Separator);
                                         DETAIL.Add(partline);
