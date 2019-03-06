@@ -124,6 +124,10 @@
       <HintPath>$(AlmaCamPath) Wpm.Implement.Manager.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Wpm.Implement.ModelSetting, Version=2.1.4.35644, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\AlmaCAM\Bin\Wpm.Implement.ModelSetting.dll</HintPath>
+    </Reference>
     <Reference Include="Wpm.Implement.Processor">
       <HintPath>$(AlmaCamPath) Wpm.Implement.Processor.dll</HintPath>
       <Private>False</Private>
@@ -152,7 +156,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>

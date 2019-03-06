@@ -34,8 +34,7 @@ using Alma.BaseUI.DescriptionEditor;
 namespace AlmaCamTrainingTest
 {
 
-
-
+   
 
     public partial class AlmaCam_Clipper_Form : Form,IDisposable
     {
@@ -756,14 +755,56 @@ namespace AlmaCamTrainingTest
 
         private void preparerLaBasePourClipperToolStripMenuItem_Click(object sender, EventArgs e)
         {
+
             IModelsRepository modelsRepository = new ModelsRepository();
             _Context = modelsRepository.GetModelContext(Lst_Model.Text);
+
+            string FieldKey = "";
+            string FieldName = "";
+            var sheet_Dictionnary = new Dictionary<string, NewField>();
+
+            //preparation du dictionnaire //
+            // champs des toles//
+
+            //tole//
             
+            var filename = new NewField("FILENAME", "desc",FieldDescriptionEditableType.AllSection,FieldDescriptionVisibilityType.AllSection,FieldDescriptionType.String,"");
+            sheet_Dictionnary.Add("FILENAME", filename);
+            filename = new NewField("description", "desc2", FieldDescriptionEditableType.AllSection, FieldDescriptionVisibilityType.AllSection, FieldDescriptionType.Lookup,"bla");
+            sheet_Dictionnary.Add("description", filename);
 
-                var install = new InstallclipperTest(_Context);
+            /*
+            IEntityType entityType = _Context.Kernel.GetEntityType("_SHEET");
+            IEntityTypeFactory entityTypeFactory = new EntityTypeFactory(_Context, 1, entityType, null, "_SUPPLY", null);
+            entityTypeFactory.Key = "_SHEET";
+            entityTypeFactory.Name = "Toles";
+            entityTypeFactory.DefaultDisplayKey = "_NAME";
+            entityTypeFactory.ActAsEnvironment = false;*/
+            
+            FieldEditableType a = FieldEditableType.AllSection;
+            if (sheet_Dictionnary["description"].Type == FieldDescriptionType.Lookup)
+            {
+                string l = sheet_Dictionnary["description"].Link;
+            }
+                //fieldDescription.LinkKey = sheet_Dictionnary["descritpion"].Link;
+            //string ModelName =Lst_Model.Text;
+            /*
+            List<Tuple<string, string>> CustoFileCsList = new List<Tuple<string, string>>();
+            //CustoFileCsList.Add(new Tuple<string, string>("Command", Properties.Resources.All_Commandes));
+            CustoFileCsList.Add(new Tuple<string, string>("Entities", Properties.Resources.All_Entities));
+            CustoFileCsList.Add(new Tuple<string, string>("FormulasAndEvents", Properties.Resources.All_Events));
 
-            _Context = null;
-               
+            foreach (Tuple<string, string> CustoFileCs in CustoFileCsList)
+            {
+                string CommandCsPath = Path.GetTempPath() + CustoFileCs.Item1 + ".cs";
+                File.WriteAllText(CommandCsPath, CustoFileCs.Item2);
+
+                IModelsRepository modelsRepository = new ModelsRepository();
+                ModelManager modelManager = new ModelManager(modelsRepository);
+                modelManager.CustomizeModel(CommandCsPath, ModelName, true);
+                File.Delete(CommandCsPath);
+            }
+           */
 
         }
 
@@ -1023,6 +1064,24 @@ namespace AlmaCamTrainingTest
         }
     }
 
+    public class NewField
+    {
+        public string Key;
+        public string Name;
+        public FieldDescriptionEditableType Editable;
+        public FieldDescriptionVisibilityType Visible;
+        public FieldDescriptionType Type;
+        public string Link;
+        public NewField(string key, string name, FieldDescriptionEditableType editable, FieldDescriptionVisibilityType visible, FieldDescriptionType type, string link)
+        {
+            Key = key;
+            Name = name;
+            Editable = editable;
+            Visible = visible;
+            Type = type;
+            Link = link;
+        }
+    }
 
 
     public class InstallclipperTest : ScriptModelCustomization, IScriptModelCustomization

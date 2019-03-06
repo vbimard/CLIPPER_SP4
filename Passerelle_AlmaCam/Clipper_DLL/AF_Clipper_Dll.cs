@@ -29,6 +29,9 @@ using System.Diagnostics;
 using Alma.BaseUI.Utils;
 using Actcut.CommonModel;
 using System.Globalization;
+using Wpm.Implement.ModelSetting;
+using System.Collections;
+using Alma.BaseUI.DescriptionEditor;
 //
 
 
@@ -6808,7 +6811,7 @@ namespace AF_Clipper_Dll
                                 sheetId_list_from_txt_file.Add(idclipobject.ToString());
                                 //chargement de la liste des lignes csv non ignorée
                                 //csvfile_list_lines.Add(newline);
-                                //construction du dictionnaire de lignes indexe
+                                //construction du dictionnaire de lignes index
                                 csvfile_list_dictionnary.Add(idclipobject.ToString(), line_Dictionnary);
 
 
@@ -6863,7 +6866,7 @@ namespace AF_Clipper_Dll
                         foreach (IExtendedEntity xstock in stocks_indentifie_en_cours)
                         { string idclip = null;
                             idclip = xstock.Entity.GetFieldValueAsString("IDCLIP");
-                            if (stock_identifed_dictionnary.ContainsKey(idclip) == false) {
+                            if (stock_identifed_dictionnary.ContainsKey(idclip) == false  && string.IsNullOrEmpty(idclip) == false) {
                                 stock_identifed_dictionnary.Add(idclip, xstock.Entity); }
                         }
 
@@ -6994,9 +6997,11 @@ namespace AF_Clipper_Dll
                         {
                             string filename = null;
                             filename = xstock.Entity.GetFieldValueAsString("FILENAME");
-                            if (chutes_cfao_non_identifiees_dictionnary.ContainsKey(filename) == false)
-                            {
-                                chutes_cfao_non_identifiees_dictionnary.Add(filename, xstock.Entity);
+                            if (string.IsNullOrEmpty(filename) == false) { 
+                                if (chutes_cfao_non_identifiees_dictionnary.ContainsKey(filename) == false )
+                                {
+                                    chutes_cfao_non_identifiees_dictionnary.Add(filename, xstock.Entity);
+                                }
                             }
                         }
 
@@ -8981,7 +8986,42 @@ namespace AF_Clipper_Dll
     #endregion
 
     #region Integration
-    public class Clipper_8_integrate{
+    public class Clipper_8_integrate : ScriptModelCustomization, IScriptModelCustomization
+    {
+
+        public override bool Execute(IContext context, IContext hostContext)
+        {
+            IEntityType entityType = context.Kernel.GetEntityType("_TO_PRODUCE_REFERENCE");
+            IEntityTypeFactory entityTypeFactory = new EntityTypeFactory(context, 1, entityType, null, "_ACTCUT", null);
+            entityTypeFactory.Key = "_TO_PRODUCE_REFERENCE";
+            entityTypeFactory.Name = "Pièces à produire";
+            entityTypeFactory.DefaultDisplayKey = "_NAME";
+            entityTypeFactory.ActAsEnvironment = false;
+
+            {
+                IFieldDescription fieldDescription = new FieldDescription(context.Kernel.UnitSystem, true);
+                fieldDescription.Key = "AFFAIRE";
+                fieldDescription.Name = "*Affaire";
+                fieldDescription.Editable = FieldDescriptionEditableType.AllSection;
+                fieldDescription.Visible = FieldDescriptionVisibilityType.AllSection;
+                fieldDescription.Mandatory = false;
+                fieldDescription.FieldDescriptionType = FieldDescriptionType.String;
+                entityTypeFactory.EntityTypeAttributList.Add(fieldDescription);
+
+            }
+
+            if (!entityTypeFactory.UpdateModel())
+            {
+                foreach (ModelSettingError error in entityTypeFactory.ErrorList)
+                {
+                    hostContext.TraceLogger.TraceError(error.Message, true);
+                }
+                return false;
+            }
+            return true;
+        }
+
+
 
 
         public void Integrate_All(string databasemane)
@@ -9012,7 +9052,20 @@ namespace AF_Clipper_Dll
 
 
         }
+        public void Field_Add_PartToProduce(IContext localcontexte)
+        {
+            //recuperation des champs spé. de la base selectionnée
+            IEntityType entityType = localcontexte.Kernel.GetEntityType("_TO_PRODUCE_REFERENCE");
+            IEntityTypeFactory entityTypeFactory = new EntityTypeFactory(localcontexte, 1, entityType, null, "_ACTCUT", null);
+            entityTypeFactory.Key = "_TO_PRODUCE_REFERENCE";
+            entityTypeFactory.Name = "Pièces à produire";
+            entityTypeFactory.DefaultDisplayKey = "_NAME";
+            entityTypeFactory.ActAsEnvironment = false;
+            //foreach (IField f in entityTypeFactory.EditEntityType.GetStandardFieldList())
+            //IWpmEnumerable ie = entityTypeFactory.EditEntityType.GetStandardFieldList();
+            //recuperation  de la liste des champs spé.
 
+        }
 
     }
     #endregion

@@ -597,7 +597,7 @@ namespace AF_Export_Devis_Clipper
                 System.Windows.Forms.MessageBox.Show(dirEx.Message);
                 Environment.Exit(0); return false;
             }
-
+            catch (MissingCustomerReference ie) {  return false; }
             catch (Exception ie) { System.Windows.Forms.MessageBox.Show(ie.Message); return false; }
         }
 
@@ -768,13 +768,20 @@ namespace AF_Export_Devis_Clipper
                 ordernumber = ""; //Repère commercial interne
 
             ///commande                                                                                                ///commande interne
-            string cocli="";                                                                                              ///
-            if (clientEntity.GetFieldValueAsString("_REFERENCE")!=string.Empty)
-            { cocli = clientEntity.GetFieldValueAsString("_REFERENCE").ToUpper(); }
-            else if(clientEntity.GetFieldValueAsString("_EXTERNAL_ID")!=string.Empty)
-            { EmptyString(clientEntity.GetFieldValueAsString("_EXTERNAL_ID")).ToUpper(); }
-           
-                
+            string cocli="";
+            ///
+            ///if (clientEntity.GetFieldValueAsString("_REFERENCE")!=string.Empty)
+            ///{ cocli = EmptyString(clientEntity.GetFieldValueAsString("_REFERENCE")).ToUpper(); }
+            ///on ne recupere pas la reference client on recupere l'external id plus fiable
+            if (string.IsNullOrEmpty(clientEntity.GetFieldValueAsString("_EXTERNAL_ID"))==false)
+            { cocli=EmptyString(clientEntity.GetFieldValueAsString("_EXTERNAL_ID")).ToUpper(); }
+            else
+            {// Mauvais Paramétrage des imports clients, le Code client doit être renseigné dans l'external_id des clients AlmaCam.
+                throw new MissingCustomerReference();
+
+            }
+
+
 
 
             long i = 0;
@@ -2280,7 +2287,10 @@ namespace AF_Export_Devis_Clipper
                 data[i++] = FormatDesignation(""); //Désignation 4
                 data[i++] = FormatDesignation(""); //Désignation 5
                 data[i++] = FormatDesignation(""); //Désignation 6
-                data[i++] = CreateTransFile.GetClipperCentreFrais(subOperationEntity); //Centre de frais 
+                if ((quote as Quote).GetOperationType(operationEntity) == OperationType.Stt)
+                    data[i++] = ""; //Désignation 1
+                else
+                    data[i++] = CreateTransFile.GetClipperCentreFrais(subOperationEntity); //Centre de frais 
 
                 double unitPrepTime = operationEntity.GetFieldValueAsDouble("_CORRECTED_PREPARATION_TIME") / 3600;
                 double unitTime = operationEntity.GetFieldValueAsDouble("_CORRECTED_CYCLE_TIME") / 3600;
@@ -2562,6 +2572,18 @@ namespace AF_Export_Devis_Clipper
                 }
             }
 
+            else if (subQuoteOperation.EntityType.Key == "_SUB_QUOTE_OPE")
+            {//soustraintance //
+                IEntity opertationType = subQuoteOperation.GetFieldValueAsEntity("_SUBCONTRACTING_OPE_TYPE");
+                if (opertationType != null)
+                {
+                    centreFrais = opertationType.GetFieldValueAsString("_NAME");
+                    //IEntity centreFraisEntity = opertationType.GetFieldValueAsEntity("_CENTRE_FRAIS");
+                    //if (centreFraisEntity != null)
+                    //  centreFrais = centreFraisEntity.GetFieldValueAsString("_CODE");
+                }
+            }
+            
             else if (subQuoteOperation.EntityType.Key == "_OTHER_QUOTE_OPE")
             {
                 IEntity opertationType = subQuoteOperation.GetFieldValueAsEntity("_OTHER_OPE_TYPE");
@@ -2971,10 +2993,22 @@ namespace AF_Export_Devis_Clipper
     {
         public UnvalidatedQuoteConfigurations(string message) : base(message)
         {
-            MessageBox.Show(base.Message, string.Format("Probleme de configuration d' AlmaCam :", "", DateTime.Now.ToLongTimeString()), MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //MessageBox.Show(base.Message, string.Format("Probleme de configuration d' AlmaCam :", "", DateTime.Now.ToLongTimeString()), MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(base.Message);
         }
-    }
 
+    }
+    /// <summary>
+    /// cas des devis non clos
+    /// </summary>
+    internal class MissingCustomerReference : Exception
+    {
+        public MissingCustomerReference()
+        {
+            MessageBox.Show(string.Format("Ce client n'a pas de code client (colci) associé.\r\nVeuillez corriger ceci dans la liste des sociétés d'AlmaCam.", "", DateTime.Now.ToLongTimeString()), "MissingCustomerReference Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+    }
 
     /// <summary>
     /// missing_almaquote_cost_center

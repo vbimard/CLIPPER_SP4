@@ -22,7 +22,7 @@ namespace AF_Clipper_Dll.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace AF_Clipper_Dll.Properties {
         ///   Retourne l'instance ResourceManager mise en cache utilisée par cette classe.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AF_Clipper_Dll.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace AF_Clipper_Dll.Properties {
         ///   les recherches de ressources à l'aide de cette classe de ressource fortement typée.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -79,7 +79,7 @@ namespace AF_Clipper_Dll.Properties {
         ///            #region CLIP Configuration
         ///      [le reste de la chaîne a été tronqué]&quot;;.
         /// </summary>
-        internal static string All_Commandes {
+        public static string All_Commandes {
             get {
                 return ResourceManager.GetString("All_Commandes", resourceCulture);
             }
@@ -105,7 +105,7 @@ namespace AF_Clipper_Dll.Properties {
         ///            {
         ///                IEn [le reste de la chaîne a été tronqué]&quot;;.
         /// </summary>
-        internal static string All_Entities {
+        public static string All_Entities {
             get {
                 return ResourceManager.GetString("All_Entities", resourceCulture);
             }
@@ -129,7 +129,7 @@ namespace AF_Clipper_Dll.Properties {
         ///        {
         ///            ITransaction transacti [le reste de la chaîne a été tronqué]&quot;;.
         /// </summary>
-        internal static string All_Events {
+        public static string All_Events {
             get {
                 return ResourceManager.GetString("All_Events", resourceCulture);
             }
@@ -138,7 +138,7 @@ namespace AF_Clipper_Dll.Properties {
         /// <summary>
         ///   Recherche une chaîne localisée semblable à 2.1.4.
         /// </summary>
-        internal static string Almcam_Version {
+        public static string Almcam_Version {
             get {
                 return ResourceManager.GetString("Almcam_Version", resourceCulture);
             }
@@ -147,7 +147,7 @@ namespace AF_Clipper_Dll.Properties {
         /// <summary>
         ///   Recherche une chaîne localisée semblable à AlmaCAM_Clipper_8.
         /// </summary>
-        internal static string Clipper_Almacam_Database_Name {
+        public static string Clipper_Almacam_Database_Name {
             get {
                 return ResourceManager.GetString("Clipper_Almacam_Database_Name", resourceCulture);
             }
