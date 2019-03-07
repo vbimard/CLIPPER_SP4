@@ -756,55 +756,31 @@ namespace AlmaCamTrainingTest
         private void preparerLaBasePourClipperToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
+
+
+
+            //IList<CustomizedCommandItem> customizedItemList = GetCustomizedCommandTypeList(context);
+
             IModelsRepository modelsRepository = new ModelsRepository();
-            _Context = modelsRepository.GetModelContext(Lst_Model.Text);
-
-            string FieldKey = "";
-            string FieldName = "";
-            var sheet_Dictionnary = new Dictionary<string, NewField>();
-
-            //preparation du dictionnaire //
-            // champs des toles//
-
-            //tole//
-            
-            var filename = new NewField("FILENAME", "desc",FieldDescriptionEditableType.AllSection,FieldDescriptionVisibilityType.AllSection,FieldDescriptionType.String,"");
-            sheet_Dictionnary.Add("FILENAME", filename);
-            filename = new NewField("description", "desc2", FieldDescriptionEditableType.AllSection, FieldDescriptionVisibilityType.AllSection, FieldDescriptionType.Lookup,"bla");
-            sheet_Dictionnary.Add("description", filename);
-
-            /*
-            IEntityType entityType = _Context.Kernel.GetEntityType("_SHEET");
-            IEntityTypeFactory entityTypeFactory = new EntityTypeFactory(_Context, 1, entityType, null, "_SUPPLY", null);
-            entityTypeFactory.Key = "_SHEET";
-            entityTypeFactory.Name = "Toles";
-            entityTypeFactory.DefaultDisplayKey = "_NAME";
-            entityTypeFactory.ActAsEnvironment = false;*/
-            
-            FieldEditableType a = FieldEditableType.AllSection;
-            if (sheet_Dictionnary["description"].Type == FieldDescriptionType.Lookup)
-            {
-                string l = sheet_Dictionnary["description"].Link;
-            }
-                //fieldDescription.LinkKey = sheet_Dictionnary["descritpion"].Link;
-            //string ModelName =Lst_Model.Text;
-            /*
+         
             List<Tuple<string, string>> CustoFileCsList = new List<Tuple<string, string>>();
-            //CustoFileCsList.Add(new Tuple<string, string>("Command", Properties.Resources.All_Commandes));
-            CustoFileCsList.Add(new Tuple<string, string>("Entities", Properties.Resources.All_Entities));
-            CustoFileCsList.Add(new Tuple<string, string>("FormulasAndEvents", Properties.Resources.All_Events));
+          
+            CustoFileCsList.Add(new Tuple<string, string>("Entities", Properties.Resources.Entities3));
+            CustoFileCsList.Add(new Tuple<string, string>("FormulasAndEvents", Properties.Resources._event));
+            CustoFileCsList.Add(new Tuple<string, string>("Commandes", Properties.Resources.CommandesV2));
 
             foreach (Tuple<string, string> CustoFileCs in CustoFileCsList)
             {
                 string CommandCsPath = Path.GetTempPath() + CustoFileCs.Item1 + ".cs";
                 File.WriteAllText(CommandCsPath, CustoFileCs.Item2);
+                
+                string cs = CustoFileCs.Item1;
 
-                IModelsRepository modelsRepository = new ModelsRepository();
                 ModelManager modelManager = new ModelManager(modelsRepository);
-                modelManager.CustomizeModel(CommandCsPath, ModelName, true);
-                File.Delete(CommandCsPath);
+                modelManager.CustomizeModel(CommandCsPath, Lst_Model.Text, true);
+                 File.Delete(CommandCsPath);
             }
-           */
+           
 
         }
 
@@ -1061,6 +1037,86 @@ namespace AlmaCamTrainingTest
                 }
                 _Context = null;
             
+        }
+
+        private void ajouterLesEvenementsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //IList<CustomizedCommandItem> customizedItemList = GetCustomizedCommandTypeList(context);
+
+            IModelsRepository modelsRepository = new ModelsRepository();
+
+            List<Tuple<string, string>> CustoFileCsList = new List<Tuple<string, string>>();
+
+         
+            CustoFileCsList.Add(new Tuple<string, string>("FormulasAndEvents", Properties.Resources._event));
+          
+
+            foreach (Tuple<string, string> CustoFileCs in CustoFileCsList)
+            {
+                string CommandCsPath = Path.GetTempPath() + CustoFileCs.Item1 + ".cs";
+                File.WriteAllText(CommandCsPath, CustoFileCs.Item2);
+
+                string cs = CustoFileCs.Item1;
+
+                ModelManager modelManager = new ModelManager(modelsRepository);
+                modelManager.CustomizeModel(CommandCsPath, Lst_Model.Text, true);
+                File.Delete(CommandCsPath);
+            }
+        }
+
+        private void ajouterLesCommandesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //IList<CustomizedCommandItem> customizedItemList = GetCustomizedCommandTypeList(context);
+
+            IModelsRepository modelsRepository = new ModelsRepository();
+
+            List<Tuple<string, string>> CustoFileCsList = new List<Tuple<string, string>>();
+
+            //CustoFileCsList.Add(new Tuple<string, string>("Entities", Properties.Resources.Entities3));
+            //CustoFileCsList.Add(new Tuple<string, string>("FormulasAndEvents", Properties.Resources._event));
+            CustoFileCsList.Add(new Tuple<string, string>("Commandes", Properties.Resources.CommandesV2));
+
+            foreach (Tuple<string, string> CustoFileCs in CustoFileCsList)
+            {
+                string CommandCsPath = Path.GetTempPath() + CustoFileCs.Item1 + ".cs";
+                File.WriteAllText(CommandCsPath, CustoFileCs.Item2);
+
+                string cs = CustoFileCs.Item1;
+
+                ModelManager modelManager = new ModelManager(modelsRepository);
+                modelManager.CustomizeModel(CommandCsPath, Lst_Model.Text, true);
+                File.Delete(CommandCsPath);
+            }
+        }
+
+        private void ajouerLesChampsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //IList<CustomizedCommandItem> customizedItemList = GetCustomizedCommandTypeList(context);
+
+            IModelsRepository modelsRepository = new ModelsRepository();
+
+            List<Tuple<string, string>> CustoFileCsList = new List<Tuple<string, string>>();
+
+            CustoFileCsList.Add(new Tuple<string, string>("Entities", Properties.Resources.Entities3));
+            //CustoFileCsList.Add(new Tuple<string, string>("FormulasAndEvents", Properties.Resources._event));
+            //CustoFileCsList.Add(new Tuple<string, string>("Commandes", Properties.Resources.CommandesV2));
+
+            foreach (Tuple<string, string> CustoFileCs in CustoFileCsList)
+            {
+                string CommandCsPath = Path.GetTempPath() + CustoFileCs.Item1 + ".cs";
+                File.WriteAllText(CommandCsPath, CustoFileCs.Item2);
+
+                string cs = CustoFileCs.Item1;
+
+                ModelManager modelManager = new ModelManager(modelsRepository);
+                modelManager.CustomizeModel(CommandCsPath, Lst_Model.Text, true);
+                File.Delete(CommandCsPath);
+            }
+        }
+
+        private void ajouterLesChampsSpécifiquesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 

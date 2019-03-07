@@ -61,12 +61,94 @@ namespace AlmaCamTrainingTest.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à using System;
+        ///using System.IO;
+        ///using System.Collections.Generic;
+        ///using System.Windows.Forms;
+        ///using Wpm.Schema.Kernel;
+        ///using Wpm.Implement.Manager;
+        ///using Wpm.Implement.ModelSetting;
+        ///using Alma.BaseUI.DescriptionEditor;
+        ///
+        ///namespace Wpm.Implement.ModelSetting
+        ///{
+        ///    public partial class ImportCustomizedFormulaEventType : ScriptModelCustomization, IScriptModelCustomization
+        ///    {
+        ///        public override bool Execute(IContext context, IContext hostContext)
+        ///        {
+        ///            ITransaction transacti [le reste de la chaîne a été tronqué]&quot;;.
+        /// </summary>
+        public static string _event {
+            get {
+                return ResourceManager.GetString("_event", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap BUTTON {
             get {
                 object obj = ResourceManager.GetObject("BUTTON", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à using System;
+        ///using System.IO;
+        ///using System.Collections.Generic;
+        ///using System.Windows.Forms;
+        ///using Wpm.Schema.Kernel;
+        ///using Wpm.Implement.Manager;
+        ///using Wpm.Implement.ModelSetting;
+        ///using Alma.BaseUI.DescriptionEditor;
+        ///
+        ///
+        ///using Wpm.Implement.Manager;
+        ///using Wpm.Implement.Processor;
+        ///using Wpm.Implement.ComponentEditor;  // ouverture de fenetres de selection almacam
+        ///
+        ///
+        ///
+        ///
+        ///
+        ///
+        ///
+        ///
+        ///namespace Wpm.Implement.ModelSetting
+        ///{
+        ///    public partial class ImportUserCommandType : ScriptModelCustomization, ISc [le reste de la chaîne a été tronqué]&quot;;.
+        /// </summary>
+        public static string CommandesV2 {
+            get {
+                return ResourceManager.GetString("CommandesV2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à using System;
+        ///using System.IO;
+        ///using System.Collections.Generic;
+        ///using Wpm.Schema.Kernel;
+        ///using Wpm.Implement.Manager;
+        ///using Wpm.Implement.ModelSetting;
+        ///using Alma.BaseUI.DescriptionEditor;
+        ///
+        ///namespace Wpm.Implement.ModelSetting
+        ///{
+        ///    public partial class ImportUserEntityType : ScriptModelCustomization, IScriptModelCustomization
+        ///    {
+        ///        public override bool Execute(IContext context, IContext hostContext)
+        ///        {
+        ///        
+        ///            
+        ///		  //preparation du dictionnaire //
+        ///            / [le reste de la chaîne a été tronqué]&quot;;.
+        /// </summary>
+        public static string Entities3 {
+            get {
+                return ResourceManager.GetString("Entities3", resourceCulture);
             }
         }
         

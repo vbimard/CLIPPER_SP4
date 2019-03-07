@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AlmaCam_Clipper_Form));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quitToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
@@ -37,6 +36,7 @@
             this.creerRetourGPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.remonterDTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.c7ImpoortStockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.c7PlanningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clipper8ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importStockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.purgerToutLeStockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -51,15 +51,17 @@
             this.remonteeDTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.integrationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extraireChampsClipperToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.preparerLaBasePourClipperToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.initialiserStockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.preparerLaBasePourClipperToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ajouterLesEvenementsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ajouterLesCommandesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ajouerLesChampsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.quitToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.InfosLabel = new System.Windows.Forms.Label();
             this.Lst_Model = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.c7PlanningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -134,6 +136,13 @@
             this.c7ImpoortStockToolStripMenuItem.Text = "c7_Import Stock";
             this.c7ImpoortStockToolStripMenuItem.Click += new System.EventHandler(this.c7ImpoortStockToolStripMenuItem_Click);
             // 
+            // c7PlanningToolStripMenuItem
+            // 
+            this.c7PlanningToolStripMenuItem.Name = "c7PlanningToolStripMenuItem";
+            this.c7PlanningToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.c7PlanningToolStripMenuItem.Text = "c7_Planning";
+            this.c7PlanningToolStripMenuItem.Click += new System.EventHandler(this.c7PlanningToolStripMenuItem_Click);
+            // 
             // clipper8ToolStripMenuItem
             // 
             this.clipper8ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -151,7 +160,7 @@
             this.importerStockToolStripMenuItem,
             this.recreerLEmfToolStripMenuItem});
             this.importStockToolStripMenuItem.Name = "importStockToolStripMenuItem";
-            this.importStockToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.importStockToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
             this.importStockToolStripMenuItem.Text = "Stock";
             this.importStockToolStripMenuItem.Click += new System.EventHandler(this.importStockToolStripMenuItem_Click);
             // 
@@ -188,7 +197,7 @@
             this.avecDTToolStripMenuItem,
             this.sansDTToolStripMenuItem});
             this.importOFToolStripMenuItem.Name = "importOFToolStripMenuItem";
-            this.importOFToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.importOFToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
             this.importOFToolStripMenuItem.Text = "Import_OF";
             this.importOFToolStripMenuItem.Click += new System.EventHandler(this.importOFToolStripMenuItem_Click);
             // 
@@ -213,7 +222,7 @@
             this.relanceClotureToolStripMenuItem2,
             this.remonteeDTToolStripMenuItem});
             this.clotureToolStripMenuItem.Name = "clotureToolStripMenuItem";
-            this.clotureToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.clotureToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
             this.clotureToolStripMenuItem.Text = "Retour Gp";
             // 
             // relanceenvoiecoupeToolStripMenuItem
@@ -241,8 +250,11 @@
             // 
             this.integrationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.extraireChampsClipperToolStripMenuItem,
+            this.initialiserStockToolStripMenuItem,
             this.preparerLaBasePourClipperToolStripMenuItem,
-            this.initialiserStockToolStripMenuItem});
+            this.ajouterLesEvenementsToolStripMenuItem,
+            this.ajouterLesCommandesToolStripMenuItem,
+            this.ajouerLesChampsToolStripMenuItem});
             this.integrationToolStripMenuItem.Name = "integrationToolStripMenuItem";
             this.integrationToolStripMenuItem.Size = new System.Drawing.Size(77, 20);
             this.integrationToolStripMenuItem.Text = "Integration";
@@ -252,26 +264,47 @@
             // 
             this.extraireChampsClipperToolStripMenuItem.AutoToolTip = true;
             this.extraireChampsClipperToolStripMenuItem.Name = "extraireChampsClipperToolStripMenuItem";
-            this.extraireChampsClipperToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+            this.extraireChampsClipperToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
             this.extraireChampsClipperToolStripMenuItem.Text = "Extraire champs Clipper";
             this.extraireChampsClipperToolStripMenuItem.ToolTipText = "Extraire champs specifiques de Clipper";
             this.extraireChampsClipperToolStripMenuItem.Click += new System.EventHandler(this.extraireChampsClipperToolStripMenuItem_Click);
+            // 
+            // initialiserStockToolStripMenuItem
+            // 
+            this.initialiserStockToolStripMenuItem.Name = "initialiserStockToolStripMenuItem";
+            this.initialiserStockToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
+            this.initialiserStockToolStripMenuItem.Text = "Initialiser Stock";
+            this.initialiserStockToolStripMenuItem.Click += new System.EventHandler(this.initialiserStockToolStripMenuItem_Click);
             // 
             // preparerLaBasePourClipperToolStripMenuItem
             // 
             this.preparerLaBasePourClipperToolStripMenuItem.AutoToolTip = true;
             this.preparerLaBasePourClipperToolStripMenuItem.Name = "preparerLaBasePourClipperToolStripMenuItem";
-            this.preparerLaBasePourClipperToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+            this.preparerLaBasePourClipperToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
             this.preparerLaBasePourClipperToolStripMenuItem.Text = "Preparer la Base pour Clipper";
             this.preparerLaBasePourClipperToolStripMenuItem.ToolTipText = "Integre les nouveaux champs par rapport a une base de reference";
             this.preparerLaBasePourClipperToolStripMenuItem.Click += new System.EventHandler(this.preparerLaBasePourClipperToolStripMenuItem_Click);
             // 
-            // initialiserStockToolStripMenuItem
+            // ajouterLesEvenementsToolStripMenuItem
             // 
-            this.initialiserStockToolStripMenuItem.Name = "initialiserStockToolStripMenuItem";
-            this.initialiserStockToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
-            this.initialiserStockToolStripMenuItem.Text = "Initialiser Stock";
-            this.initialiserStockToolStripMenuItem.Click += new System.EventHandler(this.initialiserStockToolStripMenuItem_Click);
+            this.ajouterLesEvenementsToolStripMenuItem.Name = "ajouterLesEvenementsToolStripMenuItem";
+            this.ajouterLesEvenementsToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
+            this.ajouterLesEvenementsToolStripMenuItem.Text = "Ajouter les Evenements";
+            this.ajouterLesEvenementsToolStripMenuItem.Click += new System.EventHandler(this.ajouterLesEvenementsToolStripMenuItem_Click);
+            // 
+            // ajouterLesCommandesToolStripMenuItem
+            // 
+            this.ajouterLesCommandesToolStripMenuItem.Name = "ajouterLesCommandesToolStripMenuItem";
+            this.ajouterLesCommandesToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
+            this.ajouterLesCommandesToolStripMenuItem.Text = "Ajouter les Commandes";
+            this.ajouterLesCommandesToolStripMenuItem.Click += new System.EventHandler(this.ajouterLesCommandesToolStripMenuItem_Click);
+            // 
+            // ajouerLesChampsToolStripMenuItem
+            // 
+            this.ajouerLesChampsToolStripMenuItem.Name = "ajouerLesChampsToolStripMenuItem";
+            this.ajouerLesChampsToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
+            this.ajouerLesChampsToolStripMenuItem.Text = "Ajouter les Champs";
+            this.ajouerLesChampsToolStripMenuItem.Click += new System.EventHandler(this.ajouerLesChampsToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem
             // 
@@ -325,13 +358,6 @@
             this.label1.Text = "Model";
             this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
-            // c7PlanningToolStripMenuItem
-            // 
-            this.c7PlanningToolStripMenuItem.Name = "c7PlanningToolStripMenuItem";
-            this.c7PlanningToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
-            this.c7PlanningToolStripMenuItem.Text = "c7_Planning";
-            this.c7PlanningToolStripMenuItem.Click += new System.EventHandler(this.c7PlanningToolStripMenuItem_Click);
-            // 
             // AlmaCam_Clipper_Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -349,7 +375,6 @@
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            //this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Location = new System.Drawing.Point(1200, 400);
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -398,6 +423,9 @@
         private System.Windows.Forms.ToolStripMenuItem initialiserStockToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem remonteeDTToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem c7PlanningToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ajouterLesEvenementsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ajouterLesCommandesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ajouerLesChampsToolStripMenuItem;
     }
 }
 
